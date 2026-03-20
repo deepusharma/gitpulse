@@ -4,6 +4,7 @@ A CLI tool that reads your git repositories and generates a weekly standup summa
 
 ![Python](https://img.shields.io/badge/python-3.12+-blue)
 ![Tests](https://img.shields.io/badge/tests-14%20passing-brightgreen)
+[![CI](https://github.com/deepusharma/gitpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/deepusharma/gitpulse/actions/workflows/ci.yml)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Groq](https://img.shields.io/badge/LLM-Groq%20%7C%20llama--3.3--70b-orange)
 ![uv](https://img.shields.io/badge/package%20manager-uv-purple)
