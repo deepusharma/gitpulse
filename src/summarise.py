@@ -251,6 +251,6 @@ if __name__ == "__main__":
     logger.debug("Summary: \n%s", str(summary))
 
     # 6. write summary to file
-    with open("summary.txt", "w") as f:
+    with open("summary.md", "w") as f:
         f.write(summary)
     logger.debug("Summary written to summary.txt")
