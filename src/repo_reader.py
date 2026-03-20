@@ -8,6 +8,10 @@ from pathlib import Path
 import tomllib
 from git import Repo, InvalidGitRepositoryError
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def load_config() -> dict:
 
     """
@@ -47,23 +51,22 @@ def get_commits(days:int=7) -> list:
     
     repos = load_config()
     
-    #OPTIMIZE Move to proper logger and get rid of print statements
-    print("Repos" + str(repos))
+    logger.debug ("Repos: %s", str(repos))
 
     since = datetime.now(timezone.utc) - timedelta(days=days)
-    print("Since: " + str(since))
+    logger.debug("Since: %s", str(since))
 
     commits=[]
     
     for name, path in repos.items():
         try:
-            print("Repo: " + name)
-            print("Path: " + path)
+            logger.debug("Repo: %s", name)
+            logger.debug("Path: %s", path)
 
             repo=Repo(path)
 
             for commit in repo.iter_commits(since=since): 
-                print("Commits: " + str(commit))
+                logger.debug("Commits: %s", str(commit))
 
                 commits.append({"repo":name,
                 "message":commit.message, 
@@ -72,16 +75,20 @@ def get_commits(days:int=7) -> list:
                 "hash":commit.hexsha,
                 })
         except (InvalidGitRepositoryError, FileNotFoundError) as e:
-            print(f"Error loading repo {name}: {e}")
+            logger.warning ("Error loading repo. Skipping %s: %s", name, e)
         except Exception as e:
             #TODO narrow down exception types
-            print(f"Error loading repo {name}: {e}")
+            logger.error ("Unexpected Error in loading repo %s: %s", name, e)
     return commits
     
 # -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
-#print(load_config())
-#NOTE Need to review this later 
-commits = get_commits(15)
-print("(main) All Commits: " + str(commits))
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    #logger.debug(load_config())
+
+
+    #NOTE Need to review this later 
+    commits = get_commits(15)
+    logger.debug("(main) All Commits: %s", commits)

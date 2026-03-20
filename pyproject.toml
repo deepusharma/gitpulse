@@ -8,3 +8,6 @@ dependencies = ["typer", "groq", "gitpython", "rich", "python-dotenv"]
 
 [project.scripts]
 gitpulse = "src.cli:app"
+
+[tool.ruff]
+select = ["T20"]
