@@ -1,0 +1,9 @@
+# --------------------------------
+# Keep it in home ~/.gitpulse.toml
+# --------------------------------
+
+[repos]
+dotfiles = "/mnt/d/GitProjects/public/dotfiles"
+gitpulse = "/mnt/d/GitProjects/public/gitpulse"
+crewai-course = "/mnt/d/GitProjects/lab/crse-crewai-deeplearningai"
+
