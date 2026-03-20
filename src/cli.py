@@ -1,5 +1,6 @@
 import logging
 import argparse
+import os
 
 from repo_reader import get_commits
 from summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
@@ -62,6 +63,7 @@ if __name__ == "__main__":
     print("Summary: "+ str(summary))        # noqa: T201
 
     # 6. write summary to file
-    with open("summary.md", "w") as f:
+    os.makedirs("output", exist_ok=True)
+    with open("output/summary.md", "w") as f:
         f.write(summary)
-    logger.debug("Summary written to summary.txt")
+    logger.debug("Summary written to output/summary.md")
