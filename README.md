@@ -99,11 +99,20 @@ python src/cli.py
 # Last 14 days
 python src/cli.py --days 14
 
+# Filter by specific repo
+python src/cli.py --repo gitpulse
+
+# Custom output path
+python src/cli.py --output reports/weekly.md
+
+# Combine flags
+python src/cli.py --days 14 --repo gitpulse --output reports/gitpulse.md
+
 # With debug logging
 python src/cli.py --days 7 --debug
 ```
 
-Output is printed to terminal and saved to `output/summary.md`.
+Output is printed to terminal and saved to `output/summary.md` by default.
 
 ---
 
