@@ -34,12 +34,3 @@ def load_env():
             logger.error("Missing required environment variable: %s", key)
         raise EnvironmentError("Missing required environment variables: %s" % ", ".join(missing_keys))
     logger.debug("Environment variables loaded successfully")
-    
-
-# -----------------------------------------------------------------------------
-# Main
-# -----------------------------------------------------------------------------
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    logger.debug("utils.py: __main__")
-    

@@ -80,15 +80,3 @@ def get_commits(days:int=7) -> list:
             #TODO narrow down exception types
             logger.error ("Unexpected Error in loading repo %s: %s", name, e)
     return commits
-    
-# -----------------------------------------------------------------------------
-# Main
-# -----------------------------------------------------------------------------
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    #logger.debug(load_config())
-
-
-    #NOTE Need to review this later 
-    commits = get_commits(15)
-    logger.debug("(main) All Commits: %s", commits)

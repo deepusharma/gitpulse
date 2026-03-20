@@ -1,10 +1,8 @@
-from repo_reader import get_commits
 import logging
 import json
 
 import groq
 import os
-from utils import load_env
 
 
 logger = logging.getLogger(__name__)
@@ -214,43 +212,3 @@ def summarise (prompt_str:str) -> str:
     #logger.debug("summarise: Summary: %s", str(summary))
 
     return summary  
-
-
-# -----------------------------------------------------------------------------
-# Main
-# -----------------------------------------------------------------------------
-
-if __name__ == "__main__":
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    load_env()
-
-    # 1. receives a FLAT LIST of commit dicts from repo_reader.get_commits
-    commits = get_commits(15)
-    #logger.debug("Commits: %s", str(commits))
-
-    # 2. format_commits: groups by repo, cleans messages -> returns dict
-    logger.debug("Formatted Commits: START")
-    formatted_commits = format_commits(commits)
-    #logger.debug("Formatted Commits:\n%s", json.dumps(formatted_commits, indent=2, default=str))
-
-    # 3. to_prompt_str: converts dict -> compact string for LLM
-    prompt_str = to_prompt_str(formatted_commits)
-    #logger.debug("Prompt String: %s", str(prompt_str))
-
-    display_str = to_display_str(formatted_commits)
-    #logger.debug("Display String: %s", str(display_str))
-
-    # 4. build_prompt: wraps string into full LLM prompt
-    prompt = build_prompt(prompt_str)
-    logger.debug("Prompt: %s", str(prompt))
-
-    # 5. summarise: orchestrates 2-4, calls Groq, returns summary string
-    summary = summarise(prompt)
-    logger.debug("Summary: \n%s", str(summary))
-
-    # 6. write summary to file
-    with open("summary.md", "w") as f:
-        f.write(summary)
-    logger.debug("Summary written to summary.txt")
