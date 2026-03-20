@@ -28,6 +28,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="GitPulse — weekly standup generator")
     parser.add_argument("--days", type=int, default=7, help="Number of days to look back (default: 7)")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument("--output", default="output/summary.md", help="Output file path")
+    parser.add_argument("--repo", default=None, help="Repo name to filter")
+    
     args = parser.parse_args()
 
     log_level = logging.DEBUG if args.debug else logging.WARNING
@@ -38,6 +41,14 @@ if __name__ == "__main__":
     # 1. receives a FLAT LIST of commit dicts from repo_reader.get_commits
     commits = get_commits(args.days)
     #logger.debug("Commits: %s", str(commits))
+
+    if args.repo:
+        commits = [c for c in commits if c["repo"] == args.repo]
+        logger.debug("Filtered commits for repo: %s", args.repo)
+        if not commits:
+            logger.warning("No commits found for repo: %s", args.repo)
+
+
 
     # 2. format_commits: groups by repo, cleans messages -> returns dict
     logger.debug("Formatted Commits: START")
@@ -63,7 +74,7 @@ if __name__ == "__main__":
     print("Summary: "+ str(summary))        # noqa: T201
 
     # 6. write summary to file
-    os.makedirs("output", exist_ok=True)
-    with open("output/summary.md", "w") as f:
+    os.makedirs(os.path.dirname(args.output) or "output", exist_ok=True)
+    with open(args.output, "w") as f:
         f.write(summary)
-    logger.debug("Summary written to output/summary.md")
+    logger.debug("Summary written to %s", args.output)
