@@ -11,3 +11,6 @@ gitpulse = "src.cli:app"
 
 [tool.ruff]
 select = ["T20"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
