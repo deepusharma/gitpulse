@@ -226,8 +226,8 @@ Specialized agent skills are in `.antigravity/skills/`:
 
 | Skill             | Use for                            |
 | ----------------- | ---------------------------------- |
-| `backend-dev`     | Python, FastAPI, core library work. Use for all core/ api/ work. |
-| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use for all web/ work. |
-| `reviewer`        | Code review and quality checks. |
-| `tester-backend`  | pytest, Python test writing. Use for Python tests. |
-| `tester-frontend` | Vitest, React Testing Library. Use for TypeScript tests. |
+| `backend-dev`     | Python, FastAPI, core library work. Use @backend-dev for all core/ api/ work. |
+| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use @frontend-dev for all web/ work. |
+| `reviewer`        | Code review and quality checks. Use @reviewer. |
+| `tester-backend`  | pytest, Python test writing. Use @tester-backend for Python tests. |
+| `tester-frontend` | Vitest, React Testing Library. Use @tester-frontend for TypeScript tests. |
