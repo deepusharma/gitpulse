@@ -23,8 +23,7 @@ logger = logging.getLogger(__name__)
 # 7. to_display_str -> print
 # 8. to_prompt_str -> build_prompt -> summarise -> print
 
-if __name__ == "__main__":    
-    
+def main():
     parser = argparse.ArgumentParser(description="GitPulse — weekly standup generator")
     parser.add_argument("--days", type=int, default=7, help="Number of days to look back (default: 7)")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
@@ -78,3 +77,6 @@ if __name__ == "__main__":
     with open(args.output, "w") as f:
         f.write(summary)
     logger.debug("Summary written to %s", args.output)
+
+if __name__ == "__main__":    
+    main()
