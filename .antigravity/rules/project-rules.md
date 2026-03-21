@@ -44,7 +44,11 @@ def process(d):
   - `INFO` — key lifecycle events
   - `WARNING` — recoverable issues
   - `ERROR` — failures that need attention
-- Always log before raising an exception
+- Always use `exc_info=True` when logging exceptions: `logger.error("msg: %s", e, exc_info=True)`
+- Never use bare `except Exception` without logging the actual error first
+- Log entry to all API endpoints at `INFO` level
+- Log successful responses at `INFO` level
+- Never swallow exceptions silently
 - Catch specific exceptions — never bare `except:`
 - Include context in error messages
 

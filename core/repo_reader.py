@@ -32,6 +32,7 @@ def load_config() -> dict:
     
     config_path = Path.home() / ".gitpulse.toml"
     if not config_path.exists():
+        logger.error("Config file not found at %s", config_path)
         raise FileNotFoundError(f"Config file not found at {config_path}")
     
     with open(config_path,"rb") as f:
@@ -69,14 +70,24 @@ def _get_local_commits(days:int=7) -> list:
                 "hash":commit.hexsha,
                 })
         except (InvalidGitRepositoryError, FileNotFoundError) as e:
-            logger.warning ("Error loading repo. Skipping %s: %s", name, e)
+            logger.warning("Error loading repo. Skipping %s: %s", name, e, exc_info=True)
         except Exception as e:
-            logger.error ("Unexpected Error in loading repo %s: %s", name, e)
+            logger.error("msg: %s", e, exc_info=True)
     return commits
 
 
 def _get_github_commits(days: int = 7, username: str = None, repos: list = None) -> list:
-    """Gets commits from GitHub API."""
+    """
+    Get the commits from GitHub API for the duration of days provided.
+    
+    Args:
+        days (int): Number of days to look back for commits. Defaults to 7.
+        username (str): The GitHub username.
+        repos (list): List of repository names.
+        
+    Returns:
+        list: List of commit dicts from the given repositories.
+    """
     if not username or not repos:
         return []
 
@@ -104,10 +115,13 @@ def _get_github_commits(days: int = 7, username: str = None, repos: list = None)
                 response = client.get(url, headers=headers, params=params)
 
                 if response.status_code == 404:
+                    logger.error("Repo '%s/%s' not found or is private", username, repo)
                     raise ValueError(f"Repo '{username}/{repo}' not found or is private")
                 elif response.status_code == 429:
+                    logger.error("GitHub API rate limit exceeded")
                     raise ValueError("GitHub API rate limit exceeded")
                 elif response.status_code == 401:
+                    logger.error("GitHub API unauthorised — check GITHUB_TOKEN")
                     raise ValueError("GitHub API unauthorised — check GITHUB_TOKEN")
 
                 response.raise_for_status()
@@ -122,10 +136,10 @@ def _get_github_commits(days: int = 7, username: str = None, repos: list = None)
                         "hash": commit["sha"]
                     })
             except httpx.RequestError as e:
-                logger.error("Network error while requesting %s: %s", url, e)
+                logger.error("Network error while requesting %s: %s", url, e, exc_info=True)
                 raise
             except httpx.HTTPStatusError as e:
-                logger.error("HTTP error %s while requesting %s: %s", response.status_code, url, e)
+                logger.error("HTTP error %s while requesting %s: %s", response.status_code, url, e, exc_info=True)
                 raise
 
     return commits
@@ -149,4 +163,5 @@ def get_commits(source: str = "local", days: int = 7, **kwargs) -> list:
     elif source == "github":
         return _get_github_commits(days=days, **kwargs)
     else:
+        logger.error("Unknown source: %s", source)
         raise ValueError(f"Unknown source: {source}")
