@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = ["typer", "groq", "gitpython", "rich", "python-dotenv", "httpx", "fastapi", "uvicorn"]
 
 [project.scripts]
-gitpulse = "src.cli:app"
+gitpulse = "cli.cli:main"
 
 [tool.ruff]
 select = ["T20"]
