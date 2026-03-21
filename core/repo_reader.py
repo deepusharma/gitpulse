@@ -32,6 +32,7 @@ def load_config() -> dict:
     
     config_path = Path.home() / ".gitpulse.toml"
     if not config_path.exists():
+        logger.error("Config file not found at %s", config_path)
         raise FileNotFoundError(f"Config file not found at {config_path}")
     
     with open(config_path,"rb") as f:
@@ -114,10 +115,13 @@ def _get_github_commits(days: int = 7, username: str = None, repos: list = None)
                 response = client.get(url, headers=headers, params=params)
 
                 if response.status_code == 404:
+                    logger.error("Repo '%s/%s' not found or is private", username, repo)
                     raise ValueError(f"Repo '{username}/{repo}' not found or is private")
                 elif response.status_code == 429:
+                    logger.error("GitHub API rate limit exceeded")
                     raise ValueError("GitHub API rate limit exceeded")
                 elif response.status_code == 401:
+                    logger.error("GitHub API unauthorised — check GITHUB_TOKEN")
                     raise ValueError("GitHub API unauthorised — check GITHUB_TOKEN")
 
                 response.raise_for_status()
@@ -159,4 +163,5 @@ def get_commits(source: str = "local", days: int = 7, **kwargs) -> list:
     elif source == "github":
         return _get_github_commits(days=days, **kwargs)
     else:
+        logger.error("Unknown source: %s", source)
         raise ValueError(f"Unknown source: {source}")
