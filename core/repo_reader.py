@@ -6,6 +6,9 @@ commit history for a given time period.
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import tomllib
+import os
+
+os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 from git import Repo, InvalidGitRepositoryError
 
 import logging
