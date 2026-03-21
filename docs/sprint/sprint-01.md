@@ -3,23 +3,23 @@
 **Sprint goal:** Restructure the codebase into core/cli/api/web and set up agent infrastructure.  
 **Milestone:** v0.2 — Web UI  
 **Duration:** Week of 2026-03-21  
-**Status:** In Progress
+**Status:** Complete ✅
 
 ---
 
 ## Sprint Stories
 
-| Issue | Story                            | Status         | Night |
-| ----- | -------------------------------- | -------------- | ----- |
-| #23   | Create AGENTS.md and skill files | ✅ Done        | -     |
-| #19   | Move shared logic to core/       | 🔵 This Sprint | Mon   |
-| #20   | Move CLI code to cli/            | 🔵 This Sprint | Mon   |
-| #21   | Update imports and tests         | 🔵 This Sprint | Tue   |
-| #22   | Update CI for new structure      | 🔵 This Sprint | Tue   |
+| Issue | Story                            | Status  | Night |
+| ----- | -------------------------------- | ------- | ----- |
+| #23   | Create AGENTS.md and skill files | ✅ Done | -     |
+| #19   | Move shared logic to core/       | ✅ Done | Mon   |
+| #20   | Move CLI code to cli/            | ✅ Done | Mon   |
+| #21   | Update imports and tests         | ✅ Done | Tue   |
+| #22   | Update CI for new structure      | ✅ Done | Tue   |
 
 ---
 
-## Story Details
+## Story Detailss
 
 ### #19 — Move shared logic to core/
 
@@ -39,10 +39,10 @@
 
 **Done when:**
 
-- [ ] `core/` exists with `__init__.py`
-- [ ] All three modules in `core/`
-- [ ] All three test files in `core/tests/`
-- [ ] No files left in `src/`
+- [✅] `core/` exists with `__init__.py`
+- [✅] All three modules in `core/`
+- [✅] All three test files in `core/tests/`
+- [✅] No files left in `src/`
 
 **Do NOT change any logic — move only.**
 
@@ -68,11 +68,11 @@
 
 **Done when:**
 
-- [ ] `cli/` exists with `__init__.py`
-- [ ] `cli.py` is in `cli/`
-- [ ] `main()` function exists in `cli.py`
-- [ ] `pyproject.toml` has entry point
-- [ ] No `cli.py` left in `src/`
+- [✅] `cli/` exists with `__init__.py`
+- [✅] `cli.py` is in `cli/`
+- [✅] `main()` function exists in `cli.py`
+- [✅] `pyproject.toml` has entry point
+- [✅] No `cli.py` left in `src/`
 
 ---
 
@@ -96,9 +96,9 @@
 
 **Done when:**
 
-- [ ] All imports reference `core.` not `src.`
-- [ ] `pytest -v` shows 16 passing
-- [ ] No import errors
+- [✅] All imports reference `core.` not `src.`
+- [✅] `pytest -v` shows 16 passing
+- [✅] No import errors
 
 ---
 
@@ -122,8 +122,8 @@
 
 **Done when:**
 
-- [ ] CI passes on PR
-- [ ] All tests discovered and passing in CI
+- [✅] CI passes on PR
+- [✅] All tests discovered and passing in CI
 
 ---
 
@@ -155,8 +155,8 @@ When working on this sprint:
 
 Sprint is complete when:
 
-- [ ] All 4 stories closed
-- [ ] `src/` folder is empty and deleted
-- [ ] `pytest -v` shows 16 passing from new locations
-- [ ] CI passes
-- [ ] CLI still runs: `python -m cli.cli --days 7`
+- [✅] All 4 stories closed
+- [✅] `src/` folder is empty and deleted
+- [✅] `pytest -v` shows 16 passing from new locations
+- [✅] CI passes
+- [✅] CLI still runs: `python -m cli.cli --days 7`
