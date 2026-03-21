@@ -3,26 +3,26 @@
 **Sprint goal:** Build and deploy the FastAPI backend with GitHub API adapter.  
 **Milestone:** v0.2 — Web UI  
 **Duration:** 2026-03-21  
-**Status:** In Progress
+**Status:** ✅ Done
 
 ---
 
 ## Sprint Stories
 
-| Issue | Story                                    | Status         | Session |
-| ----- | ---------------------------------------- | -------------- | ------- |
-| #24   | Add GitHub API adapter to repo_reader    | 🔵 This Sprint | Today   |
-| #25   | Support source parameter local or github | 🔵 This Sprint | Today   |
-| #26   | Accept github username and repo list     | 🔵 This Sprint | Today   |
-| #27   | Write tests for GitHub API adapter       | 🔵 This Sprint | Today   |
-| #28   | Handle rate limiting and API errors      | 🔵 This Sprint | Today   |
-| #29   | Create FastAPI app skeleton in api/      | 🔵 This Sprint | Today   |
-| #30   | Implement POST /summarise endpoint       | 🔵 This Sprint | Today   |
-| #31   | Wire core modules into API endpoint      | 🔵 This Sprint | Today   |
-| #32   | Add CORS support                         | 🔵 This Sprint | Today   |
-| #33   | Add Pydantic request validation          | 🔵 This Sprint | Today   |
-| #34   | Write tests for API endpoints            | 🔵 This Sprint | Today   |
-| #35   | Deploy API to Railway                    | 🔵 This Sprint | Today   |
+| Issue | Story                                    | Status  | Session |
+| ----- | ---------------------------------------- | ------- | ------- |
+| #24   | Add GitHub API adapter to repo_reader    | ✅ Done | Today   |
+| #25   | Support source parameter local or github | ✅ Done | Today   |
+| #26   | Accept github username and repo list     | ✅ Done | Today   |
+| #27   | Write tests for GitHub API adapter       | ✅ Done | Today   |
+| #28   | Handle rate limiting and API errors      | ✅ Done | Today   |
+| #29   | Create FastAPI app skeleton in api/      | ✅ Done | Today   |
+| #30   | Implement POST /summarise endpoint       | ✅ Done | Today   |
+| #31   | Wire core modules into API endpoint      | ✅ Done | Today   |
+| #32   | Add CORS support                         | ✅ Done | Today   |
+| #33   | Add Pydantic request validation          | ✅ Done | Today   |
+| #34   | Write tests for API endpoints            | ✅ Done | Today   |
+| #35   | Deploy API to Railway                    | ✅ Done | Today   |
 
 ---
 
@@ -72,10 +72,10 @@ def get_commits(source: str = "local", days: int = 7, **kwargs) -> list:
 
 **Done when:**
 
-- [ ] `get_commits(source="local")` works as before
-- [ ] `get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)` returns commits
-- [ ] Returns same flat list shape as local mode
-- [ ] `GITHUB_TOKEN` used if available in env
+- [✅] `get_commits(source="local")` works as before
+- [✅] `get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)` returns commits
+- [✅] Returns same flat list shape as local mode
+- [✅] `GITHUB_TOKEN` used if available in env
 
 ---
 
@@ -206,9 +206,9 @@ Use `@backend-dev` skill for all stories.
 
 Sprint is complete when:
 
-- [ ] GitHub API adapter working for public repos
-- [ ] FastAPI backend running locally
-- [ ] All tests passing
-- [ ] API deployed to Railway
-- [ ] `GET /health` returns 200 on live URL
-- [ ] `POST /summarise` works end to end
+- [✅] GitHub API adapter working for public repos
+- [✅] FastAPI backend running locally
+- [✅] All tests passing
+- [✅] API deployed to Railway
+- [✅] `GET /health` returns 200 on live URL
+- [✅] `POST /summarise` works end to end
