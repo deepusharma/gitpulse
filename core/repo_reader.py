@@ -69,14 +69,24 @@ def _get_local_commits(days:int=7) -> list:
                 "hash":commit.hexsha,
                 })
         except (InvalidGitRepositoryError, FileNotFoundError) as e:
-            logger.warning ("Error loading repo. Skipping %s: %s", name, e)
+            logger.warning("Error loading repo. Skipping %s: %s", name, e)
         except Exception as e:
-            logger.error ("Unexpected Error in loading repo %s: %s", name, e)
+            logger.error("msg: %s", e, exc_info=True)
     return commits
 
 
 def _get_github_commits(days: int = 7, username: str = None, repos: list = None) -> list:
-    """Gets commits from GitHub API."""
+    """
+    Get the commits from GitHub API for the duration of days provided.
+    
+    Args:
+        days (int): Number of days to look back for commits. Defaults to 7.
+        username (str): The GitHub username.
+        repos (list): List of repository names.
+        
+    Returns:
+        list: List of commit dicts from the given repositories.
+    """
     if not username or not repos:
         return []
 
