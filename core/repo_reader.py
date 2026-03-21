@@ -69,7 +69,7 @@ def _get_local_commits(days:int=7) -> list:
                 "hash":commit.hexsha,
                 })
         except (InvalidGitRepositoryError, FileNotFoundError) as e:
-            logger.warning("Error loading repo. Skipping %s: %s", name, e)
+            logger.warning("Error loading repo. Skipping %s: %s", name, e, exc_info=True)
         except Exception as e:
             logger.error("msg: %s", e, exc_info=True)
     return commits
@@ -132,10 +132,10 @@ def _get_github_commits(days: int = 7, username: str = None, repos: list = None)
                         "hash": commit["sha"]
                     })
             except httpx.RequestError as e:
-                logger.error("Network error while requesting %s: %s", url, e)
+                logger.error("Network error while requesting %s: %s", url, e, exc_info=True)
                 raise
             except httpx.HTTPStatusError as e:
-                logger.error("HTTP error %s while requesting %s: %s", response.status_code, url, e)
+                logger.error("HTTP error %s while requesting %s: %s", response.status_code, url, e, exc_info=True)
                 raise
 
     return commits
