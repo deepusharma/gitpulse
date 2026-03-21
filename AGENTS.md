@@ -195,16 +195,28 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 
 ## Current Milestone
 
-**v0.2 — Web UI**
+- Sprint 01 ✅ Complete
+- Sprint 02 ✅ Complete  
+- Sprint 03 🔵 Active — Next.js frontend (#36-#42)
+- Active branch: feature/nextjs-frontend
 
 Active epics:
 
-- #15 — codebase restructure (start here)
-- #16 — GitHub API adapter
-- #17 — FastAPI backend
-- #18 — Next.js frontend
+- #15 — codebase restructure (✅ Complete)
+- #16 — GitHub API adapter (✅ Complete)
+- #17 — FastAPI backend (✅ Complete)
+- #18 — Next.js frontend (🔵 Active)
 
-Start with epic #15 stories #19-#23 before touching any other epic.
+Currently working on Epic #18 stories #36-#42.
+
+---
+
+## Sprint Workflow
+- Sprint plans: docs/sprint/sprint-XX.md
+- Execution plans: docs/sprint/sprint-XX-execution-plan.md
+- Always read both before starting a sprint
+- Save execution plan to file before closing planning chat
+- Open new execution chat per sprint for clean context
 
 ---
 
@@ -214,8 +226,8 @@ Specialized agent skills are in `.antigravity/skills/`:
 
 | Skill             | Use for                            |
 | ----------------- | ---------------------------------- |
-| `backend-dev`     | Python, FastAPI, core library work |
-| `frontend-dev`    | Next.js, TypeScript, Tailwind work |
-| `reviewer`        | Code review and quality checks     |
-| `tester-backend`  | pytest, Python test writing        |
-| `tester-frontend` | Vitest, React Testing Library      |
+| `backend-dev`     | Python, FastAPI, core library work. Use @backend-dev for all core/ api/ work. |
+| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use @frontend-dev for all web/ work. |
+| `reviewer`        | Code review and quality checks. Use @reviewer. |
+| `tester-backend`  | pytest, Python test writing. Use @tester-backend for Python tests. |
+| `tester-frontend` | Vitest, React Testing Library. Use @tester-frontend for TypeScript tests. |
