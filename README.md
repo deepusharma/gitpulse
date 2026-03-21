@@ -12,6 +12,15 @@ Point it at your repos, run one command, get a structured summary of what you di
 
 Simple utility — no dashboards, no subscriptions, just a command that tells you what you did.
 
+## Live Demo
+
+|        | URL                                           |
+| ------ | --------------------------------------------- |
+| Web UI | <https://gitpulse-kappa.vercel.app>           |
+| API    | <https://web-production-83e65.up.railway.app> |
+
+Try it: enter your GitHub username and any public repo to generate a standup summary.
+
 ---
 
 ## Why
