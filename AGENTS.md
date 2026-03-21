@@ -195,12 +195,19 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 
 ## Current Milestone
 
-**v0.2 — Web UI**
-
 - Sprint 01 ✅ Complete
 - Sprint 02 ✅ Complete  
 - Sprint 03 🔵 Active — Next.js frontend (#36-#42)
 - Active branch: feature/nextjs-frontend
+
+Active epics:
+
+- #15 — codebase restructure (✅ Complete)
+- #16 — GitHub API adapter (✅ Complete)
+- #17 — FastAPI backend (✅ Complete)
+- #18 — Next.js frontend (🔵 Active)
+
+Currently working on Epic #18 stories #36-#42.
 
 ---
 
@@ -219,8 +226,8 @@ Specialized agent skills are in `.antigravity/skills/`:
 
 | Skill             | Use for                            |
 | ----------------- | ---------------------------------- |
-| `backend-dev`     | Use @backend-dev for all core/ api/ work |
-| `frontend-dev`    | Use @frontend-dev for all web/ work |
-| `reviewer`        | Code review and quality checks     |
-| `tester-backend`  | Use @tester-backend for Python tests |
-| `tester-frontend` | Use @tester-frontend for TypeScript tests |
+| `backend-dev`     | Python, FastAPI, core library work. Use for all core/ api/ work. |
+| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use for all web/ work. |
+| `reviewer`        | Code review and quality checks. |
+| `tester-backend`  | pytest, Python test writing. Use for Python tests. |
+| `tester-frontend` | Vitest, React Testing Library. Use for TypeScript tests. |
