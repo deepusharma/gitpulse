@@ -12,6 +12,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import httpx
+import os
+
 def load_config() -> dict:
 
     """
@@ -34,23 +37,11 @@ def load_config() -> dict:
     return config.get("repos",{})
 
 
-def get_commits(days:int=7) -> list:
+def _get_local_commits(days:int=7) -> list:
     """
-    Get the commits for the duration of days provided 
-    
-    Args: 
-        days (int): Number of days to look back for commits. 7 by default
-
-    Returns:
-        list object containing the summaries of commit across each of these repos
-
-    Raises:
-        Exception: If Any errors found
+    Get the commits from local configuration for the duration of days provided 
     """
-    #TODO Need to add the exception type in above comment
-    
     repos = load_config()
-    
     logger.debug ("Repos: %s", str(repos))
 
     since = datetime.now(timezone.utc) - timedelta(days=days)
@@ -77,6 +68,82 @@ def get_commits(days:int=7) -> list:
         except (InvalidGitRepositoryError, FileNotFoundError) as e:
             logger.warning ("Error loading repo. Skipping %s: %s", name, e)
         except Exception as e:
-            #TODO narrow down exception types
             logger.error ("Unexpected Error in loading repo %s: %s", name, e)
     return commits
+
+
+def _get_github_commits(days: int = 7, username: str = None, repos: list = None) -> list:
+    """Gets commits from GitHub API."""
+    if not username or not repos:
+        return []
+
+    commits = []
+    since = datetime.now(timezone.utc) - timedelta(days=days)
+    since_iso = since.isoformat()
+
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+
+    token = os.getenv("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    with httpx.Client() as client:
+        for repo in repos:
+            url = f"https://api.github.com/repos/{username}/{repo}/commits"
+            params = {
+                "since": since_iso,
+                "per_page": 100
+            }
+            try:
+                response = client.get(url, headers=headers, params=params)
+
+                if response.status_code == 404:
+                    raise ValueError(f"Repo '{username}/{repo}' not found or is private")
+                elif response.status_code == 429:
+                    raise ValueError("GitHub API rate limit exceeded")
+                elif response.status_code == 401:
+                    raise ValueError("GitHub API unauthorised — check GITHUB_TOKEN")
+
+                response.raise_for_status()
+
+                data = response.json()
+                for commit in data:
+                    commits.append({
+                        "repo": repo,
+                        "message": commit["commit"]["message"],
+                        "author": commit["commit"]["author"]["name"],
+                        "date": datetime.fromisoformat(commit["commit"]["author"]["date"]),
+                        "hash": commit["sha"]
+                    })
+            except httpx.RequestError as e:
+                logger.error("Network error while requesting %s: %s", url, e)
+                raise
+            except httpx.HTTPStatusError as e:
+                logger.error("HTTP error %s while requesting %s: %s", response.status_code, url, e)
+                raise
+
+    return commits
+
+def get_commits(source: str = "local", days: int = 7, **kwargs) -> list:
+    """
+    Get the commits for the duration of days provided 
+    
+    Args: 
+        source (str): "local" or "github".
+        days (int): Number of days to look back for commits. 7 by default
+
+    Returns:
+        list object containing the summaries of commit across each of these repos
+
+    Raises:
+        Exception: If Any errors found
+    """
+    if source == "local":
+        return _get_local_commits(days=days)
+    elif source == "github":
+        return _get_github_commits(days=days, **kwargs)
+    else:
+        raise ValueError(f"Unknown source: {source}")
