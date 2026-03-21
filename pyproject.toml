@@ -14,3 +14,7 @@ select = ["T20"]
 
 [project.optional-dependencies]
 dev = ["pytest"]
+
+[tool.pytest.ini_options]
+#pythonpath = ["."]
+pythonpath = ["src"]
