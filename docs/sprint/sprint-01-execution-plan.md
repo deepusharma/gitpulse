@@ -1,27 +1,59 @@
-# Sprint 01 — Codebase Restructure Execution Plan
+# Sprint 01 — Codebase Restructure Plan
 
-## Goal Description
-Restructure the legacy flat script codebase into clearly delineated modules (`core`, `cli`, `api`, `web`) to support the multi-client v0.2 milestone without modifying any existing business logic. Set up the agent infrastructure and testing protocols for the new structure.
+The goal of this sprint is to restructure the codebase to support both the CLI and a new web frontend, setting the stage for v0.2.
 
-## Executed Changes
+## User Review Required
 
-### Move Shared Logic to `core/` (#19)
-- Relocated `src/repo_reader.py`, `src/summarise.py`, and `src/utils.py` to `core/`.
-- Moved associated unit tests into `core/tests/`.
-- Generated empty placeholder documentation in `core/docs/core-guide.md`.
-- Ensure all logic remains completely identical.
+> [!IMPORTANT]
+> **Gaps & Inconsistencies Detected:**
+> 1. [pyproject.toml](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/pyproject.toml) currently defines the entry point as `gitpulse = "src.cli:app"`. However, inspecting [src/cli.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/src/cli.py) shows it utilizes standard `argparse`, not Typer, and has no `app` object. We will update the entry point to `gitpulse = "cli.cli:main"` and correctly wrap the script execution in a [main()](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/main.py#1-3) function as proposed in Story #20.
+> 2. [main.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/main.py) at the root currently just prints "Hello from gitpulse!". We will ignore this file and let it be, unless you want it deleted.
+> 3. Story #20 mentions creating `test_cli.py` inside `cli/tests/` when there is currently no `test_cli.py` in `tests/`. This naturally works out since there were no CLI tests to move to begin with.
+> 4. We will completely replace `pythonpath = ["src"]` in [pyproject.toml](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/pyproject.toml) with `pythonpath = ["."]` and set `testpaths = ["core/tests", "cli/tests"]` since `src/` will no longer exist.
 
-### Move CLI Code to `cli/` (#20)
-- Isolated the command-line interface logic to `cli/cli.py`.
-- Encapsulated the module-level execution block within a formal `main()` function.
-- Created `cli/tests/` and an empty `cli/docs/cli-guide.md`.
-- Registered `gitpulse = "cli.cli:main"` as the central entry point macro in `pyproject.toml`.
+Please confirm the plan below is acceptable to proceed with execution.
 
-### Abstract Imports and Test Paths (#21, #22)
-- Replaced all explicit `src.*` imports globally with the newly qualified `core.*`.
-- Explicitly specified `testpaths = ["core/tests", "cli/tests"]` in `pyproject.toml` so Pytest natively discovers all modularized test suites.
-- Validated that the GitHub Actions CI automatically recognized the new testing framework without modifying the runner configuration.
+## Proposed Changes
 
-## Verification
-- Validated `pytest -v` accurately detected and ran all 16 pre-existing tests securely natively without `src/` conflicts.
-- Verified manual local test runs using the standard CLI parameters `python -m cli.cli --days 7` executed functionally over the new directory map.
+### Story #19 — Move Shared Logic to `core/`
+We will create the `core` structure (`core/`, `core/tests/`, `core/docs/`) and use `git mv` to preserve git history.
+#### [NEW] `core/__init__.py`
+#### [NEW] `core/docs/core-guide.md`
+#### [MODIFY] `core/repo_reader.py` (Moved from [src/repo_reader.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/src/repo_reader.py))
+#### [MODIFY] `core/summarise.py` (Moved from [src/summarise.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/src/summarise.py))
+#### [MODIFY] `core/utils.py` (Moved from [src/utils.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/src/utils.py))
+#### [MODIFY] `core/tests/test_repo_reader.py` (Moved from [tests/test_repo_reader.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/tests/test_repo_reader.py))
+#### [MODIFY] `core/tests/test_summarise.py` (Moved from [tests/test_summarise.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/tests/test_summarise.py))
+#### [MODIFY] `core/tests/test_utils.py` (Moved from [tests/test_utils.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/tests/test_utils.py))
+
+---
+
+### Story #20 — Move CLI Code to `cli/`
+We will create the `cli` structure (`cli/`, `cli/tests/`, `cli/docs/`) and use `git mv` for [src/cli.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/src/cli.py).
+#### [NEW] `cli/__init__.py`
+#### [NEW] `cli/tests/test_cli.py` 
+#### [NEW] `cli/docs/cli-guide.md`
+#### [MODIFY] `cli/cli.py` (Moved from [src/cli.py](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/src/cli.py))
+- We will indent the execution block under `if __name__ == "__main__":` into a `def main():` function.
+
+---
+
+### Story #21 & #22 — Update Imports, Tests, and CI
+We will update references to point to the new package paths.
+#### [MODIFY] `cli/cli.py`
+- Update imports from `from repo_reader import ...` to `from core.repo_reader import ...`.
+#### [MODIFY] `core/tests/*`
+- Update imports from `from repo_reader import ...` to `from core.repo_reader import ...` as well.
+#### [MODIFY] [pyproject.toml](file:///Users/shrutirastogi/Documents/GitProjects/public/gitpulse/pyproject.toml)
+- Adjust the `[project.scripts]` to run `gitpulse = "cli.cli:main"`.
+- Adjust the `[tool.pytest.ini_options]` to use `pythonpath = ["."]` instead of `["src"]` and configure `testpaths`.
+#### [DELETE] `src/` (Folder will be empty)
+#### [DELETE] `tests/` (Folder will be empty)
+
+## Verification Plan
+
+### Automated Tests
+- Run `pytest -v` from the project root. We expect exactly 16 passing tests.
+
+### Manual Verification
+- Run the CLI from the command line: `python -m cli.cli --days 7`. Ensure it successfully parses standard arguments without crashing.
