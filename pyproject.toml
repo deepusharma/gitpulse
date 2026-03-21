@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "CLI tool that generates weekly standup summaries from git history"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["typer", "groq", "gitpython", "rich", "python-dotenv", "httpx"]
+dependencies = ["typer", "groq", "gitpython", "rich", "python-dotenv", "httpx", "fastapi", "uvicorn"]
 
 [project.scripts]
 gitpulse = "src.cli:app"
@@ -17,7 +17,7 @@ dev = ["pytest", "respx"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["core/tests", "cli/tests"]
+testpaths = ["core/tests", "cli/tests", "api/tests"]
 
 [tool.setuptools.packages.find]
 include = ["core*", "cli*"]
