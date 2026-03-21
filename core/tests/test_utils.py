@@ -1,7 +1,7 @@
 import pytest
 import os
 from unittest.mock import patch
-from utils import load_env
+from core.utils import load_env
 
 # -----------------------------------------------------------------------------
 # load_env
@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 def test_load_env_raises_if_key_missing():
     """load_env raises EnvironmentError if GROQ_API_KEY is not set."""
-    with patch("utils.load_dotenv"):
+    with patch("core.utils.load_dotenv"):
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(EnvironmentError):
                 load_env()

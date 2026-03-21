@@ -16,5 +16,5 @@ select = ["T20"]
 dev = ["pytest"]
 
 [tool.pytest.ini_options]
-#pythonpath = ["."]
-pythonpath = ["src"]
+pythonpath = ["."]
+testpaths = ["core/tests", "cli/tests"]

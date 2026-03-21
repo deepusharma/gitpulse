@@ -2,9 +2,9 @@ import logging
 import argparse
 import os
 
-from repo_reader import get_commits
-from summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
-from utils import load_env
+from core.repo_reader import get_commits
+from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
+from core.utils import load_env
 
 
 logger = logging.getLogger(__name__)

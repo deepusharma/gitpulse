@@ -1,6 +1,6 @@
 import pytest
 import os
-from repo_reader import load_config, get_commits
+from core.repo_reader import load_config, get_commits
 
 pytestmark = pytest.mark.skipif(
     not os.path.exists(os.path.expanduser("~/.gitpulse.toml")),
