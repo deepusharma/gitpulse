@@ -14,7 +14,19 @@ Build and deploy a clean, GitHub-inspired single-page web UI for gitpulse as per
   - Add shadcn components: `npx -y shadcn-ui@latest add button input card badge separator alert skeleton`.
   - `npm install react-markdown`
 - **Structure**: Create `components/Hero.tsx`, `components/SummaryForm.tsx`, `components/Results.tsx`, `lib/api.ts`.
-- **Environment**: Define `.env.local` inside `web/` with `NEXT_PUBLIC_API_URL=http://localhost:8000` for local dev.
+- **Environment**: Define `.env.local` inside `web/` with `NEXT_PUBLIC_API_URL=https://web-production-83e65.up.railway.app` for local dev.
+- **Documentation**: Create an empty `web/docs/web-guide.md` placeholder.
+
+### Styling & Theming
+- Apply GitHub-inspired dark theme from sprint-03.md color palette:
+  - Background: `#0d1117`
+  - Surface: `#161b22`
+  - Border: `#30363d`
+  - Text primary: `#e6edf3`
+  - Text secondary: `#8b949e`
+  - Accent: `#238636`
+  - Error: `#da3633`
+- Typography: Use `Inter` for UI, `JetBrains Mono` or default monospace for code/commits.
 
 ### API Connection & Input Form (#37, #38)
 - **`lib/api.ts`**:
@@ -39,7 +51,7 @@ Build and deploy a clean, GitHub-inspired single-page web UI for gitpulse as per
 
 ### Vercel Deployment (#42)
 - Push `web` folder to GitHub repo.
-- User imports project to Vercel, setting Root Directory to `web` and env var `NEXT_PUBLIC_API_URL=https://gitpulse-api.railway.app` (or whatever the deployed URL is).
+- User imports project to Vercel, setting Root Directory to `web` and env var `NEXT_PUBLIC_API_URL=https://web-production-83e65.up.railway.app`.
 
 ## Verification Plan
 
