@@ -23,8 +23,9 @@ Next.js 14 frontend developer.
 ## Stack
 
 - Next.js 14 App Router
+- NextAuth.js (GitHub OAuth)
 - TypeScript
-- Tailwind CSS
+- Tailwind CSS (with @tailwindcss/typography)
 - shadcn/ui
 - fetch for API calls
 - react-markdown for rendering summaries
@@ -34,6 +35,8 @@ Next.js 14 frontend developer.
 
 - 'use client' for interactive components
 - useState for form and loading state
+- Use NextAuth `useSession` and `getServerSession` for auth state
+- Use `prose` classes for markdown rendering
 - NEXT_PUBLIC_API_URL for backend URL
 - Map API error codes to user-friendly messages
 

@@ -17,7 +17,8 @@ a web interface for browser access — both sharing a common Python core library
 
 | Doc          | Path                            | When to read                    |
 | ------------ | ------------------------------- | ------------------------------- |
-| PRD          | `docs/prd/prd-web.md`           | Before any v0.2 feature         |
+| PRD v0.2     | `docs/prd/prd-web.md`           | Before any v0.2 feature         |
+| PRD v0.3     | `docs/prd/prd-v03.md`           | Before any v0.3 feature         |
 | Architecture | `docs/architecture/overview.md` | Before any implementation       |
 | API Contract | `docs/api/api-contract.md`      | Before backend or frontend work |
 
@@ -25,7 +26,7 @@ a web interface for browser access — both sharing a common Python core library
 
 ## Codebase Structure
 
-```
+```none
 gitpulse/
 ├── core/
 │   ├── __init__.py
@@ -104,8 +105,9 @@ gitpulse/
 ### TypeScript (web)
 
 - Next.js 14 App Router
+- NextAuth.js (GitHub OAuth)
 - TypeScript strict mode
-- Tailwind CSS
+- Tailwind CSS (with @tailwindcss/typography)
 - shadcn/ui components
 - fetch for API calls
 
@@ -175,7 +177,7 @@ from core.utils import load_env
 
 ## Environment Variables
 
-```
+```YAML
 GROQ_API_KEY=          # Required for all Python components
 GITHUB_TOKEN=          # Optional — raises GitHub API rate limit
 NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
@@ -195,23 +197,23 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 
 ## Current Milestone
 
-- Sprint 01 ✅ Complete
-- Sprint 02 ✅ Complete  
-- Sprint 03 🔵 Active — Next.js frontend (#36-#42)
-- Active branch: feature/nextjs-frontend
+History:
+- v0.1 ✅ Complete
+- v0.2 ✅ Complete
+- v0.3 🔵 Active — UI Polish
 
-Active epics:
+Active stories:
+- #65 GitHub OAuth login
+- #66 Header and footer
+- #67 Fix markdown rendering
+- #68 Improve form and results layout
 
-- #15 — codebase restructure (✅ Complete)
-- #16 — GitHub API adapter (✅ Complete)
-- #17 — FastAPI backend (✅ Complete)
-- #18 — Next.js frontend (🔵 Active)
-
-Currently working on Epic #18 stories #36-#42.
+Active branch: feature/v0.3-ui-polish
 
 ---
 
 ## Sprint Workflow
+
 - Sprint plans: docs/sprint/sprint-XX.md
 - Execution plans: docs/sprint/sprint-XX-execution-plan.md
 - Always read both before starting a sprint
@@ -224,10 +226,10 @@ Currently working on Epic #18 stories #36-#42.
 
 Specialized agent skills are in `.antigravity/skills/`:
 
-| Skill             | Use for                            |
-| ----------------- | ---------------------------------- |
+| Skill             | Use for                                                                       |
+| ----------------- | ----------------------------------------------------------------------------- |
 | `backend-dev`     | Python, FastAPI, core library work. Use @backend-dev for all core/ api/ work. |
-| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use @frontend-dev for all web/ work. |
-| `reviewer`        | Code review and quality checks. Use @reviewer. |
-| `tester-backend`  | pytest, Python test writing. Use @tester-backend for Python tests. |
-| `tester-frontend` | Vitest, React Testing Library. Use @tester-frontend for TypeScript tests. |
+| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use @frontend-dev for all web/ work.      |
+| `reviewer`        | Code review and quality checks. Use @reviewer.                                |
+| `tester-backend`  | pytest, Python test writing. Use @tester-backend for Python tests.            |
+| `tester-frontend` | Vitest, React Testing Library. Use @tester-frontend for TypeScript tests.     |

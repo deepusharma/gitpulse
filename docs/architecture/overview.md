@@ -1,10 +1,10 @@
 # Architecture Overview — gitpulse
 
-**Version:** 0.1  
+**Version:** 0.2  
 **Status:** Draft  
 **Author:** Deepak Sharma  
-**Date:** 2026-03-21  
-**Milestone:** v0.2 — Web UǏ
+**Date:** 2026-03-22  
+**Milestone:** v0.3 — UI Polisȟ
 
 ---
 
@@ -307,10 +307,18 @@ GitHub Actions CI (pytest)
 
 ---
 
-## 10. Out of Scope (v0.2)
+## 10. Authentication (v0.3)
+
+For v0.3, gitpulse introduces authentication using **NextAuth.js** with the **GitHub OAuth** provider.
+- This allows the Next.js frontend to securely authenticate users.
+- In the future, this will unlock access to private repositories and user-specific rate limits.
+- The FastAPI backend remains stateless, but the frontend will manage the GitHub OAuth session.
+
+---
+
+## 11. Out of Scope (v0.3)
 
 - Private GitHub repos
-- Authentication
 - Persisting summaries
 - Rate limit caching
 - Streaming responses
