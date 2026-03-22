@@ -17,7 +17,8 @@ a web interface for browser access — both sharing a common Python core library
 
 | Doc          | Path                            | When to read                    |
 | ------------ | ------------------------------- | ------------------------------- |
-| PRD          | `docs/prd/prd-web.md`           | Before any v0.2 feature         |
+| PRD v0.2     | `docs/prd/prd-web.md`           | Before any v0.2 feature         |
+| PRD v0.3     | `docs/prd/prd-v03.md`           | Before any v0.3 feature         |
 | Architecture | `docs/architecture/overview.md` | Before any implementation       |
 | API Contract | `docs/api/api-contract.md`      | Before backend or frontend work |
 
@@ -25,7 +26,7 @@ a web interface for browser access — both sharing a common Python core library
 
 ## Codebase Structure
 
-```
+```none
 gitpulse/
 ├── core/
 │   ├── __init__.py
@@ -196,23 +197,18 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 
 ## Current Milestone
 
-**v0.3 — UI Polish**
+History:
+- v0.1 ✅ Complete
+- v0.2 ✅ Complete
+- v0.3 🔵 Active — UI Polish
 
-- Sprint 01 ✅ Complete
-- Sprint 02 ✅ Complete  
-- Sprint 03 ✅ Complete
-- Sprint 04 🔵 Active — UI Polish (#65-#68)
-- Active branch: feature/v0.3-ui-polish
+Active stories:
+- #65 GitHub OAuth login
+- #66 Header and footer
+- #67 Fix markdown rendering
+- #68 Improve form and results layout
 
-Active epics:
-
-- #15 — codebase restructure (✅ Complete)
-- #16 — GitHub API adapter (✅ Complete)
-- #17 — FastAPI backend (✅ Complete)
-- #18 — Next.js frontend (✅ Complete)
-- #19 — UI Polish & Authentication (🔵 Active)
-
-Currently working on Epic #19 stories #65-#68.
+Active branch: feature/v0.3-ui-polish
 
 ---
 
