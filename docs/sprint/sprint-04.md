@@ -9,12 +9,15 @@
 
 ## Sprint Stories
 
-| Issue | Story                               | Status         | Night   |
-| ----- | ----------------------------------- | -------------- | ------- |
-| #67   | Fix markdown rendering              | 🔵 This Sprint | Mon     |
-| #68   | Improve form and results layout     | 🔵 This Sprint | Mon     |
-| #66   | Add header and footer               | 🔵 This Sprint | Tue     |
-| #65   | GitHub OAuth login with NextAuth.js | 🔵 This Sprint | Wed-Thu |
+| Issue | Story                                   | Status         | Night     |
+| ----- | --------------------------------------- | -------------- | --------- |
+| #67   | Fix markdown rendering                  | 🔵 This Sprint | Mon       |
+| #68   | Improve form and results layout         | 🔵 This Sprint | Mon       |
+| #66   | Add header and footer                   | 🔵 This Sprint | Tue       |
+| #65   | GitHub OAuth login with NextAuth.js     | 🔵 This Sprint | Wed-Thu   |
+| #75   | Fix layout transitions — form to drawer | 🔵 This Sprint | This week |
+| #76   | Fix commit breakdown markdown rendering | 🔵 This Sprint | This week |
+| #77   | Collapsible/expandable result sections  | 🔵 This Sprint | This week |
 
 ---
 
@@ -191,3 +194,6 @@ Sprint is complete when:
 - [ ] GitHub OAuth login working locally
 - [ ] GitHub OAuth login working on Vercel
 - [ ] All changes deployed and live
+- [ ] Form transitions to drawer after results appear
+- [ ] Commit breakdown renders formatted text
+- [ ] Result sections are collapsible
