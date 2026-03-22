@@ -29,20 +29,41 @@ Reasoning: Start with the quickest visual win (#67), then establish the core lay
    - **Session handling**: Need to seamlessly pass session data from the header down to the `SummaryForm` component to auto-fill the username.
    - **Manual OAuth Setup**: **CRITICAL RISK.** We cannot test or verify `#65` until the GitHub OAuth app is registered and environment variables are supplied.
 
-## Manual Setup Required Before #65
+## OAuth App Setup (Manual — Required Before #65)
 
-To implement Story #65, you **must** manually set up a GitHub OAuth App.
-1. Go to `https://github.com/settings/developers` → New OAuth App
-2. Homepage URL: `http://localhost:3000` (or Vercel URL)
-3. Callback URL: `http://localhost:3000/api/auth/callback/github`
-4. Generate a `NEXTAUTH_SECRET` (e.g., `openssl rand -base64 32`)
-5. Add these to `web/.env.local`:
-   ```
+Two separate GitHub OAuth apps are needed:
+
+### 1. Development App (gitpulse-dev)
+1. Go to https://github.com/settings/developers → New OAuth App
+2. Name: gitpulse-dev
+3. Homepage URL: http://localhost:3000
+4. Callback URL: http://localhost:3000/api/auth/callback/github
+5. Copy Client ID and Client Secret
+6. Generate NEXTAUTH_SECRET: openssl rand -base64 32
+7. Add to web/.env.local:
    NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your_secret
-   GITHUB_CLIENT_ID=your_client_id
-   GITHUB_CLIENT_SECRET=your_client_secret
-   ```
+   NEXTAUTH_SECRET=<generated secret>
+   GITHUB_CLIENT_ID=<dev client id>
+   GITHUB_CLIENT_SECRET=<dev client secret>
+
+### 2. Production App (gitpulse-prod)
+1. Go to https://github.com/settings/developers → New OAuth App
+2. Name: gitpulse-prod
+3. Homepage URL: https://your-vercel-url.vercel.app
+4. Callback URL: https://your-vercel-url.vercel.app/api/auth/callback/github
+5. Copy Client ID and Client Secret
+6. Generate a different NEXTAUTH_SECRET: openssl rand -base64 32
+7. Add to Vercel dashboard → Settings → Environment Variables:
+   NEXTAUTH_URL=https://your-vercel-url.vercel.app
+   NEXTAUTH_SECRET=<different generated secret>
+   GITHUB_CLIENT_ID=<prod client id>
+   GITHUB_CLIENT_SECRET=<prod client secret>
+
+### Important Notes
+- Never share or commit these secrets
+- Dev and prod use different Client IDs and Secrets
+- web/.env.local is gitignored — safe to store secrets there
+- #65 cannot be tested until both apps are set up and env vars added
 
 ## Proposed Changes
 
