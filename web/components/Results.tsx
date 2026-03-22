@@ -118,12 +118,18 @@ export function Results({ data, isLoading }: ResultsProps) {
             </div>
           ) : data ? (
             <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-              {data.summary.split(/(?=(?:^|\n)# (?:WHAT I DID|DETAILS|WHATS NEXT|BLOCKERS))/).map((section, idx) => {
+              {data.summary.split(/(?=\n?#{1,2} )/m).map((section, idx) => {
                 if (!section.trim()) return null;
                 const trimmedSection = section.trim();
-                const titleMatch = trimmedSection.match(/^# (.*?)(?:\n([\s\S]*))?$/);
-                if (titleMatch && ["WHAT I DID", "DETAILS", "WHATS NEXT", "BLOCKERS"].includes(titleMatch[1].trim())) {
-                  return <CollapsibleSection key={idx} title={titleMatch[1].trim()} content={titleMatch[2] || ""} />;
+                const titleMatch = trimmedSection.match(/^#{1,2}\s+(.*?)(?:\n([\s\S]*))?$/);
+                if (titleMatch) {
+                  const rawTitle = titleMatch[1].replace(/\*\*/g, "").trim();
+                  const upperTitle = rawTitle.toUpperCase().replace(/["'\u2019]/g, "");
+                  const KNOWN_SECTIONS = ["WHAT I DID", "DETAILS", "WHATS NEXT", "WHAT'S NEXT", "BLOCKERS"];
+                  const isKnown = KNOWN_SECTIONS.some(s => upperTitle.includes(s.replace(/["'\u2019]/g, "")));
+                  if (isKnown) {
+                    return <CollapsibleSection key={idx} title={rawTitle} content={titleMatch[2] || ""} />;
+                  }
                 }
                 return (
                   <div key={idx} className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base mb-6">
