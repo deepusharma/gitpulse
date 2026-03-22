@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, AlertCircle } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface SummaryFormProps {
   onSuccess: (data: SummariseResponse) => void;
@@ -20,6 +21,14 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
   const [days, setDays] = useState(7);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const { data: session } = useSession();
+
+  React.useEffect(() => {
+    if (session?.user?.name && !username) {
+      setUsername(session.user.name);
+    }
+  }, [session, username]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
