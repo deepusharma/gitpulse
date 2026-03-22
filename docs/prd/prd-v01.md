@@ -34,7 +34,8 @@ Developers often struggle to recall exactly what they worked on during daily or 
 
 ## 4. User Stories
 
-### Core CLI 
+### Core CLI
+
 > As a developer, I want a CLI tool to summarize my recent git commits so I can report my updates smoothly.
 
 | ID   | Story                                                             | Priority |
@@ -46,6 +47,7 @@ Developers often struggle to recall exactly what they worked on during daily or 
 | S0.5 | Output to a cleanly formatted Markdown file                       | High     |
 
 **Acceptance Criteria:**
+
 - CLI runs successfully via `gitpulse` or `python -m cli.cli`
 - Supports `--days` (lookback period), `--repo` (filter specific repo), `--output` (file path), and `--debug` (logging level).
 - AI Output is formatted rigidly into: `WHAT I DID`, `DETAILS`, `WHATS NEXT`, `BLOCKERS`.
@@ -54,19 +56,20 @@ Developers often struggle to recall exactly what they worked on during daily or 
 
 ## 5. Technical Decisions
 
-| Decision         | Choice                                         | Reason                                      |
-| ---------------- | ---------------------------------------------- | ------------------------------------------- |
-| Language         | Python 3.12+                                   | Excellent scripting standard, rich library support |
-| Package Manager  | `uv`                                           | Extremely fast Python packaging and resolution |
-| Git Parsing      | `GitPython`                                    | Mature, reliable library for reading local `.git` folders |
-| LLM Generator    | Groq (`llama-3.3-70b-versatile`)               | Fast, high reasoning quality, and free tier |
-| Testing          | `pytest`                                       | Standard and powerful Python test runner    |
+| Decision        | Choice                           | Reason                                                    |
+| --------------- | -------------------------------- | --------------------------------------------------------- |
+| Language        | Python 3.12+                     | Excellent scripting standard, rich library support        |
+| Package Manager | `uv`                             | Extremely fast Python packaging and resolution            |
+| Git Parsing     | `GitPython`                      | Mature, reliable library for reading local `.git` folders |
+| LLM Generator   | Groq (`llama-3.3-70b-versatile`) | Fast, high reasoning quality, and free tier               |
+| Testing         | `pytest`                         | Standard and powerful Python test runner                  |
 
 ---
 
 ## 6. Architecture & Configuration
 
 **Configuration:** `~/.gitpulse.toml`
+
 ```toml
 [repos]
 gitpulse = "/path/to/gitpulse"
@@ -75,14 +78,16 @@ dotfiles = "/path/to/dotfiles"
 
 **Output Format:**
 Summary strictly enforces four sections:
+
 ```markdown
 WHAT I DID
+
 - Bullet points of features/fixes completed
-DETAILS
+  DETAILS
 - Technical details, PR numbers, or important context
-WHATS NEXT
+  WHATS NEXT
 - What you plan to work on next
-BLOCKERS
+  BLOCKERS
 - Any obstacles or dependencies
 ```
 

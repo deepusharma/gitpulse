@@ -84,11 +84,11 @@
 
 1. Update `cli/cli.py` imports:
 
-```python
-   from core.repo_reader import get_commits
-   from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
-   from core.utils import load_env
-```
+   ```python
+      from core.repo_reader import get_commits
+      from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
+      from core.utils import load_env
+   ```
 
 2. Update `pyproject.toml` to add `core` and `cli` to Python path
 3. Run `pytest -v` — all 16 tests must pass
@@ -112,11 +112,11 @@
 2. Verify pytest discovers `core/tests/` automatically
 3. Add `pythonpath` config to `pyproject.toml` if needed:
 
-```toml
-   [tool.pytest.ini_options]
-   pythonpath = ["."]
-   testpaths = ["core/tests", "cli/tests"]
-```
+   ```toml
+      [tool.pytest.ini_options]
+      pythonpath = ["."]
+      testpaths = ["core/tests", "cli/tests"]
+   ```
 
 4. Push and verify CI passes on PR
 
@@ -129,7 +129,7 @@
 
 ## Order of Work
 
-```
+```none
 #19 → #20 → #21 → #22
 ```
 

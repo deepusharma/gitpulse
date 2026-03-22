@@ -33,12 +33,12 @@ With v0.2, the core functionality of generating summaries via a web UI was compl
 
 > As a persistent user, I want a polished, authenticated web experience allowing secure application usage and well-formatted visual summaries.
 
-| Story                                   | Priority |
-| --------------------------------------- | -------- |
-| #65 GitHub OAuth login with NextAuth.js | High     |
-| #66 Header and footer                   | High     |
-| #67 Fix markdown rendering              | High     |
-| #68 Improve form and results layout     | Medium   |
+| ID   | Story                               | Priority |
+| ---- | ----------------------------------- | -------- |
+| #65  | GitHub OAuth login with NextAuth.js | High     |
+| #66  | Header and footer                   | High     |
+| #67  | Fix markdown rendering              | High     |
+| #68  | Improve form and results layout     | Medium   |
 
 ---
 

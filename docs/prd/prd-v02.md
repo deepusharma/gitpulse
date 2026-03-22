@@ -161,4 +161,4 @@ gitpulse CLI generates useful standup summaries but requires terminal access and
 
 ---
 
-
+N/A
