@@ -8,6 +8,33 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+function CollapsibleSection({ title, content }: { title: string; content: string }) {
+  const [expanded, setExpanded] = React.useState(true);
+  
+  return (
+    <div className="mb-6 last:mb-0">
+      <button 
+        onClick={() => setExpanded(!expanded)} 
+        className="flex items-center gap-2 w-full text-left font-bold text-lg text-foreground mb-2 hover:text-primary transition-colors"
+      >
+        <span className="text-xs">{expanded ? '▼' : '▶'}</span>
+        {title}
+      </button>
+      <div 
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+          expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base">
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface ResultsProps {
   data: SummariseResponse | null;
   isLoading: boolean;
@@ -42,9 +69,9 @@ export function Results({ data, isLoading }: ResultsProps) {
               <Skeleton className="h-8 w-4/6" />
             </div>
           ) : data ? (
-            <pre className="p-4 bg-muted/50 rounded-md font-mono text-sm max-h-[600px] overflow-y-auto whitespace-pre-wrap border border-sidebar-border hidden-scrollbar custom-scrollbar">
-              {data.display}
-            </pre>
+            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base max-h-[600px] overflow-y-auto pr-2 custom-scrollbar bg-muted/50 p-4 rounded-md border border-sidebar-border">
+              <ReactMarkdown>{data.display}</ReactMarkdown>
+            </div>
           ) : null}
         </CardContent>
       </Card>
@@ -74,8 +101,18 @@ export function Results({ data, isLoading }: ResultsProps) {
               <Skeleton className="h-4 w-2/3" />
             </div>
           ) : data ? (
-            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-              <ReactMarkdown>{data.summary}</ReactMarkdown>
+            <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              {data.summary.split(/(?=(?:^|\n)# (?:WHAT I DID|DETAILS|WHATS NEXT|BLOCKERS))/).map((section, idx) => {
+                const titleMatch = section.match(/^(?:# )?(.*?)\n([\s\S]*)$/);
+                if (titleMatch && ["WHAT I DID", "DETAILS", "WHATS NEXT", "BLOCKERS"].includes(titleMatch[1].trim())) {
+                  return <CollapsibleSection key={idx} title={titleMatch[1].trim()} content={titleMatch[2]} />;
+                }
+                return (
+                  <div key={idx} className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base mb-6">
+                    <ReactMarkdown>{section}</ReactMarkdown>
+                  </div>
+                );
+              })}
             </div>
           ) : null}
         </CardContent>
