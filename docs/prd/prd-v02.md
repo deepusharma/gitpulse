@@ -24,12 +24,12 @@ gitpulse CLI generates useful standup summaries but requires terminal access and
 
 ---
 
-## 3. Non-Goals (v0.2)
+## 3. Non-Goals / Out of Scope (v0.2)
 
-- Private GitHub repo support (v0.3+)
-- Authentication / user accounts
-- Saving or storing summaries
-- Mobile app
+- Private GitHub repo support (Targeting v0.4+)
+- User accounts / Authentication (Now scoped for v0.3)
+- Saving or persisting summaries to a database
+- Mobile app / Mobile optimisation
 - Real-time updates / webhooks
 
 ---
@@ -161,9 +161,4 @@ gitpulse CLI generates useful standup summaries but requires terminal access and
 
 ---
 
-## 9. Out of Scope
 
-- Private repos (v0.4 target)
-- Persisting summaries
-- Mobile optimisation
-- *(Note: User accounts and authentication are now in scope for v0.3)*
