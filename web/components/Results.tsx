@@ -44,7 +44,7 @@ export function Results({ data, isLoading }: ResultsProps) {
   if (!data && !isLoading) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 w-full max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start w-full max-w-6xl mx-auto">
       {/* Left Column: Commits Breakdown */}
       <Card className="border-border bg-card/60 backdrop-blur-sm h-full flex flex-col">
         <CardHeader className="pb-4">
