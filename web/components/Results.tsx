@@ -8,6 +8,33 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+function CollapsibleSection({ title, content }: { title: string; content: string }) {
+  const [expanded, setExpanded] = React.useState(true);
+  
+  return (
+    <div className="mb-6 last:mb-0">
+      <button 
+        onClick={() => setExpanded(!expanded)} 
+        className="flex items-center gap-2 w-full text-left font-bold text-lg text-foreground mb-2 hover:text-primary transition-colors"
+      >
+        <span className="text-xs">{expanded ? '▼' : '▶'}</span>
+        {title}
+      </button>
+      <div 
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+          expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base">
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface ResultsProps {
   data: SummariseResponse | null;
   isLoading: boolean;
@@ -17,7 +44,7 @@ export function Results({ data, isLoading }: ResultsProps) {
   if (!data && !isLoading) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 w-full max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start w-full max-w-6xl mx-auto">
       {/* Left Column: Commits Breakdown */}
       <Card className="border-border bg-card/60 backdrop-blur-sm h-full flex flex-col">
         <CardHeader className="pb-4">
@@ -42,9 +69,25 @@ export function Results({ data, isLoading }: ResultsProps) {
               <Skeleton className="h-8 w-4/6" />
             </div>
           ) : data ? (
-            <pre className="p-4 bg-muted/50 rounded-md font-mono text-sm max-h-[600px] overflow-y-auto whitespace-pre-wrap border border-sidebar-border hidden-scrollbar custom-scrollbar">
-              {data.display}
-            </pre>
+            <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar p-1">
+              {data.display.split(/(?=(?:^|\n)### )/).map((section, idx) => {
+                if (!section.trim()) return null;
+                const trimmedSection = section.trim();
+                const titleMatch = trimmedSection.match(/^### (.*?)(?:\n([\s\S]*))?$/);
+                if (titleMatch) {
+                  return (
+                    <div key={idx} className="mb-4 last:mb-0 bg-muted/30 p-3 rounded-md border border-sidebar-border">
+                      <CollapsibleSection title={titleMatch[1].trim()} content={titleMatch[2] || ""} />
+                    </div>
+                  );
+                }
+                return (
+                  <div key={idx} className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base mb-4 bg-muted/30 p-3 rounded-md border border-sidebar-border">
+                    <ReactMarkdown>{section}</ReactMarkdown>
+                  </div>
+                );
+              })}
+            </div>
           ) : null}
         </CardContent>
       </Card>
@@ -74,8 +117,26 @@ export function Results({ data, isLoading }: ResultsProps) {
               <Skeleton className="h-4 w-2/3" />
             </div>
           ) : data ? (
-            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-              <ReactMarkdown>{data.summary}</ReactMarkdown>
+            <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              {data.summary.split(/(?=\n?#{1,2} )/m).map((section, idx) => {
+                if (!section.trim()) return null;
+                const trimmedSection = section.trim();
+                const titleMatch = trimmedSection.match(/^#{1,2}\s+(.*?)(?:\n([\s\S]*))?$/);
+                if (titleMatch) {
+                  const rawTitle = titleMatch[1].replace(/\*\*/g, "").trim();
+                  const upperTitle = rawTitle.toUpperCase().replace(/["'\u2019]/g, "");
+                  const KNOWN_SECTIONS = ["WHAT I DID", "DETAILS", "WHATS NEXT", "WHAT'S NEXT", "BLOCKERS"];
+                  const isKnown = KNOWN_SECTIONS.some(s => upperTitle.includes(s.replace(/["'\u2019]/g, "")));
+                  if (isKnown) {
+                    return <CollapsibleSection key={idx} title={rawTitle} content={titleMatch[2] || ""} />;
+                  }
+                }
+                return (
+                  <div key={idx} className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base mb-6">
+                    <ReactMarkdown>{section}</ReactMarkdown>
+                  </div>
+                );
+              })}
             </div>
           ) : null}
         </CardContent>
