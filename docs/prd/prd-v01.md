@@ -23,7 +23,7 @@ Developers often struggle to recall exactly what they worked on during daily or 
 
 ---
 
-## 3. Non-Goals (v0.1)
+## 3. Non-Goals / Out of Scope (v0.1)
 
 - Web interface / GUI.
 - Fetching from remote GitHub instances.
@@ -37,13 +37,13 @@ Developers often struggle to recall exactly what they worked on during daily or 
 ### Core CLI 
 > As a developer, I want a CLI tool to summarize my recent git commits so I can report my updates smoothly.
 
-| Story                                   |
-| --------------------------------------- |
-| Read repositories from `~/.gitpulse.toml` |
-| Parse local git commits using GitPython |
-| Map commits to Groq AI logic prompts    |
-| Expose CLI parameters (`--days`, `--repo`, `--debug`, `--output`) |
-| Output to a cleanly formatted Markdown file |
+| ID   | Story                                                             | Priority |
+| ---- | ----------------------------------------------------------------- | -------- |
+| S0.1 | Read repositories from `~/.gitpulse.toml`                         | High     |
+| S0.2 | Parse local git commits using GitPython                           | High     |
+| S0.3 | Map commits to Groq AI logic prompts                              | High     |
+| S0.4 | Expose CLI parameters (`--days`, `--repo`, `--debug`, `--output`) | High     |
+| S0.5 | Output to a cleanly formatted Markdown file                       | High     |
 
 **Acceptance Criteria:**
 - CLI runs successfully via `gitpulse` or `python -m cli.cli`
@@ -88,7 +88,7 @@ BLOCKERS
 
 ---
 
-## 7. Testing Approach
+## 7. Success Criteria
 
 - Unit tests utilizing `pytest`.
 - Coverage for configuration loaders, local git iterators (`test_repo_reader.py`), summary formatters (`test_summarise.py`), and environment validation (`test_utils.py`).
