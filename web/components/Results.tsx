@@ -103,9 +103,11 @@ export function Results({ data, isLoading }: ResultsProps) {
           ) : data ? (
             <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
               {data.summary.split(/(?=(?:^|\n)# (?:WHAT I DID|DETAILS|WHATS NEXT|BLOCKERS))/).map((section, idx) => {
-                const titleMatch = section.match(/^(?:# )?(.*?)\n([\s\S]*)$/);
+                if (!section.trim()) return null;
+                const trimmedSection = section.trim();
+                const titleMatch = trimmedSection.match(/^# (.*?)(?:\n([\s\S]*))?$/);
                 if (titleMatch && ["WHAT I DID", "DETAILS", "WHATS NEXT", "BLOCKERS"].includes(titleMatch[1].trim())) {
-                  return <CollapsibleSection key={idx} title={titleMatch[1].trim()} content={titleMatch[2]} />;
+                  return <CollapsibleSection key={idx} title={titleMatch[1].trim()} content={titleMatch[2] || ""} />;
                 }
                 return (
                   <div key={idx} className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base mb-6">
