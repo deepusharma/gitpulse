@@ -69,8 +69,24 @@ export function Results({ data, isLoading }: ResultsProps) {
               <Skeleton className="h-8 w-4/6" />
             </div>
           ) : data ? (
-            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base max-h-[600px] overflow-y-auto pr-2 custom-scrollbar bg-muted/50 p-4 rounded-md border border-sidebar-border">
-              <ReactMarkdown>{data.display}</ReactMarkdown>
+            <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar p-1">
+              {data.display.split(/(?=(?:^|\n)### )/).map((section, idx) => {
+                if (!section.trim()) return null;
+                const trimmedSection = section.trim();
+                const titleMatch = trimmedSection.match(/^### (.*?)(?:\n([\s\S]*))?$/);
+                if (titleMatch) {
+                  return (
+                    <div key={idx} className="mb-4 last:mb-0 bg-muted/30 p-3 rounded-md border border-sidebar-border">
+                      <CollapsibleSection title={titleMatch[1].trim()} content={titleMatch[2] || ""} />
+                    </div>
+                  );
+                }
+                return (
+                  <div key={idx} className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary max-w-none prose-sm sm:prose-base mb-4 bg-muted/30 p-3 rounded-md border border-sidebar-border">
+                    <ReactMarkdown>{section}</ReactMarkdown>
+                  </div>
+                );
+              })}
             </div>
           ) : null}
         </CardContent>
