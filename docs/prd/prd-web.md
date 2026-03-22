@@ -163,7 +163,7 @@ gitpulse CLI generates useful standup summaries but requires terminal access and
 
 ## 9. Out of Scope
 
-- Private repos
-- User accounts
+- Private repos (v0.4 target)
 - Persisting summaries
 - Mobile optimisation
+- *(Note: User accounts and authentication are now in scope for v0.3)*

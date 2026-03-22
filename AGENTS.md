@@ -104,8 +104,9 @@ gitpulse/
 ### TypeScript (web)
 
 - Next.js 14 App Router
+- NextAuth.js (GitHub OAuth)
 - TypeScript strict mode
-- Tailwind CSS
+- Tailwind CSS (with @tailwindcss/typography)
 - shadcn/ui components
 - fetch for API calls
 
@@ -175,7 +176,7 @@ from core.utils import load_env
 
 ## Environment Variables
 
-```
+```YAML
 GROQ_API_KEY=          # Required for all Python components
 GITHUB_TOKEN=          # Optional — raises GitHub API rate limit
 NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
@@ -195,23 +196,28 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 
 ## Current Milestone
 
+**v0.3 — UI Polish**
+
 - Sprint 01 ✅ Complete
 - Sprint 02 ✅ Complete  
-- Sprint 03 🔵 Active — Next.js frontend (#36-#42)
-- Active branch: feature/nextjs-frontend
+- Sprint 03 ✅ Complete
+- Sprint 04 🔵 Active — UI Polish (#65-#68)
+- Active branch: feature/v0.3-ui-polish
 
 Active epics:
 
 - #15 — codebase restructure (✅ Complete)
 - #16 — GitHub API adapter (✅ Complete)
 - #17 — FastAPI backend (✅ Complete)
-- #18 — Next.js frontend (🔵 Active)
+- #18 — Next.js frontend (✅ Complete)
+- #19 — UI Polish & Authentication (🔵 Active)
 
-Currently working on Epic #18 stories #36-#42.
+Currently working on Epic #19 stories #65-#68.
 
 ---
 
 ## Sprint Workflow
+
 - Sprint plans: docs/sprint/sprint-XX.md
 - Execution plans: docs/sprint/sprint-XX-execution-plan.md
 - Always read both before starting a sprint
@@ -224,10 +230,10 @@ Currently working on Epic #18 stories #36-#42.
 
 Specialized agent skills are in `.antigravity/skills/`:
 
-| Skill             | Use for                            |
-| ----------------- | ---------------------------------- |
+| Skill             | Use for                                                                       |
+| ----------------- | ----------------------------------------------------------------------------- |
 | `backend-dev`     | Python, FastAPI, core library work. Use @backend-dev for all core/ api/ work. |
-| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use @frontend-dev for all web/ work. |
-| `reviewer`        | Code review and quality checks. Use @reviewer. |
-| `tester-backend`  | pytest, Python test writing. Use @tester-backend for Python tests. |
-| `tester-frontend` | Vitest, React Testing Library. Use @tester-frontend for TypeScript tests. |
+| `frontend-dev`    | Next.js, TypeScript, Tailwind work. Use @frontend-dev for all web/ work.      |
+| `reviewer`        | Code review and quality checks. Use @reviewer.                                |
+| `tester-backend`  | pytest, Python test writing. Use @tester-backend for Python tests.            |
+| `tester-frontend` | Vitest, React Testing Library. Use @tester-frontend for TypeScript tests.     |
