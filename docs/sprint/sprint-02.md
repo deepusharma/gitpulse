@@ -142,7 +142,7 @@ async def summarise(request: SummariseRequest): ...
 
 **Dependencies to add to pyproject.toml:**
 
-```
+```none
 fastapi
 uvicorn
 httpx
@@ -174,9 +174,9 @@ def test_summarise_empty_repos_returns_422()
 
 1. Create `Procfile` at project root:
 
-```
+   ```none
    web: uvicorn api.api:app --host 0.0.0.0 --port $PORT
-```
+   ```
 
 2. Sign up at railway.app with GitHub
 3. New project → Deploy from GitHub repo
@@ -190,7 +190,7 @@ def test_summarise_empty_repos_returns_422()
 
 ## Order of Work
 
-```
+```none
 #24 → #25 → #26 → #27 → #28 → #29 → #30 → #31 → #32 → #33 → #34 → #35
 ```
 

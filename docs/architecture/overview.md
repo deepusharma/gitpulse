@@ -12,7 +12,7 @@
 
 gitpulse is a multi-client tool that reads git commit history and generates AI-powered standup summaries. It has two clients — a CLI for local use and a web interface for browser access — both sharing a common Python core library.
 
-```
+```none
 ┌─────────────────────────────────────────────────────┐
 │                    Clients                          │
 │                                                     │
@@ -89,7 +89,7 @@ Browser interface. Calls the FastAPI backend. Deployed on Vercel.
 
 ### CLI Flow
 
-```
+```none
 User runs cli.py
        ↓
 parse args (--days, --repo, --output)
@@ -110,7 +110,7 @@ print to terminal + write to output/summary.md
 
 ### Web Flow
 
-```
+```none
 User fills form (username, repos, days)
        ↓
 Next.js POST /summarise → FastAPI (Railway)
@@ -204,7 +204,7 @@ Both return the same flat list of commit dicts — same shape, same keys. Everyt
 
 ## 6. Folder Structure
 
-```
+```none
 gitpulse/
 ├── core/
 │   ├── __init__.py
@@ -240,7 +240,9 @@ gitpulse/
 │       └── web-guide.md
 ├── docs/
 │   ├── prd/
-│   │   └── prd-web.md
+│   │   ├── prd-v01.md
+│   │   ├── prd-v02.md
+│   │   └── prd-v03.md
 │   ├── architecture/
 │   │   └── overview.md
 │   ├── decisions/
@@ -281,22 +283,22 @@ gitpulse/
 
 ### CLI + API (Python)
 
-```
+```yaml
 GROQ_API_KEY=          # Required — Groq API key
 GITHUB_TOKEN=          # Optional — increases GitHub API rate limit
 ```
 
 ### Web (Next.js)
 
-```
-NEXT_PUBLIC_API_URL=   # FastAPI backend URL
+```yaml
+NEXT_PUBLIC_API_URL= # FastAPI backend URL
 ```
 
 ---
 
 ## 9. Deployment
 
-```
+```none
 GitHub push
     ↓
 GitHub Actions CI (pytest)
@@ -310,6 +312,7 @@ GitHub Actions CI (pytest)
 ## 10. Authentication (v0.3)
 
 For v0.3, gitpulse introduces authentication using **NextAuth.js** with the **GitHub OAuth** provider.
+
 - This allows the Next.js frontend to securely authenticate users.
 - In the future, this will unlock access to private repositories and user-specific rate limits.
 - The FastAPI backend remains stateless, but the frontend will manage the GitHub OAuth session.

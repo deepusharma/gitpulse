@@ -31,7 +31,7 @@
 
 ### Page structure
 
-```
+```none
 ┌─────────────────────────────────────────┐
 │  HERO SECTION                           │
 │  gitpulse — Your weekly standup, done   │
@@ -87,7 +87,7 @@ npm install react-markdown
 
 **File structure:**
 
-```
+```none
 web/
 ├── app/
 │   ├── layout.tsx       ← root layout, fonts, metadata
@@ -186,9 +186,9 @@ export async function generateSummary(
 3. Set **Root Directory** to `web`
 4. Add environment variable:
 
-```
+   ```none
    NEXT_PUBLIC_API_URL=https://web-production-83e65.up.railway.app
-```
+   ```
 
 5. Deploy
 6. Test live URL
@@ -197,7 +197,7 @@ export async function generateSummary(
 
 ## Order of Work
 
-```
+```none
 #36 → #37 → #38 → #39 → #40 → #41 → #42
 ```
 

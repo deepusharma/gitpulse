@@ -35,7 +35,7 @@ def process(d):
 
 ## 2. Logging & Exception Handling
 
-### Python
+### Python Logging
 
 - Always use `logging` module — never `print`
 - `%s` format style: `logger.debug("msg: %s", var)`
@@ -68,7 +68,7 @@ except:
     pass
 ```
 
-### TypeScript
+### TypeScript Logging
 
 - Use `console.error` only — never `console.log` in production code
 - Always handle Promise rejections
@@ -160,7 +160,7 @@ Never put business logic in `cli.py` or `api.py` — always in `core/`.
 
 ## 7. Documentation
 
-### Python #SKIP MD024
+### Python Documentation
 
 - Google docstrings on ALL functions and classes
 - Module-level docstring at top of every file explaining its purpose
@@ -190,7 +190,7 @@ def get_commits(source: str = "local", **kwargs) -> list:
     """
 ```
 
-### TypeScript #SKIP MD024
+### TypeScript Documentation
 
 - JSDoc comments on all exported functions and components
 - Props interfaces documented with descriptions
@@ -199,14 +199,14 @@ def get_commits(source: str = "local", **kwargs) -> list:
 
 ## 8. Linting & Formatting
 
-### Python #SKIP MD024
+### Python Linting
 
 - **Ruff** for linting and formatting — already configured in pyproject.toml
 - Run before every commit: `ruff check . && ruff format .`
 - No `print` statements — Ruff rule T20 enforces this
 - Type checking with **Pyrefly**
 
-### TypeScript #SKIP MD024
+### TypeScript Linting
 
 - **ESLint** with Next.js config
 - **Prettier** for formatting
