@@ -88,6 +88,27 @@ Two separate GitHub OAuth apps are needed:
 4. Update `Header.tsx` to display GitHub Login/Logout buttons and the user's avatar.
 5. Update `SummaryForm.tsx` to use `useSession()` to auto-fill the GitHub username input.
 
+### Story #75: Form to Drawer Transition
+- Initial state: form centered on page
+- After submit: form slides left as drawer (30% width)
+- Results take main content area (70%)
+- Drawer collapsible/expandable with toggle button
+- Mobile: stacked layout unchanged
+- Use CSS transitions for smooth animation
+
+### Story #76: Fix Commit Breakdown Markdown
+- Commit breakdown (display field) currently shows raw text
+- Apply react-markdown with prose prose-invert classes
+- Same treatment as summary section in Results.tsx
+- Quick fix — one component change
+
+### Story #77: Collapsible Result Sections
+- WHAT I DID, DETAILS, WHATS NEXT, BLOCKERS each independently collapsible
+- All expanded by default
+- Smooth CSS transition on collapse/expand
+- Toggle arrow indicator (▼ expanded, ▶ collapsed)
+- State persists during session using useState
+
 ## Verification Plan
 
 ### Automated Tests
@@ -99,3 +120,6 @@ Run standard build checks and Next.js linting (`npm run build`, `npm run lint`).
 3. Verify the layout splits neatly on large screens and stays stacked on mobile.
 4. Verify the Header and Footer exist on all pages.
 5. Once env vars are provided: verify the login flow authenticates with GitHub, shows the avatar in the header, and maps the username into the form.
+- Verify form transitions smoothly to drawer after submit
+- Verify commit breakdown renders markdown not raw text
+- Verify each result section can be collapsed and expanded
