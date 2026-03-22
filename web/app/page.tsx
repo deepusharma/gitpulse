@@ -16,24 +16,26 @@ export default function Home() {
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-primary/10 to-transparent w-full pointer-events-none" />
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       
-      <main className="w-full max-w-7xl relative z-10 flex flex-col items-center gap-6 pb-20">
+      <main className="w-full max-w-7xl relative z-10 flex flex-col gap-8 pb-20 min-h-[calc(100vh-12rem)]">
         <Hero />
         
-        <div className="w-full">
-          <SummaryForm 
-            onSuccess={(response) => {
-              setData(response);
-              setIsLoading(false);
-            }} 
-            onClear={() => {
-              setData(null);
-            }}
-            setIsLoading={setIsLoading}
-          />
-        </div>
+        <div className="flex flex-col md:flex-row w-full gap-8 items-start">
+          <div className="w-full md:w-[30%] shrink-0 md:sticky md:top-24">
+            <SummaryForm 
+              onSuccess={(response) => {
+                setData(response);
+                setIsLoading(false);
+              }} 
+              onClear={() => {
+                setData(null);
+              }}
+              setIsLoading={setIsLoading}
+            />
+          </div>
 
-        <div className="w-full flex justify-center">
-          <Results data={data} isLoading={isLoading} />
+          <div className="w-full md:w-[70%] mt-8 md:mt-0">
+            <Results data={data} isLoading={isLoading} />
+          </div>
         </div>
       </main>
     </div>
