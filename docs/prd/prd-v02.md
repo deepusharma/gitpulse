@@ -1,6 +1,6 @@
 # PRD — gitpulse Web UI
 
-**Version:** 0.1  
+**Version:** 0.2  
 **Status:** Draft  
 **Author:** Deepak Sharma  
 **Date:** 2026-03-21  

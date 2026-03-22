@@ -17,8 +17,9 @@ a web interface for browser access — both sharing a common Python core library
 
 | Doc          | Path                            | When to read                    |
 | ------------ | ------------------------------- | ------------------------------- |
-| PRD v0.2     | `docs/prd/prd-web.md`           | Before any v0.2 feature         |
-| PRD v0.3     | `docs/prd/prd-v03.md`           | Before any v0.3 feature         |
+| PRD v0.1     | `docs/prd/prd-v01.md`           | Before any CLI work             |
+| PRD v0.2     | `docs/prd/prd-v02.md`           | Before any web UI work          |
+| PRD v0.3     | `docs/prd/prd-v03.md`           | Before any v0.3 work            |
 | Architecture | `docs/architecture/overview.md` | Before any implementation       |
 | API Contract | `docs/api/api-contract.md`      | Before backend or frontend work |
 
@@ -62,7 +63,9 @@ gitpulse/
 │       └── web-guide.md
 ├── docs/
 │   ├── prd/
-│   │   └── prd-web.md
+│   │   ├── prd-v01.md
+│   │   ├── prd-v02.md
+│   │   └── prd-v03.md
 │   ├── architecture/
 │   │   └── overview.md
 │   ├── api/
@@ -198,11 +201,13 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 ## Current Milestone
 
 History:
+
 - v0.1 ✅ Complete
 - v0.2 ✅ Complete
 - v0.3 🔵 Active — UI Polish
 
 Active stories:
+
 - #65 GitHub OAuth login
 - #66 Header and footer
 - #67 Fix markdown rendering
