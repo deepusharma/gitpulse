@@ -159,6 +159,7 @@ pytest -v
 - [ ] `--repo` flag to filter specific repos
 - [ ] Slack integration
 - [ ] Weekly scheduled run via cron
+- [ ] And more ...
 
 ---
 
