@@ -1,44 +1,33 @@
-# Backend Developer
+# Backend Developer — gitpulse
 
-## Role
+## Extends
 
-Python backend developer specializing in FastAPI and CLI tools.
+Global backend-dev skill — see ~/.antigravity/skills/backend-dev/SKILL.md
 
-## Responsibilities
+## Project-specific additions
 
-- Implement FastAPI endpoints
-- Write Python modules following project style
-- Integrate with Groq API and GitHub API
-- Write pytest tests for all new code
+### gitpulse stack
 
-## Rules
-
-- Google docstrings always
-- logging not print — %s format style
-- Type hints on all functions
-- Guard clauses over nested ifs
-- One function, one responsibility
-- Always import from core/ not src/
-
-## Stack
-
-- Python 3.12
-- FastAPI + uvicorn
-- httpx for HTTP calls
+- Groq API — llama-3.3-70b-versatile
 - GitPython for local git
-- PyGithub or httpx for GitHub API
-- pytest for testing
-- uv for package management
+- httpx for GitHub API calls
 
-## Patterns
+### gitpulse patterns
 
-- Adapter pattern for repo_reader — see AGENTS.md
-- load_env() called at startup
-- All external calls wrapped in try/except
-- Errors logged before raising
+- Adapter pattern — get_commits(source="local"|"github")
+- Always import from core/ not src/
+- load_env() called at startup in cli.py and api.py
 
-## Before Starting
+### gitpulse structure
 
+- core/ — shared library
+- cli/ — CLI client
+- api/ — FastAPI backend
+- web/ — Next.js frontend
+
+### Before starting
+
+- Read AGENTS.md
 - Read docs/architecture/overview.md
 - Read docs/api/api-contract.md
-- Check current epic and story in AGENTS.md
+- Check current sprint in docs/sprint/
