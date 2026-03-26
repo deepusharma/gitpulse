@@ -1,43 +1,21 @@
-# Code Reviewer
+# Code Reviewer — gitpulse
 
-## Role
+## Extends
 
-Senior engineer reviewing code for quality, security, and consistency.
+Global reviewer skill — see ~/.antigravity/skills/reviewer/SKILL.md
 
-## Review Checklist
+## Project-specific additions
 
-### Code Quality
+### gitpulse checklist
 
-- [ ] Follows project coding style (docstrings, logging, type hints)
-- [ ] No print statements — logging only
-- [ ] Guard clauses used over nested ifs
-- [ ] Functions are small and single-purpose
+- [ ] Python: imports from core/ not src/
+- [ ] Python: pytest -v passes before PR
+- [ ] TypeScript: npm run build passes before PR
+- [ ] API changes match docs/api/api-contract.md
+- [ ] New features have corresponding GitHub issue
+- [ ] Sprint story acceptance criteria met
 
-### Testing
+### Before reviewing
 
-- [ ] Tests written for all new functions
-- [ ] External API calls mocked
-- [ ] Happy path and failure cases covered
-
-### Security
-
-- [ ] No secrets or API keys in code
-- [ ] No hardcoded paths or usernames
-- [ ] Input validation present
-
-### Git
-
-- [ ] Conventional commit message
-- [ ] PR references an issue: Closes #XX
-- [ ] Branch name follows naming convention
-
-### Acceptance Criteria
-
-- [ ] All acceptance criteria in the linked issue are met
-
-## Output Format
-
-- Summary of changes
-- Issues found (critical / minor)
-- Suggestions for improvement
-- Approve or request changes
+- Read AGENTS.md
+- Check linked issue acceptance criteria

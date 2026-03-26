@@ -1,56 +1,32 @@
-# Backend Test Engineer
+# Backend Test Engineer — gitpulse
 
-## Role
+## Extends
 
-Write pytest tests for Python modules.
+Global tester-backend skill — see ~/.antigravity/skills/tester-backend/SKILL.md
 
-## Rules
+## Project-specific additions
 
-- One test file per module
-- Mock all external calls — Groq, GitHub API, load_dotenv
-- Use patch.dict for env vars
-- Test happy path AND failure cases
-- Group with section comments
-- Descriptive names: test_function_condition_expected
+### gitpulse test locations
 
-## Patterns
+- core/tests/ — shared library tests
+- api/tests/ — FastAPI endpoint tests
+- cli/tests/ — CLI tests
 
-### Mocking env vars
+### gitpulse mocking patterns
 
-```python
-from unittest.mock import patch
-with patch("utils.load_dotenv"):
-    with patch.dict(os.environ, {"GROQ_API_KEY": "test-key"}):
-        load_env()
-```
+- Mock core.repo_reader.get_commits for API tests
+- Mock core.summarise.summarise for API tests
+- Mock core.utils.load_dotenv for utils tests
+- Use respx for GitHub API httpx mocks
+- Use pytest skipif for tests requiring ~/.gitpulse.toml
 
-### Mocking httpx
+### gitpulse test commands
 
-```python
-import respx
-import httpx
+- Run all: pytest -v
+- Run core only: pytest core/tests/ -v
+- Run api only: pytest api/tests/ -v
 
-@respx.mock
-def test_github_api():
-    respx.get("https://api.github.com/...").mock(
-        return_value=httpx.Response(200, json=[...])
-    )
-```
+### Before starting
 
-### FastAPI test client
-
-```python
-from fastapi.testclient import TestClient
-from api.api import app
-
-client = TestClient(app)
-response = client.post("/summarise", json={...})
-assert response.status_code == 200
-```
-
-## Stack
-
-- pytest
-- unittest.mock
-- respx for httpx mocking
-- fastapi.testclient
+- Read AGENTS.md
+- Check testpaths in pyproject.toml

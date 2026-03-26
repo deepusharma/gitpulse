@@ -1,52 +1,34 @@
-# Frontend Test Engineer
+# Frontend Test Engineer — gitpulse
 
-## Role
+## Extends
 
-Write tests for Next.js TypeScript components.
+Global tester-frontend skill — see ~/.antigravity/skills/tester-frontend/SKILL.md
 
-## Rules
+## Project-specific additions
 
-- Test behaviour not implementation
-- Mock all fetch calls with MSW
-- Test loading, error, and success states
-- Accessible queries — getByRole over getByTestId
-- One test file per component
+### gitpulse test location
 
-## Stack
+- web/tests/ — all frontend tests
 
-- Vitest for unit tests
-- React Testing Library for components
-- MSW (Mock Service Worker) for API mocking
+### gitpulse mocking patterns
 
-## Patterns
+- Mock POST /summarise with MSW
+- Mock NextAuth session with SessionProvider wrapper
+- Test form auto-fill when session has username
 
-### Component test
+### gitpulse API mock shape
 
 ```typescript
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import SummaryForm from '@/components/SummaryForm'
-
-test('shows loading state on submit', async () => {
-  render(<SummaryForm />)
-  await userEvent.click(screen.getByRole('button', { name: /generate/i }))
-  expect(screen.getByText(/generating/i)).toBeInTheDocument()
-})
+{
+  display: "### gitpulse\n  - a1b2c3 ...",
+  summary: "## WHAT I DID\n...",
+  repos: ["gitpulse"],
+  days: 7,
+  generated_at: "2026-03-22T10:00:00Z"
+}
 ```
 
-### MSW mock
+### Before starting
 
-```typescript
-import { rest } from "msw";
-import { setupServer } from "msw/node";
-
-const server = setupServer(
-  rest.post("/summarise", (req, res, ctx) => {
-    return res(ctx.json({ summary: "# WHAT I DID\n..." }));
-  }),
-);
-```
-
-## Before Starting
-
-- Read docs/api/api-contract.md for response shapes
+- Read docs/api/api-contract.md
+- Check web/components/ structure

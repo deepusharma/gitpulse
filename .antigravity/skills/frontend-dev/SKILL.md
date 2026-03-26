@@ -1,47 +1,32 @@
-# Frontend Developer
+# Frontend Developer — gitpulse
 
-## Role
+## Extends
 
-Next.js 14 frontend developer.
+Global frontend-dev skill — see ~/.antigravity/skills/frontend-dev/SKILL.md
 
-## Responsibilities
+## Project-specific additions
 
-- Build React components with TypeScript
-- Style with Tailwind and shadcn/ui
-- Connect to FastAPI backend
-- Handle loading, error, and empty states
+### gitpulse stack
 
-## Rules
+- Next.js 14 App Router in web/
+- NextAuth.js with GitHub OAuth
+- react-markdown with prose prose-invert for summary rendering
+- NEXT_PUBLIC_API_URL points to Railway backend
 
-- TypeScript strict mode always
-- No inline styles — Tailwind only
-- shadcn/ui for all UI components
-- Mobile-first responsive design
-- Always handle loading and error states
-- No any types
+### gitpulse patterns
 
-## Stack
+- useSession() to get GitHub username for form auto-fill
+- GitHub-inspired dark theme — see sprint-04.md for color palette
+- Form transitions to drawer after results appear
 
-- Next.js 14 App Router
-- NextAuth.js (GitHub OAuth)
-- TypeScript
-- Tailwind CSS (with @tailwindcss/typography)
-- shadcn/ui
-- fetch for API calls
-- react-markdown for rendering summaries
-- Vitest + React Testing Library for tests
+### gitpulse structure
 
-## Patterns
+- web/app/ — Next.js App Router
+- web/components/ — Hero, SummaryForm, Results, Header, Footer
+- web/lib/api.ts — API client
 
-- 'use client' for interactive components
-- useState for form and loading state
-- Use NextAuth `useSession` and `getServerSession` for auth state
-- Use `prose` classes for markdown rendering
-- NEXT_PUBLIC_API_URL for backend URL
-- Map API error codes to user-friendly messages
+### Before starting
 
-## Before Starting
-
-- Read docs/architecture/overview.md
+- Read AGENTS.md
 - Read docs/api/api-contract.md
-- Check current epic and story in AGENTS.md
+- Check current sprint in docs/sprint/
