@@ -3,21 +3,21 @@
 **Sprint goal:** Polish the gitpulse web UI with GitHub OAuth login, header/footer, proper markdown rendering and improved layout.  
 **Milestone:** v0.3 — UI Polish  
 **Duration:** Week of 2026-03-22  
-**Status:** In Progress
+**Status:** Complete ✅
 
 ---
 
 ## Sprint Stories
 
-| Issue | Story                                   | Status         | Night     |
-| ----- | --------------------------------------- | -------------- | --------- |
-| #67   | Fix markdown rendering                  | 🔵 This Sprint | Mon       |
-| #68   | Improve form and results layout         | 🔵 This Sprint | Mon       |
-| #66   | Add header and footer                   | 🔵 This Sprint | Tue       |
-| #65   | GitHub OAuth login with NextAuth.js     | 🔵 This Sprint | Wed-Thu   |
-| #75   | Fix layout transitions — form to drawer | 🔵 This Sprint | This week |
-| #76   | Fix commit breakdown markdown rendering | 🔵 This Sprint | This week |
-| #77   | Collapsible/expandable result sections  | 🔵 This Sprint | This week |
+| Issue | Story                                   | Status  | Night     |
+| ----- | --------------------------------------- | ------- | --------- |
+| #67   | Fix markdown rendering                  | ✅ Done | Mon       |
+| #68   | Improve form and results layout         | ✅ Done | Mon       |
+| #66   | Add header and footer                   | ✅ Done | Tue       |
+| #65   | GitHub OAuth login with NextAuth.js     | ✅ Done | Wed-Thu   |
+| #75   | Fix layout transitions — form to drawer | ✅ Done | This week |
+| #76   | Fix commit breakdown markdown rendering | ✅ Done | This week |
+| #77   | Collapsible/expandable result sections  | ✅ Done | This week |
 
 ---
 
