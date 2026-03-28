@@ -188,12 +188,12 @@ GITHUB_CLIENT_SECRET=your_secret
 
 Sprint is complete when:
 
-- [ ] Markdown renders properly
-- [ ] Split view layout working on desktop
-- [ ] Header and footer on all pages
-- [ ] GitHub OAuth login working locally
-- [ ] GitHub OAuth login working on Vercel
-- [ ] All changes deployed and live
-- [ ] Form transitions to drawer after results appear
-- [ ] Commit breakdown renders formatted text
-- [ ] Result sections are collapsible
+- [x] Markdown renders properly
+- [x] Split view layout working on desktop
+- [x] Header and footer on all pages
+- [x] GitHub OAuth login working locally
+- [x] GitHub OAuth login working on Vercel
+- [x] All changes deployed and live
+- [x] Form transitions to drawer after results appear
+- [x] Commit breakdown renders formatted text
+- [x] Result sections are collapsible
