@@ -3,13 +3,14 @@
 **Sprint goal:** Add --dry-run flag, config file defaults, and better error messages to the CLI.
 **Milestone:** v0.4 — Config & Scheduling
 **Duration:** Day 1 (Weekday — ~1 hour)
-**Status:** Not Started
+**Status:** ✅ Complete
 
 ---
 
 ## Antigravity Prompts
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
+
 ```
 Read these files before responding:
 - AGENTS.md
@@ -34,6 +35,7 @@ Use @backend-dev skill.
 ```
 
 ### Execution Prompt (Fast Mode)
+
 ```
 Read these files before starting:
 - AGENTS.md
@@ -57,12 +59,12 @@ Closes #89
 
 ## Sprint Stories
 
-| Issue | Story | Status | Priority |
-|---|---|---|---|
-| #86 | S5.1: add --dry-run flag to CLI | 🔵 This Sprint | High |
-| #87 | S5.2: add [defaults] section to .gitpulse.toml | 🔵 This Sprint | High |
-| #88 | S5.3: improve CLI error messages | 🔵 This Sprint | Medium |
-| #89 | S5.4: write tests for config defaults and dry-run | 🔵 This Sprint | High |
+| Issue | Story                                             | Status      | Priority |
+| ----- | ------------------------------------------------- | ----------- | -------- |
+| #86   | S5.1: add --dry-run flag to CLI                   | ✅ Complete | High     |
+| #87   | S5.2: add [defaults] section to .gitpulse.toml    | ✅ Complete | High     |
+| #88   | S5.3: improve CLI error messages                  | ✅ Complete | Medium   |
+| #89   | S5.4: write tests for config defaults and dry-run | ✅ Complete | High     |
 
 ---
 
@@ -73,15 +75,17 @@ Closes #89
 **Goal:** Show commit breakdown without calling Groq API.
 
 **Implementation:**
+
 - Add `--dry-run` flag to argparse in `cli/cli.py`
 - If `--dry-run` set — skip `build_prompt`, `summarise` calls
 - Print `display_str` only
 - Log "dry-run mode — skipping LLM call"
 
 **Done when:**
-- [ ] `python -m cli.cli --dry-run` shows commits only
-- [ ] No Groq API call made
-- [ ] No output file written
+
+- [x] `python -m cli.cli --dry-run` shows commits only
+- [x] No Groq API call made
+- [x] No output file written
 
 ---
 
@@ -90,6 +94,7 @@ Closes #89
 **Goal:** Read defaults from `~/.gitpulse.toml` for CLI flags.
 
 **New .gitpulse.toml structure:**
+
 ```toml
 [repos]
 gitpulse = "/path/to/gitpulse"
@@ -103,43 +108,49 @@ repo = "gitpulse"
 **Priority:** CLI flag > config default > argparse default
 
 **Done when:**
-- [ ] [defaults] section read from config
-- [ ] CLI flags override config defaults
-- [ ] .gitpulse.toml.example updated
+
+- [x] [defaults] section read from config
+- [x] CLI flags override config defaults
+- [x] .gitpulse.toml.example updated
 
 ---
 
 ### #88 — Better error messages
 
 **Scenarios to handle:**
+
 - Repo not found → "Repo 'X' not found in ~/.gitpulse.toml. Add it under [repos]."
 - GROQ_API_KEY missing → "GROQ_API_KEY not set. Add it to .env or export it."
 - No commits found → "No commits found for the last N days. Try --days 30."
 - Config file missing → "~/.gitpulse.toml not found. Run gitpulse init to set up."
 
 **Done when:**
-- [ ] Each error has clear message with suggested fix
+
+- [x] Each error has clear message with suggested fix
 
 ---
 
 ### #89 — Tests
 
 **Done when:**
-- [ ] Test --dry-run skips LLM call
-- [ ] Test config defaults loaded correctly
-- [ ] Test CLI flag overrides config default
-- [ ] All existing tests still pass
+
+- [x] Test --dry-run skips LLM call
+- [x] Test config defaults loaded correctly
+- [x] Test CLI flag overrides config default
+- [x] All existing tests still pass
 
 ---
 
 ## Order of Work
+
 ```
 #87 → #86 → #88 → #89
 ```
 
 ## Definition of Done
-- [ ] --dry-run works end to end
-- [ ] Config defaults load from ~/.gitpulse.toml
-- [ ] Error messages are clear and actionable
-- [ ] All tests pass
-- [ ] PR merged
+
+- [x] --dry-run works end to end
+- [x] Config defaults load from ~/.gitpulse.toml
+- [x] Error messages are clear and actionable
+- [x] All tests pass
+- [x] PR merged
