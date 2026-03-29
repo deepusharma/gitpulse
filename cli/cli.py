@@ -1,82 +1,83 @@
 import logging
 import argparse
+import sys
 import os
 
-from core.repo_reader import get_commits
+from core.repo_reader import get_commits, load_config
 from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
 from core.utils import load_env
 
 
 logger = logging.getLogger(__name__)
 
-
-# -----------------------------------------------------------------------------
-# Main
-# -----------------------------------------------------------------------------
-
-# 1. import argparse, logging, and all functions from summarise, repo_reader, utils
-# 2. parse --days and --debug args
-# 3. set logging level based on --debug flag
-# 4. load_env()
-# 5. get_commits(days)
-# 6. format_commits(commits)
-# 7. to_display_str -> print
-# 8. to_prompt_str -> build_prompt -> summarise -> print
-
 def main():
     parser = argparse.ArgumentParser(description="GitPulse — weekly standup generator")
-    parser.add_argument("--days", type=int, default=7, help="Number of days to look back (default: 7)")
+    parser.add_argument("--days", type=int, default=None, help="Number of days to look back")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
-    parser.add_argument("--output", default="output/summary.md", help="Output file path")
+    parser.add_argument("--output", default=None, help="Output file path")
     parser.add_argument("--repo", default=None, help="Repo name to filter")
+    parser.add_argument("--dry-run", action="store_true", help="Show commits without calling Groq API")
     
     args = parser.parse_args()
 
     log_level = logging.DEBUG if args.debug else logging.WARNING
     logging.basicConfig(level=log_level)
 
-    load_env()
+    try:
+        config = load_config()
+    except FileNotFoundError:
+        print("~/.gitpulse.toml not found. Run gitpulse init to set up.")
+        sys.exit(1)
 
-    # 1. receives a FLAT LIST of commit dicts from repo_reader.get_commits
-    commits = get_commits(args.days)
-    #logger.debug("Commits: %s", str(commits))
+    defaults = config.get("defaults", {})
+    
+    # Priority: args > defaults > hardcoded
+    days = args.days if args.days is not None else defaults.get("days", 7)
+    output = args.output if args.output is not None else defaults.get("output", "output/summary.md")
+    repo = args.repo if args.repo is not None else defaults.get("repo")
+    
+    if repo:
+        repos = config.get("repos", {})
+        if repo not in repos:
+            print(f"Repo '{repo}' not found in ~/.gitpulse.toml. Add it under [repos].")
+            sys.exit(1)
 
-    if args.repo:
-        commits = [c for c in commits if c["repo"] == args.repo]
-        logger.debug("Filtered commits for repo: %s", args.repo)
-        if not commits:
-            logger.warning("No commits found for repo: %s", args.repo)
+    # load env, check keys only if not dry-run
+    try:
+        load_env(check_keys=not args.dry_run)
+    except EnvironmentError:
+        print("GROQ_API_KEY not set. Add it to .env or export it.")
+        sys.exit(1)
 
+    commits = get_commits(days)
+    
+    if repo:
+        commits = [c for c in commits if c["repo"] == repo]
 
+    if not commits:
+        print(f"No commits found for the last {days} days. Try --days 30.")
+        sys.exit(1)
 
-    # 2. format_commits: groups by repo, cleans messages -> returns dict
     logger.debug("Formatted Commits: START")
     formatted_commits = format_commits(commits)
-    #logger.debug("Formatted Commits:\n%s", json.dumps(formatted_commits, indent=2, default=str))
-
-    # 3. to_prompt_str: converts dict -> compact string for LLM
-    prompt_str = to_prompt_str(formatted_commits)
-    logger.debug("Prompt String: %s", str(prompt_str))
 
     display_str = to_display_str(formatted_commits)
-    logger.debug("Display String: %s", str(display_str))
-    print("Display String: " + str(display_str))            # noqa: T201
+    print("Display String:\n" + str(display_str))
 
-    # 4. build_prompt: wraps string into full LLM prompt
+    if args.dry_run:
+        print("dry-run mode — skipping LLM call")
+        sys.exit(0)
+
+    prompt_str = to_prompt_str(formatted_commits)
     prompt = build_prompt(prompt_str)
-    logger.debug("Prompt: %s", str(prompt))
 
-
-    # 5. summarise: orchestrates 2-4, calls Groq, returns summary string
     summary = summarise(prompt)
-    logger.debug("Summary: \n%s", str(summary))
-    print("Summary: "+ str(summary))        # noqa: T201
+    print("Summary:\n"+ str(summary))
 
-    # 6. write summary to file
-    os.makedirs(os.path.dirname(args.output) or "output", exist_ok=True)
-    with open(args.output, "w") as f:
+    os.makedirs(os.path.dirname(output) or "output", exist_ok=True)
+    with open(output, "w") as f:
         f.write(summary)
-    logger.debug("Summary written to %s", args.output)
+    logger.debug("Summary written to %s", output)
 
 if __name__ == "__main__":    
     main()
