@@ -38,15 +38,16 @@ def load_config() -> dict:
     with open(config_path,"rb") as f:
         config=tomllib.load(f)
 
-    return config.get("repos",{})
+    return config
 
 
 def _get_local_commits(days:int=7) -> list:
     """
     Get the commits from local configuration for the duration of days provided 
     """
-    repos = load_config()
-    logger.debug ("Repos: %s", str(repos))
+    config = load_config()
+    repos = config.get("repos", {})
+    logger.debug("Repos: %s", str(repos))
 
     since = datetime.now(timezone.utc) - timedelta(days=days)
     logger.debug("Since: %s", str(since))
