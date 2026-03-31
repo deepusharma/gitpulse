@@ -48,7 +48,7 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
 
   if (!data && !isLoading) return null;
 
-  const commitsCount = data ? (data.display.match(/^(?:-|\*) /gm) || []).length : 0;
+  const commitsCount = data ? (data.display.match(/^\s*(?:-|\*) /gm) || []).length : 0;
   const wordCount = data ? data.summary.trim().split(/\s+/).length : 0;
   const hasCommits = commitsCount > 0;
 
