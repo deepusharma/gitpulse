@@ -14,6 +14,13 @@ export interface SummariseResponse {
   generated_at: string;
 }
 
+export class ApiError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 export async function generateSummary(
   req: SummariseRequest,
 ): Promise<SummariseResponse> {
@@ -23,8 +30,9 @@ export async function generateSummary(
     body: JSON.stringify(req),
   });
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || error.detail?.[0]?.msg || "Failed to generate summary");
+    const error = await response.json().catch(() => ({}));
+    const message = error.error || error.detail?.[0]?.msg || "Failed to generate summary";
+    throw new ApiError(message, response.status);
   }
   return response.json();
 }

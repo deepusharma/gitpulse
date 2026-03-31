@@ -8,6 +8,7 @@ import { SummariseResponse } from "@/lib/api";
 
 export default function Home() {
   const [data, setData] = useState<SummariseResponse | null>(null);
+  const [generationTimeMs, setGenerationTimeMs] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
 
@@ -32,13 +33,15 @@ export default function Home() {
           >
             <div className="w-full min-w-full md:min-w-[300px]">
               <SummaryForm 
-                onSuccess={(response) => {
+                onSuccess={(response, timeMs) => {
                   setData(response);
+                  setGenerationTimeMs(timeMs);
                   setIsLoading(false);
                   setDrawerOpen(true);
                 }} 
                 onClear={() => {
                   setData(null);
+                  setGenerationTimeMs(null);
                 }}
                 setIsLoading={setIsLoading}
               />
@@ -62,7 +65,7 @@ export default function Home() {
                   <span className="text-xs">{drawerOpen ? "◀" : "▶"}</span>
                 </button>
                 <div className={drawerOpen ? "" : "pl-12"}>
-                  <Results data={data} isLoading={isLoading} />
+                  <Results data={data} isLoading={isLoading} generationTimeMs={generationTimeMs} />
                 </div>
               </>
             )}
