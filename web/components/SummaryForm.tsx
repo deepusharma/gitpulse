@@ -10,7 +10,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 interface SummaryFormProps {
-  onSuccess: (data: SummariseResponse) => void;
+  onSuccess: (data: SummariseResponse, generationTimeMs: number) => void;
   onClear: () => void;
   setIsLoading: (loading: boolean) => void;
 }
@@ -48,14 +48,22 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
         .map((r) => r.trim())
         .filter((r) => r.length > 0);
       
+      const startTime = performance.now();
       const response = await generateSummary({
         username: username.trim(),
         repos: reposArray,
         days: days,
       });
-      onSuccess(response);
+      const endTime = performance.now();
+      onSuccess(response, endTime - startTime);
     } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+      if (err.status === 429) {
+        setError("Rate limit exceeded. Please try again later.");
+      } else if (err.status === 404) {
+        setError(err.message || "Repository or user not found.");
+      } else {
+        setError(err.message || "Something went wrong.");
+      }
       setIsLoading(false);
     } finally {
       setIsSubmitting(false);
