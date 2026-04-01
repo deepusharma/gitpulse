@@ -16,7 +16,7 @@
 ## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
-```text
+```
 Read these files before responding:
 - AGENTS.md
 - docs/sprint/sprint-18-brief.md
@@ -36,7 +36,7 @@ Do not write code yet. Planning only.
 ```
 
 ### Execution Prompt — Stream 1: Gamification & Year-in-Review
-```text
+```
 Execute Stream 1 — Core data delights.
 Branch: feature/sprint-18-delight
 
@@ -49,7 +49,7 @@ Commit and push.
 ```
 
 ### Execution Prompt — Stream 2: VS Code Extension
-```text
+```
 Execute Stream 2 — IDE extension sidebar.
 Still on branch: feature/sprint-18-delight
 
@@ -72,21 +72,56 @@ Commit, push, create PR.
 
 ---
 
-## Story Details & Definition of Done
+## Story Details
 
 ### Gamification (S18.1-S18.2)
+
 **Data source:** SQL query counting localized consecutive days with `commit_count > 0`.
+
+**UI:**
+- Interactive Year in Review horizontal block scrolling.
+
 **Done when:**
 - [ ] Streak badges correctly ignore weekends (optional setting).
 - [ ] Year in Review groups data by month and generates "Spotify Wrapped" style UI.
 
+---
+
 ### VS Code Extension (S18.3)
+
 **Architecture:** Typescript `vscode-extension` boilerplate utilizing React webview.
+
+**UI:**
+- Config panel for entering standard GitPulse backend endpoint.
+
 **Done when:**
-- [ ] Plugin runs in local VS Code.
+- [ ] Plugin runs cleanly in local VS Code.
 - [ ] Displays summarized standup view directly in sidebar without leaving editor.
 
 ---
 
+## New API Endpoints Needed
+
+```python
+GET /gamification/streak?username=X
+# Returns current and best unbroken streak
+GET /yearly-review?year=2026&username=X
+# Returns grouped analytical review chunks
+```
+
+---
+
 ## Order of Work
+```text
 Streak SQL → Year-in-Review Endpoint → Celebration UI → VS Code Scaffold
+```
+
+---
+
+## Definition of Done
+- [ ] Gamification logic parses commit timelines precisely
+- [ ] Annual review endpoint fetches within latency budgets
+- [ ] UI visualizes annual data without crashes
+- [ ] Extension works locally inside VS Code runtime
+- [ ] All tests pass
+- [ ] PR merged

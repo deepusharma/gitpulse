@@ -15,7 +15,7 @@
 ## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
-```text
+```
 Read these files before responding:
 - AGENTS.md
 - docs/sprint/sprint-16-brief.md
@@ -35,7 +35,7 @@ Do not write code yet. Planning only.
 ```
 
 ### Execution Prompt — Stream 1: Private Repos & OAuth
-```text
+```
 Execute Stream 1 — OAuth scoped access.
 Branch: feature/sprint-16-pro
 
@@ -48,7 +48,7 @@ Commit and push.
 ```
 
 ### Execution Prompt — Stream 2: Shareable Links & Comparisons
-```text
+```
 Execute Stream 2 — Public links.
 Still on branch: feature/sprint-16-pro
 
@@ -71,21 +71,57 @@ Commit, push, create PR.
 
 ---
 
-## Story Details & Definition of Done
+## Story Details
 
 ### Private Repos (S16.1)
-**Done when:**
-- [ ] Users can opt-in to private repo access.
-- [ ] Application securely fetches commits from repos otherwise inaccessible to public APIs.
 
-### Public Links & Comparisions (S16.2-S16.3)
+**Data source:** GitHub REST API with `repo` scope.
+
+**UI:**
+- OAuth permissions explainer and toggle.
+
+**Done when:**
+- [ ] Users can opt into private repo access seamlessly.
+- [ ] Application securely fetches commits from org repos inaccessible to public APIs.
+
+---
+
+### Public Links & Comparisons (S16.2-S16.3)
+
+**Data source:** Local DB boolean fields (`is_public`).
+
 **UI:**
 - Share button automatically copies unique UUID permalink.
+- Comparisons show red/green delta arrows.
+
 **Done when:**
 - [ ] `/summary/:id` page resolves without Auth if marked public.
-- [ ] Trends show red/green arrows based on previous periods.
+- [ ] Trends accurately compute percentage changes against previous periods.
+
+---
+
+## New API Endpoints Needed
+
+```python
+PATCH /history/{id}/public
+# Sets summary to public visibility
+GET /summary/public/{id}
+# Returns public summary without requiring Auth
+```
 
 ---
 
 ## Order of Work
+```text
 OAuth Scope Upgrade → Private API Verify → DB Public Flags → React Unauth Page → Trend Math
+```
+
+---
+
+## Definition of Done
+- [ ] NextAuth perfectly handles conditional `repo` scoping
+- [ ] Summaries can be marked as public natively
+- [ ] Unauthenticated `/summary/:id` works
+- [ ] Comparison math completes without floating-point errors
+- [ ] All tests pass
+- [ ] PR merged
