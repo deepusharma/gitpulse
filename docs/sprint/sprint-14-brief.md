@@ -28,14 +28,78 @@ Read these files before responding:
 We are planning Sprint 14 — Depth & Intelligence.
 
 Before writing any code:
-1. Review stories S14.1 through S14.12 mapped to this sprint.
+1. Review stories S14.1 through S14.11 mapped to this sprint.
 2. Outline how you will fetch and aggregate PR and Issue data alongside Commits.
 3. Plan the endpoints required for the `/insights` page metric cards and charts.
-4. Detail the React component structure for hover popup tooltips on metric cards.
-5. Detail the plan for generating the 2-week Sprint Retrospective.
-6. Identify risks — especially regarding complex API aggregations.
-7. Propose step-by-step technical execution plan.
-8. Save plan to `docs/sprint/sprint-14-plan.md`.
+4. Propose step-by-step technical execution plan.
+5. Save plan to `docs/sprint/sprint-14-plan.md`.
 
 Do not write any code yet. Planning only.
 ```
+
+### Execution Prompt — Stream 1: PR/Issue Enrichment
+```text
+Execute Stream 1 — PR/Issue enrichment in core summarization.
+Branch: feature/sprint-14-depth
+
+Use @backend-dev.
+- Update GitHub API calls to fetch PRs (opened/merged/reviewed) and Issues (opened/closed).
+- Update the core Markdown generator to include these new sections.
+- Create 2-week Sprint Retrospective prompt mode.
+
+Commit and push.
+```
+
+### Execution Prompt — Stream 2: Insights UI Dashboard
+```text
+Execute Stream 2 — /insights dashboard.
+Still on branch: feature/sprint-14-depth
+
+Use @frontend-dev.
+- Build /insights page with metric cards utilizing recharts (bar charts, line charts).
+- Include hover popovers for drill-down tooltips.
+- Add "Stats for Nerds" panel.
+
+Commit, push, create PR.
+```
+
+---
+
+## Sprint Stories
+
+| Issue | Story | Status | Priority |
+|---|---|---|---|
+| TBD | S14.1: PR activity in standup summary | 🔵 This Sprint | High |
+| TBD | S14.2: Issue activity in standup summary | 🔵 This Sprint | High |
+| TBD | S14.3: GitHub Projects sprint card activity | 🔵 This Sprint | Medium |
+| TBD | S14.4: AI-powered sprint retrospective | 🔵 This Sprint | High |
+| TBD | S14.5: Metric cards for /insights | 🔵 This Sprint | High |
+| TBD | S14.6: Advanced Recharts (Velocity/Health area charts) | 🔵 This Sprint | Medium |
+| TBD | S14.7: Language breakdown donut chart & badges | 🔵 This Sprint | Low |
+| TBD | S14.8: Repo metadata panel (stars, forks, CI) | 🔵 This Sprint | Medium |
+| TBD | S14.9: Repo health score algorithm | 🔵 This Sprint | Low |
+| TBD | S14.10: Stats for Nerds panel | 🔵 This Sprint | Low |
+| TBD | S14.11: Date range and repo filters on /insights | 🔵 This Sprint | Medium |
+
+---
+
+## Story Details & Definition of Done
+
+### PR & Issue Parsing (S14.1-S14.3)
+**Data source:** GitHub GraphQL or REST (Pulls & Issues).
+**Done when:**
+- [ ] Summaries include properly formatted lists of reviewed PRs.
+- [ ] Closed issues are linked with # references.
+
+### Insights Dashboard (S14.5-S14.11)
+**UI:**
+- Modern dashboard with grid layout.
+- Hover popovers explicitly capped at 8 items.
+**Done when:**
+- [ ] /insights renders correctly without hydration errors.
+- [ ] Charts populate via backend endpoints.
+
+---
+
+## Order of Work
+Core Python Fetchers → Markdown Updater → Insights API → React Dashboard

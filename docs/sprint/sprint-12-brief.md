@@ -22,19 +22,89 @@ Read these files before responding:
 - docs/sprint/sprint-12-brief.md
 - docs/architecture/overview.md
 - docs/api/api-contract.md
-- web/src/app/page.tsx (or equivalent input form)
 
 We are planning Sprint 12 — Enhanced Input UX & Error Feedback.
 
 Before writing any code:
-1. Review stories S12.1 through S12.6 mapped to this sprint.
-2. Formulate approach for live GitHub username validation without exceeding rate limits.
-3. Design the searchable repo multiselect dropdown behavior.
-4. Plan the integration of date-range filters to the /history page.
-5. Define the export-to-MD functionality from the frontend.
-6. Identify risks — particularly UX latency and external API limits.
-7. Propose step-by-step technical execution plan.
-8. Save plan to `docs/sprint/sprint-12-plan.md`.
+1. Review stories S12.1–S12.6
+2. Plan API wrapper for live GitHub username/repo validation
+3. Plan React component for searchable multiselect
+4. Propose step-by-step execution plan
+5. Save plan to docs/sprint/sprint-12-plan.md
 
-Do not write any code yet. Planning only.
+Do not write code yet. Planning only.
 ```
+
+### Execution Prompt — Stream 1: GitHub API Validation & UI
+```text
+Execute Stream 1 — live validation and multiselect.
+Branch: feature/sprint-12-input-ux
+
+Use @frontend-dev and @backend-dev.
+- Build /api/github/validate-user endpoints
+- Build searchable repo multiselect component in Next.js
+- Handle repo-specific 404 messages.
+
+Commit and push.
+```
+
+### Execution Prompt — Stream 2: History Filters & Export
+```text
+Execute Stream 2 — filters and export.
+Still on branch: feature/sprint-12-input-ux
+
+- Add search and date-range controls to /history
+- Build Markdown export function returning downloadable .md
+- Add commit activity stats footer matching summary.
+
+Commit, push, create PR.
+```
+
+---
+
+## Sprint Stories
+
+| Issue | Story | Status | Priority |
+|---|---|---|---|
+| #137 | S12.1: Surface repo-specific 404 message | 🔵 This Sprint | High |
+| #138 | S12.2: Validate GitHub username live | 🔵 This Sprint | High |
+| #139 | S12.3: Searchable repo multiselect dropdown | 🔵 This Sprint | High |
+| #140 | S12.4: Commit activity stats footer | 🔵 This Sprint | Medium |
+| #141 | S12.5: Search and date-range filters | 🔵 This Sprint | Medium |
+| #142 | S12.6: Export standup as .md file | 🔵 This Sprint | Low |
+
+---
+
+## Story Details & Definition of Done
+
+### #137 & #138 & #139 — Form Validation & Multiselect
+**UI:**
+- Live typing debounce for username check.
+- Shows green checkmark if valid.
+- Searchable dropdown fetches user repos.
+**Done when:**
+- [ ] Username validates instantly.
+- [ ] Repo multiselect accurately searches GitHub API.
+- [ ] Specific 404 errors are bubbled up gracefully.
+
+### #140 & #141 & #142 — History Filters & Export
+**UI:**
+- Date picker and search bar on `/history`.
+- Export button on specific summary views.
+**Done when:**
+- [ ] Filter updates list in real-time.
+- [ ] Export generates valid `.md` file download.
+
+---
+
+## New API Endpoints Needed
+```python
+GET /github/validate?username=X
+# Returns {"valid": true, "avatar_url": "..."}
+
+GET /github/repos?username=X&search=Y
+# Returns [{"name": "repo1"}, ...]
+```
+
+## Order of Work
+Validation API → Multiselect UI → Filter UI → Export Button
