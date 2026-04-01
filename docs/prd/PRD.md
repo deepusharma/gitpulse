@@ -164,6 +164,16 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Construct repo activity breakdown pie charts. | S10.2 | #106 | Sprint 10 |
 | Calculate and display aggregate productivity insights. | S10.3 | #107 | Sprint 10 |
 
+**Epic: Enhanced Input UX & Error Feedback (Epic #136)**
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Fix wrong repo name returning generic error — surface repo-specific 404 message. | S12.1 | #137 | Sprint 12 |
+| Validate GitHub username live against GitHub API with visual feedback. | S12.2 | #138 | Sprint 12 |
+| Show searchable repo multiselect dropdown fetched from GitHub API after username validates. | S12.3 | #139 | Sprint 12 |
+| Add commit activity stats footer matching the summary stats panel. | S12.4 | #140 | Sprint 12 |
+| Add search and date-range filter controls to the `/history` page. | S12.5 | #141 | Sprint 12 |
+| Export standup summary as a downloadable `.md` file. | S12.6 | #142 | Sprint 12 |
+
 ### v0.6 — Integrations (Milestone #8)
 
 **Epic: Email Delivery Automation (Epic #115)**
