@@ -14,6 +14,20 @@ export interface SummariseResponse {
   generated_at: string;
 }
 
+export interface HistoryRecord {
+  id: string;
+  username: string;
+  repos: string[];
+  days: number;
+  summary: string;
+  generated_at: string;
+}
+
+export interface HistoryResponse {
+  summaries: HistoryRecord[];
+  total: number;
+}
+
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
     super(message);
@@ -33,6 +47,17 @@ export async function generateSummary(
     const error = await response.json().catch(() => ({}));
     const message = error.error || error.detail?.[0]?.msg || "Failed to generate summary";
     throw new ApiError(message, response.status);
+  }
+  return response.json();
+}
+
+export async function fetchHistory(username: string, limit: number = 20): Promise<HistoryResponse> {
+  const response = await fetch(`${API_URL}/history?username=${encodeURIComponent(username)}&limit=${limit}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch history");
   }
   return response.json();
 }
