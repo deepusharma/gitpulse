@@ -219,11 +219,12 @@ Active branch: feature/v0.3-ui-polish
 
 ## Sprint Workflow
 
-- Sprint plans: docs/sprint/sprint-XX.md
-- Execution plans: docs/sprint/sprint-XX-execution-plan.md
-- Always read both before starting a sprint
-- Save execution plan to file before closing planning chat
-- Open new execution chat per sprint for clean context
+- Sprint briefs: `docs/sprint/sprint-XX-brief.md` (Read to understand goal, constraints, and get the AI Planning Prompt)
+- Sprint plans: `docs/sprint/sprint-XX-plan.md` (The step-by-step technical plan created during the planning session)
+- Start with the brief, run the AI Planning Prompt to generate the plan, and wait for plan approval.
+- Always read both the brief and the approved plan before starting execution.
+- Save execution plan to file before closing planning chat.
+- Open a new execution chat per sprint for clean context.
 
 ---
 

@@ -18,13 +18,13 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 ```
 Read these files before responding:
 - AGENTS.md
-- docs/sprint/sprint-09.md
+- docs/sprint/sprint-09-brief.md
 - pyproject.toml
 - cli/cli.py
 - core/__init__.py
@@ -39,7 +39,7 @@ Before writing any code:
 5. Plan PyPI publish GitHub Actions workflow
 6. Plan gitpulse init interactive onboarding
 7. Propose step-by-step execution plan
-8. Save plan to docs/sprint/sprint-09-execution-plan.md
+8. Save plan to docs/sprint/sprint-09-plan.md
 
 Do not write any code yet. Planning only.
 Use @backend-dev skill.
@@ -49,8 +49,8 @@ Use @backend-dev skill.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-09.md
-- docs/sprint/sprint-09-execution-plan.md
+- docs/sprint/sprint-09-brief.md
+- docs/sprint/sprint-09-plan.md
 
 Execute stories #102, #103, #104 in order.
 Branch: feature/sprint-09-packaging

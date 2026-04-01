@@ -7,7 +7,7 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 
@@ -15,7 +15,7 @@
 Read these files before responding:
 - AGENTS.md
 - docs/prd/prd-v04.md (if exists, else use docs/prd/prd-v03.md)
-- docs/sprint/sprint-05.md
+- docs/sprint/sprint-05-brief.md
 - docs/architecture/overview.md
 - core/repo_reader.py
 - cli/cli.py
@@ -28,7 +28,7 @@ Before writing any code:
 3. Confirm implementation approach for config defaults
 4. Identify any risks or dependencies
 5. Propose step-by-step execution plan
-6. Save plan to docs/sprint/sprint-05-execution-plan.md
+6. Save plan to docs/sprint/sprint-05-plan.md
 
 Do not write any code yet. Planning only.
 Use @backend-dev skill.
@@ -39,8 +39,8 @@ Use @backend-dev skill.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-05.md
-- docs/sprint/sprint-05-execution-plan.md
+- docs/sprint/sprint-05-brief.md
+- docs/sprint/sprint-05-plan.md
 
 Execute stories #87, #86, #88, #89 in that order.
 Branch: feature/sprint-05-cli-polish

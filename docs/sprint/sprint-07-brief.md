@@ -7,13 +7,13 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 ```
 Read these files before responding:
 - AGENTS.md
-- docs/sprint/sprint-07.md
+- docs/sprint/sprint-07-brief.md
 - docs/architecture/overview.md
 - docs/api/api-contract.md
 - api/api.py
@@ -27,7 +27,7 @@ Before writing any code:
 4. Identify best ORM approach — raw SQL vs SQLAlchemy vs asyncpg
 5. Identify risks around DB connection in Railway
 6. Propose step-by-step execution plan
-7. Save plan to docs/sprint/sprint-07-execution-plan.md
+7. Save plan to docs/sprint/sprint-07-plan.md
 
 Do not write any code yet. Planning only.
 Use @backend-dev skill for API/DB work.
@@ -38,8 +38,8 @@ Use @frontend-dev skill for history page.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-07.md
-- docs/sprint/sprint-07-execution-plan.md
+- docs/sprint/sprint-07-brief.md
+- docs/sprint/sprint-07-plan.md
 - docs/api/api-contract.md
 
 Execute stories #93, #94, #95 — database and API.

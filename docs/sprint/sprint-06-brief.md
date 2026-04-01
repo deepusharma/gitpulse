@@ -7,13 +7,13 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 ```
 Read these files before responding:
 - AGENTS.md
-- docs/sprint/sprint-06.md
+- docs/sprint/sprint-06-brief.md
 - docs/architecture/overview.md
 - web/app/page.tsx
 - web/components/Results.tsx
@@ -26,7 +26,7 @@ Before writing any code:
 2. Review current web component structure
 3. Identify best approach for clipboard API
 4. Propose step-by-step execution plan
-5. Save plan to docs/sprint/sprint-06-execution-plan.md
+5. Save plan to docs/sprint/sprint-06-plan.md
 
 Do not write any code yet. Planning only.
 Use @frontend-dev skill.
@@ -36,8 +36,8 @@ Use @frontend-dev skill.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-06.md
-- docs/sprint/sprint-06-execution-plan.md
+- docs/sprint/sprint-06-brief.md
+- docs/sprint/sprint-06-plan.md
 
 Execute stories #91, #90, #92 in that order.
 Branch: feature/sprint-06-ui-polish
