@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock, MagicMock
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from api.api import app
 
 client = TestClient(app)
@@ -94,3 +94,65 @@ def test_get_history_no_pool_returns_empty():
         assert data["total"] == 0
         assert data["summaries"] == []
 
+def test_analytics_commits_per_day():
+    with patch("api.api._get_user_repos") as mock_get_repos:
+        mock_get_repos.return_value = ["gitpulse"]
+        with patch("api.api.get_commits") as mock_get_commits:
+            mock_get_commits.return_value = [
+                {"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
+                {"repo": "gitpulse", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
+                {"repo": "gitpulse", "hash": "ghi", "author": "dev", "date": datetime(2026, 3, 22, tzinfo=timezone.utc), "message": "msg3"},
+            ]
+            response = client.get("/analytics/commits-per-day?username=deepusharma&days=30")
+            assert response.status_code == 200
+            data = response.json()
+            assert len(data) == 2
+            assert data[0]["date"] == "2026-03-21"
+            assert data[0]["count"] == 2
+            assert data[1]["date"] == "2026-03-22"
+            assert data[1]["count"] == 1
+
+def test_analytics_repos_breakdown():
+    with patch("api.api._get_user_repos") as mock_get_repos:
+        mock_get_repos.return_value = ["repo1", "repo2"]
+        with patch("api.api.get_commits") as mock_get_commits:
+            mock_get_commits.return_value = [
+                {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
+                {"repo": "repo1", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
+                {"repo": "repo2", "hash": "ghi", "author": "dev", "date": datetime(2026, 3, 22, tzinfo=timezone.utc), "message": "msg3"},
+            ]
+            response = client.get("/analytics/repos-breakdown?username=deepusharma&days=30")
+            assert response.status_code == 200
+            data = response.json()
+            assert len(data) == 2
+            assert data[0]["repo"] == "repo1"
+            assert data[0]["count"] == 2
+            assert data[0]["percentage"] == 66.7
+            assert data[1]["repo"] == "repo2"
+            assert data[1]["count"] == 1
+            assert data[1]["percentage"] == 33.3
+
+def test_analytics_insights():
+    with patch("api.api._get_user_repos") as mock_get_repos:
+        mock_get_repos.return_value = ["repo1"]
+        with patch("api.api.get_commits") as mock_get_commits:
+            mock_get_commits.return_value = [
+                {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=1), "message": "msg1"},
+                {"repo": "repo1", "hash": "def", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=2), "message": "msg2"},
+            ]
+            
+            with patch("api.api.get_db_pool") as mock_pool_func:
+                mock_pool = MagicMock()
+                mock_conn = AsyncMock()
+                mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
+                mock_conn.fetchval.return_value = 5
+                mock_pool_func.return_value = mock_pool
+                
+                response = client.get("/analytics/insights?username=deepusharma&days=30")
+                assert response.status_code == 200
+                data = response.json()
+                
+                assert data["total_summaries"] == 5
+                assert data["streak"] == 2
+                assert data["top_repo"] == "repo1"
+                assert data["average_commits_per_day"] == 0.1
