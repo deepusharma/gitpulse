@@ -31,7 +31,6 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 ## 3. Non-Goals / Out of Scope
 
 - Private GitHub repository analysis (Targeted for later iterations, currently out of scope for early releases).
-- Persisting summaries to a structured database natively (Targeted for later versions/milestones).
 - Dedicated Mobile app / mobile optimization explicitly outside of responsive web standards.
 - Real-time updates, webhooks, or bidirectional repository syncing.
 
@@ -54,8 +53,8 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | **v0.1** | Core CLI — Base Python application fetching local git logs and summarizing locally. | ✅ Complete |
 | **v0.2** | Web UI — Next.js frontend and FastAPI backend interacting via GitHub's API. | ✅ Complete |
 | **v0.3** | UI Polish — Styling overhauls, Markdown formats, layouts, NexthAuth setups. | ✅ Complete |
-| **v0.4** | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements. | 🔄 In Progress |
-| **v0.5** | History & Analytics — PostgreSQL Database persistence and dashboard aggregations. | 📋 Planned |
+| **v0.4** | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements. | ✅ Complete |
+| **v0.5** | History & Analytics — PostgreSQL Database persistence and dashboard aggregations. | 🔄 In Progress |
 | **v0.6** | Integrations — Resend email delivery notifications and repository webhooks. | 📋 Planned |
 | **v0.7** | Packaging & DX — Executable distribution on PyPI and interactive CLI onboarding. | 📋 Planned |
 | **v0.8** | Open Source Ready — Comprehensive README structures, doc sites, and automated releases. | 📋 Planned |
