@@ -3,7 +3,7 @@
 **Sprint goal:** Store summaries in Neon PostgreSQL and show history in web UI.
 **Milestone:** v0.5 — History & Analytics
 **Duration:** Day 3 (Weekday — ~1.5 hours)
-**Status:** Not Started
+**Status:** ✅ Complete — Merged via PR #132
 
 ---
 
@@ -74,11 +74,11 @@ Closes #97
 
 | Issue | Story | Status | Priority |
 |---|---|---|---|
-| #93 | S7.1: set up Neon PostgreSQL schema | 🔵 This Sprint | High |
-| #94 | S7.2: save summary to DB after generation | 🔵 This Sprint | High |
-| #95 | S7.3: add GET /history API endpoint | 🔵 This Sprint | High |
-| #96 | S7.4: add history page to web UI | 🔵 This Sprint | High |
-| #97 | S7.5: write tests for history endpoints | 🔵 This Sprint | High |
+| #93 | S7.1: set up Neon PostgreSQL schema | ✅ Done | High |
+| #94 | S7.2: save summary to DB after generation | ✅ Done | High |
+| #95 | S7.3: add GET /history API endpoint | ✅ Done | High |
+| #96 | S7.4: add history page to web UI | ✅ Done | High |
+| #97 | S7.5: write tests for history endpoints | ✅ Done | High |
 
 ---
 
@@ -109,10 +109,10 @@ DATABASE_URL=postgresql://user:pass@host/dbname
 ```
 
 **Done when:**
-- [ ] Neon connection working from API
-- [ ] summaries table created
-- [ ] db/schema.sql committed
-- [ ] DATABASE_URL in Railway environment
+- [x] Neon connection working from API
+- [x] summaries table created
+- [x] db/schema.sql committed
+- [x] DATABASE_URL in Railway environment
 
 ---
 
@@ -124,9 +124,9 @@ DATABASE_URL=postgresql://user:pass@host/dbname
 - Log save errors but return summary normally
 
 **Done when:**
-- [ ] POST /summarise saves to DB
-- [ ] DB failure doesn't break response
-- [ ] username, repos, summary, generated_at stored
+- [x] POST /summarise saves to DB
+- [x] DB failure doesn't break response
+- [x] username, repos, summary, generated_at stored
 
 ---
 
@@ -152,10 +152,10 @@ DATABASE_URL=postgresql://user:pass@host/dbname
 ```
 
 **Done when:**
-- [ ] GET /history returns list
-- [ ] Supports ?username= filter
-- [ ] Supports ?limit= parameter (default 10)
-- [ ] Returns most recent first
+- [x] GET /history returns list
+- [x] Supports ?username= filter
+- [x] Supports ?limit= parameter (default 10)
+- [x] Returns most recent first
 
 ---
 
@@ -170,19 +170,19 @@ DATABASE_URL=postgresql://user:pass@host/dbname
 - Filtered to logged-in user
 
 **Done when:**
-- [ ] /history route works
-- [ ] Lists past summaries
-- [ ] Expandable items
-- [ ] Auth protected
+- [x] /history route works
+- [x] Lists past summaries
+- [x] Expandable items
+- [x] Auth protected
 
 ---
 
 ### #97 — Tests
 
 **Done when:**
-- [ ] Test POST /summarise saves to DB (mock DB)
-- [ ] Test GET /history returns data
-- [ ] Test DB failure doesn't break summarise
+- [x] Test POST /summarise saves to DB (mock DB)
+- [x] Test GET /history returns data
+- [x] Test DB failure doesn't break summarise
 
 ---
 
@@ -192,9 +192,9 @@ DATABASE_URL=postgresql://user:pass@host/dbname
 ```
 
 ## Definition of Done
-- [ ] Neon DB connected and schema created
-- [ ] Summaries saved on generation
-- [ ] GET /history returns past summaries
-- [ ] History page shows in web UI
-- [ ] All tests pass
-- [ ] PR merged
+- [x] Neon DB connected and schema created
+- [x] Summaries saved on generation
+- [x] GET /history returns past summaries
+- [x] History page shows in web UI
+- [x] All tests pass
+- [x] PR #132 merged
