@@ -16,7 +16,7 @@
 ## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
-```text
+```
 Read these files before responding:
 - AGENTS.md
 - docs/sprint/sprint-17-brief.md
@@ -36,7 +36,7 @@ Do not write code yet. Planning only.
 ```
 
 ### Execution Prompt — Stream 1: MCP Server Core
-```text
+```
 Execute Stream 1 — MCP Protocol Server.
 Branch: feature/sprint-17-local-mcp
 
@@ -48,7 +48,7 @@ Commit and push.
 ```
 
 ### Execution Prompt — Stream 2: Web Integration
-```text
+```
 Execute Stream 2 — IDE Integrations & Proactive AI.
 Still on branch: feature/sprint-17-local-mcp
 
@@ -75,21 +75,53 @@ Commit, push, create PR.
 
 ---
 
-## Story Details & Definition of Done
+## Story Details
 
 ### MCP Protocol Setup (S17.1-S17.5)
+
 **Architecture:** Python `mcp` pip package using `stdio` transport.
+
 **Done when:**
 - [ ] Users can add `uv run mcp/server.py` to their `claude_desktop_config.json`.
-- [ ] LLM inside IDE can request commit data and write standups automatically.
+- [ ] LLM inside IDE can request commit data and write standups automatically via tools.
+
+---
 
 ### AI Customization (S17.6-S17.7)
+
+**Data source:** Local DB insight aggregation coupled with LLM evaluation.
+
 **UI:**
-- Insights page displays a sidebar block with "AI Notice" suggestions based on anomalies.
+- Insights page displays a sidebar block with "AI Notice" suggestions.
+
 **Done when:**
-- [ ] LLM automatically identifies "unusually high PR cycle time".
+- [ ] LLM automatically processes anomaly metrics into human-readable recommendations.
+- [ ] Users can store and reuse custom instruction prompts natively.
+
+---
+
+## New API Endpoints Needed
+
+```python
+GET /mcp/sse
+# Real-time SSE endpoint for remote MCP connection
+POST /insights/recommendations
+# Triggers AI background scan of user velocity
+```
 
 ---
 
 ## Order of Work
+```text
 MCP Protocol → Server Functions → Testing via Claude Desktop → Proactive AI Gen → Documentation
+```
+
+---
+
+## Definition of Done
+- [ ] `mcp/server.py` implements tool contracts without error
+- [ ] SSE endpoints correctly proxy tool usage over HTTP
+- [ ] Proactive AI recommendation module hooked into Insights
+- [ ] Prompt templates are savable
+- [ ] All tests pass
+- [ ] PR merged

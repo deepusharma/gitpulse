@@ -16,7 +16,7 @@
 ## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
-```text
+```
 Read these files before responding:
 - AGENTS.md
 - docs/sprint/sprint-12-brief.md
@@ -36,7 +36,7 @@ Do not write code yet. Planning only.
 ```
 
 ### Execution Prompt — Stream 1: GitHub API Validation & UI
-```text
+```
 Execute Stream 1 — live validation and multiselect.
 Branch: feature/sprint-12-input-ux
 
@@ -49,10 +49,11 @@ Commit and push.
 ```
 
 ### Execution Prompt — Stream 2: History Filters & Export
-```text
+```
 Execute Stream 2 — filters and export.
 Still on branch: feature/sprint-12-input-ux
 
+Use @frontend-dev.
 - Add search and date-range controls to /history
 - Build Markdown export function returning downloadable .md
 - Add commit activity stats footer matching summary.
@@ -75,22 +76,32 @@ Commit, push, create PR.
 
 ---
 
-## Story Details & Definition of Done
+## Story Details
 
-### #137 & #138 & #139 — Form Validation & Multiselect
+### #137, #138, #139 — Form Validation & Multiselect
+
+**Data source:** GitHub REST API.
+
 **UI:**
 - Live typing debounce for username check.
 - Shows green checkmark if valid.
 - Searchable dropdown fetches user repos.
+
 **Done when:**
-- [ ] Username validates instantly.
+- [ ] Username validates instantly via `/github/validate`.
 - [ ] Repo multiselect accurately searches GitHub API.
 - [ ] Specific 404 errors are bubbled up gracefully.
 
-### #140 & #141 & #142 — History Filters & Export
+---
+
+### #140, #141, #142 — History Filters & Export
+
+**Data source:** Local PostgreSQL summaries.
+
 **UI:**
 - Date picker and search bar on `/history`.
 - Export button on specific summary views.
+
 **Done when:**
 - [ ] Filter updates list in real-time.
 - [ ] Export generates valid `.md` file download.
@@ -98,6 +109,7 @@ Commit, push, create PR.
 ---
 
 ## New API Endpoints Needed
+
 ```python
 GET /github/validate?username=X
 # Returns {"valid": true, "avatar_url": "..."}
@@ -106,5 +118,19 @@ GET /github/repos?username=X&search=Y
 # Returns [{"name": "repo1"}, ...]
 ```
 
+---
+
 ## Order of Work
+```text
 Validation API → Multiselect UI → Filter UI → Export Button
+```
+
+---
+
+## Definition of Done
+- [ ] Validation API endpoints working
+- [ ] Frontend multiselect component renders and interacts
+- [ ] History search and filters work
+- [ ] Standup export functions properly
+- [ ] All tests pass
+- [ ] PR merged

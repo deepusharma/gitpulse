@@ -17,7 +17,7 @@
 ## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
-```text
+```
 Read these files before responding:
 - AGENTS.md
 - docs/sprint/sprint-14-brief.md
@@ -38,7 +38,7 @@ Do not write any code yet. Planning only.
 ```
 
 ### Execution Prompt — Stream 1: PR/Issue Enrichment
-```text
+```
 Execute Stream 1 — PR/Issue enrichment in core summarization.
 Branch: feature/sprint-14-depth
 
@@ -51,7 +51,7 @@ Commit and push.
 ```
 
 ### Execution Prompt — Stream 2: Insights UI Dashboard
-```text
+```
 Execute Stream 2 — /insights dashboard.
 Still on branch: feature/sprint-14-depth
 
@@ -83,23 +83,58 @@ Commit, push, create PR.
 
 ---
 
-## Story Details & Definition of Done
+## Story Details
 
 ### PR & Issue Parsing (S14.1-S14.3)
+
 **Data source:** GitHub GraphQL or REST (Pulls & Issues).
+
+**UI:**
+- Included natively in Markdown outputs.
+
 **Done when:**
 - [ ] Summaries include properly formatted lists of reviewed PRs.
 - [ ] Closed issues are linked with # references.
 
+---
+
 ### Insights Dashboard (S14.5-S14.11)
+
+**Data source:** `GET /insights/...` aggregation endpoints.
+**Library:** recharts
+
 **UI:**
 - Modern dashboard with grid layout.
 - Hover popovers explicitly capped at 8 items.
+
 **Done when:**
 - [ ] /insights renders correctly without hydration errors.
 - [ ] Charts populate via backend endpoints.
 
 ---
 
+## New API Endpoints Needed
+
+```python
+GET /insights/metrics?username=X
+# Returns aggregated PR and commit velocity
+GET /insights/health?username=X
+# Returns computed health score
+```
+
+---
+
 ## Order of Work
+```text
 Core Python Fetchers → Markdown Updater → Insights API → React Dashboard
+```
+
+---
+
+## Definition of Done
+- [ ] Core fetcher supports PRs and Issues
+- [ ] Generated Markdown includes activity sections
+- [ ] Insights API endpoints return correct datasets
+- [ ] /insights components render recharts appropriately
+- [ ] All tests pass
+- [ ] PR merged

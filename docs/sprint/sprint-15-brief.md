@@ -16,7 +16,7 @@
 ## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
-```text
+```
 Read these files before responding:
 - AGENTS.md
 - docs/sprint/sprint-15-brief.md
@@ -37,7 +37,7 @@ Do not write code yet. Planning only.
 ```
 
 ### Execution Prompt — Stream 1: Team Rosters & Summary
-```text
+```
 Execute Stream 1 — Team logic.
 Branch: feature/sprint-15-team
 
@@ -50,7 +50,7 @@ Commit and push.
 ```
 
 ### Execution Prompt — Stream 2: Presentation & Badges
-```text
+```
 Execute Stream 2 — Reach and UI.
 Still on branch: feature/sprint-15-team
 
@@ -76,22 +76,61 @@ Commit, push, create PR.
 
 ---
 
-## Story Details & Definition of Done
+## Story Details
 
 ### Team Standups & Slack (S15.1-S15.3)
+
 **Data source:** existing core aggregator, mapped over list of users.
+
+**UI:**
+- Roster management configuration module.
+- "Send to Slack" toggle.
+
 **Done when:**
-- [ ] Users can enter multiple commas separated usernames or save them as a roster.
+- [ ] Users can enter multiple comma separated usernames or save roster.
 - [ ] API can post the aggregated standup blocks to a configurable Slack channel.
 
+---
+
 ### Present & Badges (S15.4-S15.5)
+
+**Data source:** Aggregated Standup response payload.
+
 **UI:**
-- Present mode strips out sidebars and uses pure markdown typography scaled up 150%.
+- Present mode strips sidebars and scales typography to 150%.
+- Carousel for scrolling through team members.
+
 **Done when:**
-- [ ] Present mode scales with viewport.
-- [ ] Badges successfully render streak counts via simple HTTP GET.
+- [ ] Present mode scales with viewport without breaking.
+- [ ] Badges explicitly render streak counts via simple HTTP GET response.
+
+---
+
+## New API Endpoints Needed
+
+```python
+POST /team/roster
+# Save a list of team members
+POST /deliver/slack
+# Deliver generated standup via webhook
+GET /badges/streak?username=X
+# Returns SVG or badge proxy data
+```
 
 ---
 
 ## Order of Work
+```text
 Roster CRUD → Core Multi-User Aggregator → Slack Integration → Present UI → Badges API
+```
+
+---
+
+## Definition of Done
+- [ ] API accepts multiple usernames and aggregates properly
+- [ ] Team Roster is creatable and savable
+- [ ] Slack webhook payload correctly formatted
+- [ ] `/present` mode renders without standard layouts
+- [ ] Badges API functional
+- [ ] All tests pass
+- [ ] PR merged
