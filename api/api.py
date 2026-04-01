@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     await close_db()
 
-app = FastAPI(title="gitpulse API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="gitpulse API", version="0.5.0", lifespan=lifespan)
 
 # CORS
 app.add_middleware(
@@ -64,7 +64,7 @@ async def health():
         dict: Status and version of the API.
     """
     logger.info("Health check endpoint accessed")
-    return {"status": "ok", "version": "0.2.0"}
+    return {"status": "ok", "version": "0.5.0"}
 
 @app.post("/summarise", response_model=SummariseResponse)
 async def create_summary(request: SummariseRequest):
