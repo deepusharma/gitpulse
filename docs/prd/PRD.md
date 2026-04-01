@@ -66,7 +66,33 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-## 6. Epics & User Stories
+## 6. Sprint Roadmap
+
+| Sprint | Status | Milestone | Epic | Theme |
+| ------ | ------ | --------- | ---- | ----- |
+| Sprint 01 | ✅ Done | v0.1 | Epic #126 | Core CLI base application |
+| Sprint 02 | ✅ Done | v0.2 | Epic #15, #16 | Codebase restructure + GitHub API adapter |
+| Sprint 03 | ✅ Done | v0.2 | Epic #17, #18 | FastAPI backend + Next.js frontend |
+| Sprint 04 | ✅ Done | v0.3 | Epic (Web Polish) | UI polish, GitHub OAuth, markdown rendering |
+| Sprint 05 | ✅ Done | v0.4 | Epic #112 | CLI config defaults, `--dry-run`, error messages |
+| Sprint 06 | ✅ Done | v0.4 | Epic #113 | Copy to clipboard, empty/error states, stats footer |
+| Sprint 07 | ✅ Done | v0.5 | Epic #114 | DB persistence, `/history` page, `GET /history` |
+| Sprint 08 | 📋 Planned | v0.6 | Epic #115 | Email + Slack + Gist delivery, private repos, tone/language |
+| Sprint 09 | 📋 Planned | v0.7 | Epic #116 | PyPI packaging, `gitpulse init`, rich CLI help |
+| Sprint 10 | 📋 Planned | v0.5 | Epic #117 | Analytics dashboard (Recharts charts) |
+| Sprint 11 | 📋 Planned | v0.8 | Epic #118 | README, MkDocs, in-app `/docs` hub |
+| Sprint 12 | 📋 Planned | v0.5 | Epic #136 | UX fixes: error messages, repo dropdown, history filters, export |
+| Sprint 14 | 🆕 New | v0.9 | TBD | `/insights` dashboard, PR/issue enrichment, stats for nerds, GitHub Projects |
+| Sprint 15 | 🆕 New | v1.0 | TBD | Team standup, badge generator, presentation mode, notifications |
+| Sprint 16 | 🆕 New | v1.1 | TBD | Private org repos, shareable links, comparison mode |
+| Sprint 17 | 🆕 New | v1.2 | TBD | MCP server (Claude/Cursor/Windsurf), AI recommendations |
+| Sprint 18 | 🆕 New | v1.3 | TBD | Streaks, year in review, VS Code extension |
+
+> Sprint 13 is a buffer/overflow slot between v0.6 and v0.9.
+
+---
+
+## 7. Epics & User Stories
 
 ### v0.1 — Core CLI (Milestone #11)
 
@@ -300,7 +326,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-## 7. Technical Decisions
+## 8. Technical Decisions
 
 | Decision            | Choice                                                 | Reason                                                                         |
 | ------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------ |
@@ -315,7 +341,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-## 8. Success Criteria
+## 9. Success Criteria
 
 - Complete generation of multi-repository summary payloads reliably executing in under 30 seconds.
 - Native capabilities exposed natively to terminal systems remaining largely uninterrupted.
