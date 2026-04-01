@@ -275,7 +275,7 @@ async def get_insights(username: str, days: int = 30):
     if pool:
         try:
             async with pool.acquire() as conn:
-                count = await conn.fetchval('SELECT COUNT(*) FROM summaries WHERE username = $1', username)
+                count = await conn.fetchval('SELECT COUNT(*) FROM summaries')
                 total_summaries = count or 0
         except Exception as e:
             logger.error("DB error figuring out summaries count: %s", e)
