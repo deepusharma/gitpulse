@@ -11,7 +11,7 @@ milestone: v0.8.0
 
 Developers often struggle to accurately recall exactly what they worked on during daily or weekly standup updates. Manually reading through git logs across multiple repositories is tedious and unformatted. `gitpulse` solves this by automating the retrieval of git commit histories and generating well-structured, professional, AI-powered standup summaries.
 
-The vision is to maintain a multi-client tool that exposes this functionality anywhere: as a fast, offline-capable CLI tool reading local `.git` folders, and as an accessible Web UI analyzing public remote repositories dynamically via GitHub's API. 
+The vision is to maintain a multi-client tool that exposes this functionality anywhere: as a fast, offline-capable CLI tool reading local `.git` folders, and as an accessible Web UI analyzing public remote repositories dynamically via GitHub's API.
 
 ---
 
@@ -48,16 +48,16 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ## 5. Releases
 
-| Milestone | Description | Status |
-| --------- | ----------- | ------ |
-| **v0.1** | Core CLI — Base Python application fetching local git logs and summarizing locally. | ✅ Complete |
-| **v0.2** | Web UI — Next.js frontend and FastAPI backend interacting via GitHub's API. | ✅ Complete |
-| **v0.3** | UI Polish — Styling overhauls, Markdown formats, layouts, NexthAuth setups. | ✅ Complete |
-| **v0.4** | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements. | ✅ Complete |
-| **v0.5** | History & Analytics — PostgreSQL Database persistence and dashboard aggregations. | 🔄 In Progress |
-| **v0.6** | Integrations — Resend email delivery notifications and repository webhooks. | 📋 Planned |
-| **v0.7** | Packaging & DX — Executable distribution on PyPI and interactive CLI onboarding. | 📋 Planned |
-| **v0.8** | Open Source Ready — Comprehensive README structures, doc sites, and automated releases. | 📋 Planned |
+| Milestone | Description                                                                                 | Status         |
+| --------- | ------------------------------------------------------------------------------------------- | -------------- |
+| **v0.1**  | Core CLI — Base Python application fetching local git logs and summarizing locally.         | ✅ Complete    |
+| **v0.2**  | Web UI — Next.js frontend and FastAPI backend interacting via GitHub's API.                 | ✅ Complete    |
+| **v0.3**  | UI Polish — Styling overhauls, Markdown formats, layouts, NexthAuth setups.                 | ✅ Complete    |
+| **v0.4**  | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements. | ✅ Complete    |
+| **v0.5**  | History & Analytics — PostgreSQL Database persistence and dashboard aggregations.           | 🔄 In Progress |
+| **v0.6**  | Integrations — Resend email delivery notifications and repository webhooks.                 | 📋 Planned     |
+| **v0.7**  | Packaging & DX — Executable distribution on PyPI and interactive CLI onboarding.            | 📋 Planned     |
+| **v0.8**  | Open Source Ready — Comprehensive README structures, doc sites, and automated releases.     | 📋 Planned     |
 
 ---
 
@@ -207,16 +207,16 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ## 7. Technical Decisions
 
-| Decision            | Choice                                              | Reason                                                                       |
-| ------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Language Base**   | Python 3.12+ (Backend) & TypeScript (Frontend)      | Unifies scripting standards alongside modernized Web stability protocols.    |
-| **Package Builder** | `uv`                                                | Accelerates internal environment configurations implicitly lowering latencies. |
-| **Git Adapters**    | `GitPython` & GitHub API                            | Separates localized executions from scalable lightweight remote endpoints.   |
-| **Backend API**     | `FastAPI`                                           | Exposes asynchronous standard Python schemas minimizing deployment overhead. |
-| **Generative LLM**  | Groq (`llama-3.3-70b-versatile`)                    | Affords best-in-class reaction throughput paired with rigid contextual AI.   |
-| **Frontend Node**   | Next.js App Router                                  | Extends React rendering boundaries securely integrating functional UIs.      |
-| **Styling**         | Tailwind CSS + `shadcn/ui` + `@tailwindcss/typography` | Maximizes visual consistency effortlessly over rigid semantic CSS scopes.    |
-| **Cloud Hosting**   | Vercel & Railway                                    | Free, responsive tiers orchestrating decoupled client-server structures.     |
+| Decision            | Choice                                                 | Reason                                                                         |
+| ------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| **Language Base**   | Python 3.12+ (Backend) & TypeScript (Frontend)         | Unifies scripting standards alongside modernized Web stability protocols.      |
+| **Package Builder** | `uv`                                                   | Accelerates internal environment configurations implicitly lowering latencies. |
+| **Git Adapters**    | `GitPython` & GitHub API                               | Separates localized executions from scalable lightweight remote endpoints.     |
+| **Backend API**     | `FastAPI`                                              | Exposes asynchronous standard Python schemas minimizing deployment overhead.   |
+| **Generative LLM**  | Groq (`llama-3.3-70b-versatile`)                       | Affords best-in-class reaction throughput paired with rigid contextual AI.     |
+| **Frontend Node**   | Next.js App Router                                     | Extends React rendering boundaries securely integrating functional UIs.        |
+| **Styling**         | Tailwind CSS + `shadcn/ui` + `@tailwindcss/typography` | Maximizes visual consistency effortlessly over rigid semantic CSS scopes.      |
+| **Cloud Hosting**   | Vercel & Railway                                       | Free, responsive tiers orchestrating decoupled client-server structures.       |
 
 ---
 
