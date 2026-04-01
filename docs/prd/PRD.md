@@ -2,7 +2,7 @@
 title: Product Requirements Document
 description: gitpulse living PRD
 status: Living Document
-milestone: v0.8.0
+milestone: v1.3.0
 ---
 
 # Product Requirements Document — gitpulse
@@ -48,16 +48,21 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ## 5. Releases
 
-| Milestone | Description                                                                                 | Status         |
-| --------- | ------------------------------------------------------------------------------------------- | -------------- |
-| **v0.1**  | Core CLI — Base Python application fetching local git logs and summarizing locally.         | ✅ Complete    |
-| **v0.2**  | Web UI — Next.js frontend and FastAPI backend interacting via GitHub's API.                 | ✅ Complete    |
-| **v0.3**  | UI Polish — Styling overhauls, Markdown formats, layouts, NexthAuth setups.                 | ✅ Complete    |
-| **v0.4**  | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements. | ✅ Complete    |
-| **v0.5**  | History & Analytics — PostgreSQL Database persistence and dashboard aggregations.           | 🔄 In Progress |
-| **v0.6**  | Integrations — Resend email delivery notifications and repository webhooks.                 | 📋 Planned     |
-| **v0.7**  | Packaging & DX — Executable distribution on PyPI and interactive CLI onboarding.            | 📋 Planned     |
-| **v0.8**  | Open Source Ready — Comprehensive README structures, doc sites, and automated releases.     | 📋 Planned     |
+| Milestone | Description                                                                                         | Status         |
+| --------- | --------------------------------------------------------------------------------------------------- | -------------- |
+| **v0.1**  | Core CLI — Base Python application fetching local git logs and summarizing locally.               | ✅ Complete    |
+| **v0.2**  | Web UI — Next.js frontend and FastAPI backend interacting via GitHub’s API.                   | ✅ Complete    |
+| **v0.3**  | UI Polish — Styling overhauls, Markdown formats, layouts, NextAuth setups.                       | ✅ Complete    |
+| **v0.4**  | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements.       | ✅ Complete    |
+| **v0.5**  | History & Analytics — PostgreSQL persistence, history page, analytics dashboard, UX improvements. | 🔄 In Progress |
+| **v0.6**  | Integrations — Email, Slack, Gist delivery; private repo support; tone/language/mode selection.   | 📋 Planned     |
+| **v0.7**  | Packaging & DX — PyPI distribution, `gitpulse init`, rich CLI help, shell completion.            | 📋 Planned     |
+| **v0.8**  | Open Source Ready — README, MkDocs, in-app docs hub, changelog page.                            | 📋 Planned     |
+| **v0.9**  | Depth & Intelligence — PR/issue activity, `/insights` dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator. | 📋 Planned |
+| **v1.0**  | Team & Reach — Team standup view, badge generator, presentation mode, smart notifications.       | 📋 Planned     |
+| **v1.1**  | Pro Features — Private org repos, shareable summary links, comparison mode.                      | 📋 Planned     |
+| **v1.2**  | AI & MCP — MCP server for Claude/Cursor/Windsurf, AI recommendations, prompt templates.          | 📋 Planned     |
+| **v1.3**  | Delight — Year in review, gamification, streaks, VS Code extension.                              | 📋 Planned     |
 
 ---
 
@@ -202,6 +207,96 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Provide `CONTRIBUTING.md`, Code of Conduct, and PR templates. | S11.2 | #109 | Sprint 11 |
 | Scaffold and deploy MkDocs static site linked to GitHub Pages. | S11.3 | #110 | Sprint 11 |
 | Streamline semantic release workflow automating changelogs. | S11.4 | #111 | Sprint 11 |
+
+---
+
+### v0.9 — Depth & Intelligence (Milestone TBD)
+
+**Epic: PR & Issue Activity Enrichment**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Include PR activity (opened/merged/reviewed) in standup summary. | S14.1 | TBD | Sprint 14 |
+| Include issue activity (opened/closed) in standup summary. | S14.2 | TBD | Sprint 14 |
+| Add GitHub Projects sprint card activity to summary. | S14.3 | TBD | Sprint 14 |
+| Generate AI-powered sprint retrospective (2-week scope). | S14.4 | TBD | Sprint 14 |
+
+**Epic: Developer Insights Dashboard (`/insights`)**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Build `/insights` page with metric cards (commits, PRs, issues, active repos). | S14.5 | TBD | Sprint 14 |
+| Add commit frequency bar chart, PR velocity line chart, issue health area chart. | S14.6 | TBD | Sprint 14 |
+| Add language breakdown donut chart and tech stack badge detection. | S14.7 | TBD | Sprint 14 |
+| Add repo metadata panel (stars, forks, watchers, CI pass rate, traffic). | S14.8 | TBD | Sprint 14 |
+| Add repo health score algorithm and display. | S14.9 | TBD | Sprint 14 |
+| Add "Stats for Nerds" panel (avg PR cycle time, commit patterns, code churn). | S14.10 | TBD | Sprint 14 |
+| Add date range and repo filters to `/insights`. | S14.11 | TBD | Sprint 14 |
+
+---
+
+### v1.0 — Team & Reach (Milestone TBD)
+
+**Epic: Team Standup View**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Add multi-username input to generate aggregated team standup. | S15.1 | TBD | Sprint 15 |
+| Build team roster management (save/load team member lists). | S15.2 | TBD | Sprint 15 |
+| Add team delivery to Slack channel (vs personal DM). | S15.3 | TBD | Sprint 15 |
+
+**Epic: Reach & Engagement**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Add README badge generator for commit streak, PR count, health score. | S15.4 | TBD | Sprint 15 |
+| Add presentation mode (`/present`) for screen-share standups. | S15.5 | TBD | Sprint 15 |
+| Add smart browser/email notifications for daily standup reminders. | S15.6 | TBD | Sprint 15 |
+
+---
+
+### v1.1 — Pro Features (Milestone TBD)
+
+**Epic: Private & Org Access**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Support private org repos via expanded OAuth scope. | S16.1 | TBD | Sprint 16 |
+| Add shareable public links for generated summaries (`/summary/:id`). | S16.2 | TBD | Sprint 16 |
+| Add comparison mode — this period vs last period vs personal averages. | S16.3 | TBD | Sprint 16 |
+
+---
+
+### v1.2 — AI & MCP (Milestone TBD)
+
+**Epic: MCP Server & IDE Integration**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Build `mcp/server.py` exposing gitpulse core as MCP Tools. | S17.1 | TBD | Sprint 17 |
+| Expose `generate_standup`, `get_history`, `analyze_repo`, `get_insights` as MCP tools. | S17.2 | TBD | Sprint 17 |
+| Publish MCP server alongside PyPI package. | S17.3 | TBD | Sprint 17 |
+| Expose remote MCP server over HTTP/SSE from FastAPI backend. | S17.4 | TBD | Sprint 17 |
+| Document MCP setup for Claude Code, Cursor, Windsurf in `/docs/mcp`. | S17.5 | TBD | Sprint 17 |
+
+**Epic: AI Customization**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Add AI-powered proactive recommendations based on insights data. | S17.6 | TBD | Sprint 17 |
+| Add saved prompt templates per project/team. | S17.7 | TBD | Sprint 17 |
+
+---
+
+### v1.3 — Delight (Milestone TBD)
+
+**Epic: Gamification & Extensions**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Add commit streak tracking and personal best records. | S18.1 | TBD | Sprint 18 |
+| Generate annual "Year in Review" summary from history data. | S18.2 | TBD | Sprint 18 |
+| Build VS Code extension surfacing standup and insights in sidebar. | S18.3 | TBD | Sprint 18 |
 
 ---
 
