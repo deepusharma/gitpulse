@@ -11,6 +11,8 @@ anyio==4.12.1
     #   groq
     #   httpx
     #   starlette
+asyncpg==0.31.0
+    # via gitpulse (pyproject.toml)
 certifi==2026.2.25
     # via
     #   httpcore
@@ -73,10 +75,12 @@ typer==0.24.1
     # via gitpulse (pyproject.toml)
 typing-extensions==4.15.0
     # via
+    #   anyio
     #   fastapi
     #   groq
     #   pydantic
     #   pydantic-core
+    #   starlette
     #   typing-inspection
 typing-inspection==0.4.2
     # via
