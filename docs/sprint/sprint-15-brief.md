@@ -9,7 +9,7 @@
 
 ## Pre-Sprint Requirements
 - Sprint 14 should be complete.
-- Read up on the `shields.io` badge generation endpoint format if necessary.
+- Slack Webhook URL required for end-to-end testing.
 
 ---
 
@@ -26,14 +26,72 @@ Read these files before responding:
 We are planning Sprint 15 — Team & Reach.
 
 Before writing any code:
-1. Review stories S15.1 through S15.6 mapped to this sprint.
-2. Define the schema and DB changes required to save and load "Team Rosters".
-3. Formulate how to execute parallel GitHub calls for multiple users efficiently.
-4. Detail the Next.js routing and UI styling plan for `/present` presentation mode.
-5. Outline structure for badge-generation endpoints (`/api/badges/...`).
-6. Identify any rate-limiting risks when querying data for whole teams.
-7. Propose a step-by-step technical execution plan.
-8. Save plan to `docs/sprint/sprint-15-plan.md`.
+1. Review stories S15.1 through S15.6.
+2. Define the schema to save/load "Team Rosters".
+3. Plan Next.js `/present` presentation mode.
+4. Outline structure for badge-generation endpoints (`/badges/*`).
+5. Propose a step-by-step technical execution plan.
+6. Save plan to `docs/sprint/sprint-15-plan.md`.
 
-Do not write any code yet. Planning only.
+Do not write code yet. Planning only.
 ```
+
+### Execution Prompt — Stream 1: Team Rosters & Summary
+```text
+Execute Stream 1 — Team logic.
+Branch: feature/sprint-15-team
+
+Use @backend-dev.
+- Update the API to accept multiple usernames.
+- Build Team Roster CRUD endpoints.
+- Map generated aggregations for Slack webhook delivery.
+
+Commit and push.
+```
+
+### Execution Prompt — Stream 2: Presentation & Badges
+```text
+Execute Stream 2 — Reach and UI.
+Still on branch: feature/sprint-15-team
+
+Use @frontend-dev.
+- Add /present view for screen-share standups (large typography, carousel).
+- Build the `/badges/` endpoint returning SVG or redirecting to shields.io.
+
+Commit, push, create PR.
+```
+
+---
+
+## Sprint Stories
+
+| Issue | Story | Status | Priority |
+|---|---|---|---|
+| TBD | S15.1: Multi-username team standup | 🔵 This Sprint | High |
+| TBD | S15.2: Team roster management (save/load) | 🔵 This Sprint | Medium |
+| TBD | S15.3: Slack channel team delivery | 🔵 This Sprint | High |
+| TBD | S15.4: README badge generator | 🔵 This Sprint | Low |
+| TBD | S15.5: Presentation mode (`/present`) | 🔵 This Sprint | Medium |
+| TBD | S15.6: Smart reminders for standups | 🔵 This Sprint | Low |
+
+---
+
+## Story Details & Definition of Done
+
+### Team Standups & Slack (S15.1-S15.3)
+**Data source:** existing core aggregator, mapped over list of users.
+**Done when:**
+- [ ] Users can enter multiple commas separated usernames or save them as a roster.
+- [ ] API can post the aggregated standup blocks to a configurable Slack channel.
+
+### Present & Badges (S15.4-S15.5)
+**UI:**
+- Present mode strips out sidebars and uses pure markdown typography scaled up 150%.
+**Done when:**
+- [ ] Present mode scales with viewport.
+- [ ] Badges successfully render streak counts via simple HTTP GET.
+
+---
+
+## Order of Work
+Roster CRUD → Core Multi-User Aggregator → Slack Integration → Present UI → Badges API
