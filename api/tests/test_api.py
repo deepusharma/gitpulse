@@ -8,7 +8,7 @@ client = TestClient(app)
 def test_health_returns_200():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "version": "0.2.0"}
+    assert response.json() == {"status": "ok", "version": "0.5.0"}
 
 def test_summarise_valid_request_returns_200():
     with patch("api.api.get_commits") as mock_get_commits:
