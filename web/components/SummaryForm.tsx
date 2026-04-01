@@ -25,8 +25,8 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
   const { data: session } = useSession();
 
   React.useEffect(() => {
-    if (session?.user?.name && !username) {
-      setUsername(session.user.name);
+    if (session?.user?.username && !username) {
+      setUsername(session.user.username);
     }
   }, [session, username]);
 
@@ -108,7 +108,7 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
               min={1}
               max={90}
               value={days}
-              onChange={(e) => setDays(Number(e.target.value))}
+              onChange={(e) => setDays(e.target.value === "" ? 0 : parseInt(e.target.value, 10))}
               disabled={isSubmitting}
               required
             />
