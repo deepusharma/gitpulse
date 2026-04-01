@@ -188,12 +188,12 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Build web UI `/history` page listing all past summaries. | S7.4 | #96 | Sprint 07 |
 | Author tests evaluating database API endpoints properly. | S7.5 | #97 | Sprint 07 |
 
-**Epic: Analytics Dashboard (Epic #117) 📋**
+**Epic: Analytics Dashboard (Epic #117) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
-| Implement commit frequency bar chart metrics via `recharts`. | S10.1 | #105 | Sprint 10 |
-| Construct repo activity breakdown pie charts. | S10.2 | #106 | Sprint 10 |
-| Calculate and display aggregate productivity insights. | S10.3 | #107 | Sprint 10 |
+| Implement commit frequency bar chart metrics via `recharts`. | S10.1 | #105 | Sprint 10 ✅ |
+| Construct repo activity breakdown pie charts. | S10.2 | #106 | Sprint 10 ✅ |
+| Calculate and display aggregate productivity insights. | S10.3 | #107 | Sprint 10 ✅ |
 
 **Epic: Enhanced Input UX & Error Feedback (Epic #136) 📋**
 | Story | Internal ID | GitHub Issue | Implemented In |
