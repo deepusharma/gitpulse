@@ -17,13 +17,13 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 ```
 Read these files before responding:
 - AGENTS.md
-- docs/sprint/sprint-08.md
+- docs/sprint/sprint-08-brief.md
 - docs/architecture/overview.md
 - docs/api/api-contract.md
 - api/api.py
@@ -38,7 +38,7 @@ Before writing any code:
 4. Identify best approach for optional email parameter
 5. Plan GitHub Actions cron workflow
 6. Propose step-by-step execution plan
-7. Save plan to docs/sprint/sprint-08-execution-plan.md
+7. Save plan to docs/sprint/sprint-08-plan.md
 
 Do not write any code yet. Planning only.
 Use @backend-dev skill for API work.
@@ -49,8 +49,8 @@ Use @frontend-dev skill for UI changes.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-08.md
-- docs/sprint/sprint-08-execution-plan.md
+- docs/sprint/sprint-08-brief.md
+- docs/sprint/sprint-08-plan.md
 
 Execute stories #98, #99 — Resend setup and API email delivery.
 Branch: feature/sprint-08-email

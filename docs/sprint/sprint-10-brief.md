@@ -13,13 +13,13 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 ```
 Read these files before responding:
 - AGENTS.md
-- docs/sprint/sprint-10.md
+- docs/sprint/sprint-10-brief.md
 - docs/architecture/overview.md
 - docs/api/api-contract.md
 - api/api.py
@@ -35,7 +35,7 @@ Before writing any code:
 5. Plan analytics page layout and component structure
 6. Identify risks — performance with large datasets
 7. Propose step-by-step execution plan
-8. Save plan to docs/sprint/sprint-10-execution-plan.md
+8. Save plan to docs/sprint/sprint-10-plan.md
 
 Do not write any code yet. Planning only.
 Use @backend-dev for API work.
@@ -46,8 +46,8 @@ Use @frontend-dev for charts and UI.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-10.md
-- docs/sprint/sprint-10-execution-plan.md
+- docs/sprint/sprint-10-brief.md
+- docs/sprint/sprint-10-plan.md
 
 Execute Stream 1 — analytics API endpoints.
 Branch: feature/sprint-10-analytics

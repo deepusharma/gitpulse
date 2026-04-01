@@ -14,13 +14,13 @@
 
 ---
 
-## Antigravity Prompts
+## AI Planning Prompt
 
 ### Planning Prompt (Gemini 3.1 Pro High — Planning Mode)
 ```
 Read these files before responding:
 - AGENTS.md
-- docs/sprint/sprint-11.md
+- docs/sprint/sprint-11-brief.md
 - README.md
 - docs/architecture/overview.md
 - docs/prd/prd-v01.md
@@ -37,7 +37,7 @@ Before writing any code:
 5. Plan GitHub issue and PR templates
 6. Plan release workflow
 7. Propose step-by-step execution plan
-8. Save plan to docs/sprint/sprint-11-execution-plan.md
+8. Save plan to docs/sprint/sprint-11-plan.md
 
 Do not write any code yet. Planning only.
 ```
@@ -46,8 +46,8 @@ Do not write any code yet. Planning only.
 ```
 Read these files before starting:
 - AGENTS.md
-- docs/sprint/sprint-11.md
-- docs/sprint/sprint-11-execution-plan.md
+- docs/sprint/sprint-11-brief.md
+- docs/sprint/sprint-11-plan.md
 - README.md
 
 Execute stories #108, #109 — README and contributing guide.
