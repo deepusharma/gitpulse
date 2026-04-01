@@ -12,7 +12,20 @@ logger = logging.getLogger(__name__)
 from core.repo_reader import get_commits
 from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
 
-app = FastAPI(title="gitpulse API", version="0.2.0")
+from contextlib import asynccontextmanager
+import os
+
+from api.db import init_db, close_db, get_db_pool
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await init_db()
+    yield
+    # Shutdown
+    await close_db()
+
+app = FastAPI(title="gitpulse API", version="0.2.0", lifespan=lifespan)
 
 # CORS
 app.add_middleware(
@@ -87,13 +100,32 @@ async def create_summary(request: SummariseRequest):
         prompt = build_prompt(prompt_str)
         summary = summarise(prompt)
         
+        generated_at = datetime.now(timezone.utc)
+        
         logger.info("Successfully generated summary for username: %s", request.username)
+        
+        # Save to DB if pool is available
+        pool = get_db_pool()
+        if pool:
+            try:
+                async with pool.acquire() as connection:
+                    await connection.execute(
+                        '''
+                        INSERT INTO summaries (username, repos, days, display, summary, generated_at)
+                        VALUES ($1, $2, $3, $4, $5, $6)
+                        ''',
+                        request.username, request.repos, request.days, display_str, summary, generated_at
+                    )
+                logger.info("Saved summary to database for username: %s", request.username)
+            except Exception as db_e:
+                logger.error("Failed to save summary to database: %s", db_e, exc_info=True)
+
         return SummariseResponse(
             display=display_str,
             summary=summary,
             repos=request.repos,
             days=request.days,
-            generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            generated_at=generated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
         )
     except ValueError as e:
         logger.error("msg: %s", e, exc_info=True)
@@ -109,3 +141,51 @@ async def create_summary(request: SummariseRequest):
     except Exception as e:
         logger.error("msg: %s", e, exc_info=True)
         raise HTTPException(status_code=500, detail={"error": "Failed to generate summary. Please try again.", "code": 500})
+
+@app.get("/history")
+async def get_history(username: str, limit: int = 10):
+    """
+    Fetch historical summaries for a given username.
+    """
+    logger.info("Fetching history for username: %s (limit: %d)", username, limit)
+    pool = get_db_pool()
+    if not pool:
+        logger.warning("DB pool not initialized. Cannot fetch history.")
+        return {"summaries": [], "total": 0}
+
+    try:
+        async with pool.acquire() as connection:
+            records = await connection.fetch(
+                '''
+                SELECT id, username, repos, days, summary, generated_at
+                FROM summaries
+                WHERE username = $1
+                ORDER BY generated_at DESC
+                LIMIT $2
+                ''',
+                username, limit
+            )
+            
+            # Count total
+            total_count = await connection.fetchval(
+                'SELECT COUNT(*) FROM summaries WHERE username = $1',
+                username
+            )
+            
+            return {
+                "summaries": [
+                    {
+                        "id": str(r["id"]),
+                        "username": r["username"],
+                        "repos": r["repos"],
+                        "days": r["days"],
+                        "summary": r["summary"],
+                        "generated_at": r["generated_at"].strftime("%Y-%m-%dT%H:%M:%SZ")
+                    }
+                    for r in records
+                ],
+                "total": total_count or 0
+            }
+    except Exception as e:
+        logger.error("msg: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": "Failed to fetch history.", "code": 500})
