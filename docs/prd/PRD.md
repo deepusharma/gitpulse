@@ -94,9 +94,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ## 7. Epics & User Stories
 
-### v0.1 — Core CLI (Milestone #11)
+### v0.1 — Core CLI (Milestone #11) ✅
 
-**Epic: Core CLI Base Application (Epic #126)**
+**Epic: Core CLI Base Application (Epic #126) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Read repositories from `~/.gitpulse.toml` configuration. | S0.1 | #127 | Sprint 01 |
@@ -105,9 +105,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Expose CLI parameters (`--days`, `--repo`, `--debug`, `--output`). | S0.4 | #130 | Sprint 01 |
 | Output to a cleanly formatted Markdown report file manually. | S0.5 | #131 | Sprint 01 |
 
-### v0.2 — Web UI & API Additions (Milestone #1)
+### v0.2 — Web UI & API Additions (Milestone #1) ✅
 
-**Epic: Codebase Restructure (Epic #15)**
+**Epic: Codebase Restructure (Epic #15) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Move shared API parsing logic to `core/`. | S1.1 | #19 | Sprint 02 |
@@ -116,7 +116,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Direct CI to run checks across modular directories. | S1.4 | #22 | Sprint 02 |
 | Formalize `AGENTS.md` system guidelines and repository skill files. | S1.5 | #23 | Sprint 02 |
 
-**Epic: GitHub API Adapter (Epic #16)**
+**Epic: GitHub API Adapter (Epic #16) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Provision a specialized GitHub API adapter in `core/repo_reader.py`. | S2.1 | #24 | Sprint 02 |
@@ -125,7 +125,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Institute tests evaluating API response parsing metrics. | S2.4 | #27 | Sprint 02 |
 | Trap and degrade gracefully on external API threshold limitations. | S2.5 | #28 | Sprint 02 |
 
-**Epic: FastAPI Backend (Epic #17)**
+**Epic: FastAPI Backend (Epic #17) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Scaffold a lightweight FastAPI root container within `api/`. | S3.1 | #29 | Sprint 03 |
@@ -136,7 +136,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Finalize API containerized test boundaries. | S3.6 | #34 | Sprint 03 |
 | Orchestrate deployment structures pointing to Railway servers. | S3.7 | #35 | Sprint 03 |
 
-**Epic: Next.js Frontend (Epic #18)**
+**Epic: Next.js Frontend (Epic #18) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Scaffold Next.js 14 utilizing TypeScript and Tailwind CSS contexts. | S4.1 | #36 | Sprint 03 |
@@ -147,9 +147,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Surface readable constraints explicitly when an active request drops. | S4.6 | #41 | Sprint 03 |
 | Direct deployments natively utilizing existing Vercel resources. | S4.7 | #42 | Sprint 03 |
 
-### v0.3 — UI Polish (Milestone #5)
+### v0.3 — UI Polish (Milestone #5) ✅
 
-**Epic: Web Component Polish & OAuth**
+**Epic: Web Component Polish & OAuth ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | GitHub OAuth login with NextAuth.js. | SP4.1 | #65 | Sprint 04 |
@@ -160,9 +160,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Fix commit breakdown markdown rendering. | SP4.6 | #76 | Sprint 04 |
 | Implement collapsible/expandable result sections. | SP4.7 | #77 | Sprint 04 |
 
-### v0.4 — Config & Scheduling (Milestone #6)
+### v0.4 — Config & Scheduling (Milestone #6) ✅
 
-**Epic: CLI Configuration Defaults (Epic #112)**
+**Epic: CLI Configuration Defaults (Epic #112) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Add `--dry-run` flag to CLI to show commits without LLM calls. | S5.1 | #86 | Sprint 05 |
@@ -170,16 +170,16 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Improve CLI error messages for faster debugging. | S5.3 | #88 | Sprint 05 |
 | Add automated tests for config defaults and dry-run flag. | S5.4 | #89 | Sprint 05 |
 
-**Epic: Web UI States & Details (Epic #113)**
+**Epic: Web UI States & Details (Epic #113) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Add copy to clipboard button to generated summaries. | S6.1 | #90 | Sprint 06 |
 | Improve empty and error UI states for better user feedback. | S6.2 | #91 | Sprint 06 |
 | Display word count and generation stats after completion. | S6.3 | #92 | Sprint 06 |
 
-### v0.5 — History & Analytics (Milestone #7)
+### v0.5 — History & Analytics (Milestone #7) 🔄
 
-**Epic: Summary History Integration (Epic #114)**
+**Epic: Summary History Integration (Epic #114) ✅**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Set up Neon PostgreSQL schema for `summaries`. | S7.1 | #93 | Sprint 07 |
@@ -188,14 +188,14 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Build web UI `/history` page listing all past summaries. | S7.4 | #96 | Sprint 07 |
 | Author tests evaluating database API endpoints properly. | S7.5 | #97 | Sprint 07 |
 
-**Epic: Analytics Dashboard (Epic #117)**
+**Epic: Analytics Dashboard (Epic #117) 📋**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Implement commit frequency bar chart metrics via `recharts`. | S10.1 | #105 | Sprint 10 |
 | Construct repo activity breakdown pie charts. | S10.2 | #106 | Sprint 10 |
 | Calculate and display aggregate productivity insights. | S10.3 | #107 | Sprint 10 |
 
-**Epic: Enhanced Input UX & Error Feedback (Epic #136)**
+**Epic: Enhanced Input UX & Error Feedback (Epic #136) 📋**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Fix wrong repo name returning generic error — surface repo-specific 404 message. | S12.1 | #137 | Sprint 12 |
@@ -205,9 +205,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Add search and date-range filter controls to the `/history` page. | S12.5 | #141 | Sprint 12 |
 | Export standup summary as a downloadable `.md` file. | S12.6 | #142 | Sprint 12 |
 
-### v0.6 — Integrations (Milestone #8)
+### v0.6 — Integrations (Milestone #8) 📋
 
-**Epic: Email Delivery Automation (Epic #115)**
+**Epic: Email Delivery Automation (Epic #115) 📋**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Set up Resend account integration locally and configure API keys. | S8.1 | #98 | Sprint 08 |
@@ -215,18 +215,18 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Implement email notification toggle directly within the web UI. | S8.3 | #100 | Sprint 08 |
 | Configure GitHub Actions cron to distribute weekly summaries. | S8.4 | #101 | Sprint 08 |
 
-### v0.7 — Packaging & DX (Milestone #9)
+### v0.7 — Packaging & DX (Milestone #9) 📋
 
-**Epic: Standard PIP Distribution (Epic #116)**
+**Epic: Standard PIP Distribution (Epic #116) 📋**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Refactor project structure enabling standard `pip install gitpulse`. | S9.1 | #102 | Sprint 09 |
 | Orchestrate PyPI publishing triggered sequentially via CI. | S9.2 | #103 | Sprint 09 |
 | Develop an interactive `gitpulse init` command standardizing onboarding. | S9.3 | #104 | Sprint 09 |
 
-### v0.8 — Open Source Ready (Milestone #10)
+### v0.8 — Open Source Ready (Milestone #10) 📋
 
-**Epic: OSS Documentation & Releases (Epic #118)**
+**Epic: OSS Documentation & Releases (Epic #118) 📋**
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Rewrite `README.md` introducing demo GIFs, architectures, and badges. | S11.1 | #108 | Sprint 11 |
@@ -236,9 +236,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-### v0.9 — Depth & Intelligence (Milestone TBD)
+### v0.9 — Depth & Intelligence (Milestone TBD) 🆕
 
-**Epic: PR & Issue Activity Enrichment**
+**Epic: PR & Issue Activity Enrichment 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -247,7 +247,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Add GitHub Projects sprint card activity to summary. | S14.3 | TBD | Sprint 14 |
 | Generate AI-powered sprint retrospective (2-week scope). | S14.4 | TBD | Sprint 14 |
 
-**Epic: Developer Insights Dashboard (`/insights`)**
+**Epic: Developer Insights Dashboard (`/insights`) 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -261,9 +261,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-### v1.0 — Team & Reach (Milestone TBD)
+### v1.0 — Team & Reach (Milestone TBD) 🆕
 
-**Epic: Team Standup View**
+**Epic: Team Standup View 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -271,7 +271,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Build team roster management (save/load team member lists). | S15.2 | TBD | Sprint 15 |
 | Add team delivery to Slack channel (vs personal DM). | S15.3 | TBD | Sprint 15 |
 
-**Epic: Reach & Engagement**
+**Epic: Reach & Engagement 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -281,9 +281,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-### v1.1 — Pro Features (Milestone TBD)
+### v1.1 — Pro Features (Milestone TBD) 🆕
 
-**Epic: Private & Org Access**
+**Epic: Private & Org Access 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -293,9 +293,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-### v1.2 — AI & MCP (Milestone TBD)
+### v1.2 — AI & MCP (Milestone TBD) 🆕
 
-**Epic: MCP Server & IDE Integration**
+**Epic: MCP Server & IDE Integration 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -305,7 +305,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Expose remote MCP server over HTTP/SSE from FastAPI backend. | S17.4 | TBD | Sprint 17 |
 | Document MCP setup for Claude Code, Cursor, Windsurf in `/docs/mcp`. | S17.5 | TBD | Sprint 17 |
 
-**Epic: AI Customization**
+**Epic: AI Customization 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
@@ -314,9 +314,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 
 ---
 
-### v1.3 — Delight (Milestone TBD)
+### v1.3 — Delight (Milestone TBD) 🆕
 
-**Epic: Gamification & Extensions**
+**Epic: Gamification & Extensions 🆕**
 
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
