@@ -7,7 +7,10 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
-import { Database, Clock, CalendarDays } from "lucide-react";
+import { Database, Clock, CalendarDays, Search, X, Filter, Calendar } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 function HistoryAccordionItem({ item }: { item: any }) {
   const [expanded, setExpanded] = useState(false);
@@ -61,29 +64,38 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [limit, setLimit] = useState(20);
+
   useEffect(() => {
     if (status === "unauthenticated") {
-      setLoading(false);
+      if (loading) setLoading(false);
       return;
     }
     
     if (status === "authenticated" && session?.user?.name) {
-      // By default NextAuth Github provider passes the GitHub username or full name inside session.user.name.
-      // Easiest is to parse from email or name.
       const githubUsername = session.user.name;
       
-      fetchHistory(githubUsername)
-        .then(data => {
-          setHistory(data);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error(err);
-          setError("Failed to load summary history. Ensure the API is running and connected to Neon.");
-          setLoading(false);
-        });
+      const timer = setTimeout(() => {
+        setLoading(true);
+        fetchHistory(githubUsername, limit, searchQuery, startDate, endDate)
+          .then(data => {
+            setHistory(data);
+            setLoading(false);
+          })
+          .catch(err => {
+            console.error(err);
+            setError("Failed to load summary history. Ensure the API is running and connected to Neon.");
+            setLoading(false);
+          });
+      }, 500);
+
+      return () => clearTimeout(timer);
     }
-  }, [session, status]);
+  }, [session, status, searchQuery, startDate, endDate, limit]);
 
   if (status === "loading") {
     return (
@@ -115,7 +127,7 @@ export default function HistoryPage() {
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       
       <main className="w-full max-w-5xl relative z-10 mx-auto flex flex-col gap-8 min-h-[calc(100vh-12rem)]">
-        <section className="mt-4 sm:mt-8 pb-4 border-b border-border/50 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+        <section className="mt-4 sm:mt-8 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-2 flex items-center gap-3">
                   <Clock className="w-8 h-8 text-primary" />
@@ -126,10 +138,76 @@ export default function HistoryPage() {
                 </p>
             </div>
             {history && (
-                <Badge variant="outline" className="px-4 py-1.5 text-sm font-medium border-primary/20 bg-primary/5">
-                    Total Summaries: {history.total}
-                </Badge>
+                <div className="flex flex-col items-end gap-2">
+                    <Badge variant="outline" className="px-4 py-1.5 text-sm font-medium border-primary/20 bg-primary/5">
+                        Total Match: {history.total}
+                    </Badge>
+                </div>
             )}
+        </section>
+
+        {/* Filter Bar */}
+        <section className="bg-card/40 border border-border p-4 rounded-xl flex flex-wrap gap-4 items-end backdrop-blur-sm shadow-sm">
+            <div className="flex-1 min-w-[240px]">
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Search</label>
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input 
+                        placeholder="Search repos or summaries..." 
+                        className="pl-9 bg-background/50"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {searchQuery && (
+                        <button 
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            onClick={() => setSearchQuery("")}
+                        >
+                            <X className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
+                        </button>
+                    )}
+                </div>
+            </div>
+            <div className="w-full sm:w-auto">
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Start Date</label>
+                <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                    <Input 
+                        type="date"
+                        className="pl-9 bg-background/50 h-10 w-full sm:w-[160px]"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                </div>
+            </div>
+            <div className="w-full sm:w-auto">
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">End Date</label>
+                <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                    <Input 
+                        type="date"
+                        className="pl-9 bg-background/50 h-10 w-full sm:w-[160px]"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                </div>
+            </div>
+            <div className="flex items-center gap-2">
+                {(searchQuery || startDate || endDate) && (
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-10 px-3 text-muted-foreground hover:text-foreground"
+                        onClick={() => {
+                            setSearchQuery("");
+                            setStartDate("");
+                            setEndDate("");
+                        }}
+                    >
+                        Reset
+                    </Button>
+                )}
+            </div>
         </section>
 
         {loading ? (
@@ -148,7 +226,7 @@ export default function HistoryPage() {
             <Clock className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
             <h3 className="text-xl font-semibold mb-2">No history found</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              You haven't generated any summaries yet. Head back to the main generator directly to pull your recent commits!
+              You haven&apos;t generated any summaries yet. Head back to the main generator directly to pull your recent commits!
             </p>
           </div>
         ) : (

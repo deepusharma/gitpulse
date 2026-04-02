@@ -22,8 +22,12 @@ import os
 
 from api.db import init_db, close_db, get_db_pool
 
-# In-memory cache for repo lists (username -> {"repos": list, "expiry": datetime})
-_repo_cache = {}
+from api.cache import InMemoryCache
+
+# Specialized caches with 5-minute default TTL
+repo_cache = InMemoryCache()
+commit_cache = InMemoryCache()
+analytics_cache = InMemoryCache()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -63,6 +67,7 @@ class SummariseResponse(BaseModel):
     summary: str
     repos: List[str]
     days: int
+    username: str
     generated_at: str
 
 # Routes
@@ -115,12 +120,13 @@ async def health_keys():
     return results
 
 @app.post("/summarise", response_model=SummariseResponse)
-async def create_summary(request: SummariseRequest):
+async def create_summary(request: SummariseRequest, refresh: bool = False):
     """
     Generate a summary of commits for a given user and repositories.
     
     Args:
         request (SummariseRequest): The request payload containing username, repos, and days.
+        refresh (bool): Whether to bypass existing cache (default False).
         
     Returns:
         SummariseResponse: The generated summary and associated metadata.
@@ -129,6 +135,14 @@ async def create_summary(request: SummariseRequest):
         HTTPException: If validation fails or downstream errors occur.
     """
     logger.info("Received summarise request for username: %s, repos: %s", request.username, request.repos)
+    
+    # 1. Check cache first
+    cache_key = f"summary:{request.username}:{','.join(sorted(request.repos))}:{request.days}"
+    if not refresh:
+        cached_result = commit_cache.get(cache_key)
+        if cached_result:
+            logger.info("Using cached summary for %s", request.username)
+            return SummariseResponse(**cached_result)
 
     if not request.username:
         logger.warning("Summarise request failed validation: missing username")
@@ -139,12 +153,22 @@ async def create_summary(request: SummariseRequest):
 
     try:
         # Calls the GitHub API adapter
-        commits = await get_commits(
+        commits, errors = await get_commits(
             source="github",
             username=request.username,
             repos=request.repos,
             days=request.days
         )
+        
+        if errors:
+            # S12.1 Surface repo-specific 404 message
+            error_msg = "; ".join(errors)
+            if "not found" in error_msg.lower() or "private" in error_msg.lower():
+                raise HTTPException(status_code=404, detail={"error": error_msg, "code": 404})
+            elif "rate limit" in error_msg.lower():
+                raise HTTPException(status_code=429, detail={"error": error_msg, "code": 429})
+            else:
+                raise HTTPException(status_code=500, detail={"error": error_msg, "code": 500})
         
         formatted = format_commits(commits)
         prompt_str = to_prompt_str(formatted)
@@ -173,13 +197,19 @@ async def create_summary(request: SummariseRequest):
             except Exception as db_e:
                 logger.error("Failed to save summary to database: %s", db_e, exc_info=True)
 
-        return SummariseResponse(
-            display=display_str,
-            summary=summary,
-            repos=request.repos,
-            days=request.days,
-            generated_at=generated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
-        )
+        result = {
+            "display": display_str,
+            "summary": summary,
+            "repos": request.repos,
+            "username": request.username,
+            "days": request.days,
+            "generated_at": generated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+        }
+        
+        # Update cache
+        commit_cache.set(cache_key, result, ttl=300)
+        
+        return SummariseResponse(**result)
     except Exception as e:
         logger.error("Error during summary generation: %s", e, exc_info=True)
         msg = str(e)
@@ -200,11 +230,17 @@ async def create_summary(request: SummariseRequest):
             })
 
 @app.get("/history")
-async def get_history(username: str, limit: int = 10):
+async def get_history(
+    username: str, 
+    limit: int = 10, 
+    search: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None
+):
     """
-    Fetch historical summaries for a given username.
+    Fetch historical summaries for a given username with filtering options.
     """
-    logger.info("Fetching history for username: %s (limit: %d)", username, limit)
+    logger.info("Fetching history for %s (limit: %d, search: %s, date: %s-%s)", username, limit, search, start_date, end_date)
     pool = get_db_pool()
     if not pool:
         logger.warning("DB pool not initialized. Cannot fetch history.")
@@ -212,22 +248,51 @@ async def get_history(username: str, limit: int = 10):
 
     try:
         async with pool.acquire() as connection:
-            records = await connection.fetch(
-                '''
+            query = """
                 SELECT id, username, repos, days, summary, generated_at
                 FROM summaries
                 WHERE username = $1
-                ORDER BY generated_at DESC
-                LIMIT $2
-                ''',
-                username, limit
-            )
+            """
+            params = [username]
+            idx = 2
             
-            # Count total
-            total_count = await connection.fetchval(
-                'SELECT COUNT(*) FROM summaries WHERE username = $1',
-                username
-            )
+            if search:
+                query += f" AND (repos::text ILIKE ${idx} OR summary ILIKE ${idx})"
+                params.append(f"%{search}%")
+                idx += 1
+                
+            if start_date:
+                query += f" AND generated_at >= ${idx}"
+                params.append(datetime.strptime(start_date, "%Y-%m-%d"))
+                idx += 1
+                
+            if end_date:
+                query += f" AND generated_at <= ${idx}"
+                params.append(datetime.strptime(end_date, "%Y-%m-%d"))
+                idx += 1
+                
+            query += f" ORDER BY generated_at DESC LIMIT ${idx}"
+            params.append(limit)
+            
+            records = await connection.fetch(query, *params)
+            
+            # Count also needs filters
+            count_query = "SELECT COUNT(*) FROM summaries WHERE username = $1"
+            count_params = [username]
+            c_idx = 2
+            if search:
+                count_query += f" AND (repos::text ILIKE ${c_idx} OR summary ILIKE ${c_idx})"
+                count_params.append(f"%{search}%")
+                c_idx += 1
+            if start_date:
+                count_query += f" AND generated_at >= ${c_idx}"
+                count_params.append(datetime.strptime(start_date, "%Y-%m-%d"))
+                c_idx += 1
+            if end_date:
+                count_query += f" AND generated_at <= ${c_idx}"
+                count_params.append(datetime.strptime(end_date, "%Y-%m-%d"))
+            
+            total_count = await connection.fetchval(count_query, *count_params) or 0
             
             return {
                 "summaries": [
@@ -249,12 +314,10 @@ async def get_history(username: str, limit: int = 10):
 
 async def _get_user_repos(username: str) -> list[str]:
     # Check cache first (10 minute expiry)
-    now = datetime.now(timezone.utc)
-    if username in _repo_cache:
-        cached = _repo_cache[username]
-        if now < cached["expiry"]:
-            logger.info("Using cached repo list for %s", username)
-            return cached["repos"]
+    repos = repo_cache.get(username)
+    if repos:
+        logger.info("Using cached repo list for %s", username)
+        return repos
 
     headers = {
         "Accept": "application/vnd.github+json",
@@ -278,17 +341,15 @@ async def _get_user_repos(username: str) -> list[str]:
             repos = [repo["name"] for repo in data]
             
             # Update cache
-            _repo_cache[username] = {
-                "repos": repos,
-                "expiry": now + timedelta(minutes=10)
-            }
+            repo_cache.set(username, repos, ttl=600) # 10 min for repo list
             return repos
         except Exception as e:
             logger.error("Failed to fetch repos for %s: %s", username, e)
-            # If fetch fails but we have stale cache, return stale as fallback
-            if username in _repo_cache:
-                logger.warning("Returning stale repo list for %s as fallback", username)
-                return _repo_cache[username]["repos"]
+            # If fetch fails but we have some cache, return it as fallback (even if expired)
+            cached_repos = repo_cache._cache.get(username) # Access internal for fallback
+            if cached_repos:
+                logger.warning("Returning stale/expired repo list for %s as fallback", username)
+                return cached_repos[0]
             raise HTTPException(status_code=500, detail="Failed to fetch user repositories from GitHub")
 
 @app.get("/analytics/commits-per-day")
@@ -298,7 +359,7 @@ async def get_commits_per_day(username: str, days: int = 30):
         return []
     
     try:
-        commits = await get_commits(source="github", username=username, repos=repos, days=days)
+        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")
@@ -318,7 +379,7 @@ async def get_repos_breakdown(username: str, days: int = 30):
         return []
         
     try:
-        commits = await get_commits(source="github", username=username, repos=repos, days=days)
+        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")
@@ -339,11 +400,61 @@ async def get_repos_breakdown(username: str, days: int = 30):
             })
     return sorted(result, key=lambda x: x["count"], reverse=True)
 
+@app.get("/github/validate")
+async def validate_github_user(username: str):
+    """
+    Check if a GitHub user exists and return their profile info.
+    """
+    logger.info("Validating GitHub user: %s", username)
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+    token = os.getenv("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+        
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(f"https://api.github.com/users/{username}", headers=headers, timeout=10.0)
+            if response.status_code == 200:
+                data = response.json()
+                return {"valid": True, "username": data["login"], "avatar_url": data["avatar_url"]}
+            elif response.status_code == 404:
+                return {"valid": False, "error": "User not found"}
+            else:
+                return {"valid": False, "error": f"GitHub API error: {response.status_code}"}
+        except Exception as e:
+            logger.error("Error validating user %s: %s", username, e)
+            return {"valid": False, "error": str(e)}
+
+@app.get("/github/repos")
+async def get_github_repos(username: str):
+    """
+    Fetch list of repos for a user (with caching).
+    """
+    try:
+        repos = await _get_user_repos(username)
+        return {"repos": repos}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error("Error fetching repos for %s: %s", username, e)
+        raise HTTPException(status_code=500, detail="Failed to fetch repositories")
+
 @app.get("/analytics/all")
-async def get_analytics_full(username: str, days: int = 30):
+async def get_analytics_full(username: str, days: int = 30, refresh: bool = False):
     """
     Fetch all analytics data in a single optimized pass.
     """
+    # Check cache
+    cache_key = f"analytics:{username}:{days}"
+    if not refresh:
+        cached = analytics_cache.get(cache_key)
+        if cached:
+            logger.info("Using cached analytics for %s", username)
+            return cached
+
     # 1. Get total summaries from DB
     pool = get_db_pool()
     total_summaries = 0
@@ -369,7 +480,7 @@ async def get_analytics_full(username: str, days: int = 30):
         
     # 3. Get ALL relevant commits in ONE sweep
     try:
-        commits = await get_commits(source="github", username=username, repos=repos, days=days)
+        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits for %s: %s", username, e)
         # Return empty data instead of 500 to keep dashboard stable
@@ -441,7 +552,7 @@ async def get_analytics_full(username: str, days: int = 30):
     
     average_commits = round(total_commits / days, 1)
 
-    return {
+    result = {
         "commits_per_day": commits_per_day,
         "repos_breakdown": repos_breakdown,
         "insights": {
@@ -450,8 +561,14 @@ async def get_analytics_full(username: str, days: int = 30):
             "top_repo": top_repo,
             "total_summaries": total_summaries,
             "average_commits_per_day": average_commits
-        }
+        },
+        "last_updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     }
+    
+    # Store in cache
+    analytics_cache.set(cache_key, result, ttl=300)
+    
+    return result
 
 @app.get("/analytics/insights")
 async def get_insights(username: str, days: int = 30):
@@ -471,7 +588,7 @@ async def get_insights(username: str, days: int = 30):
         return {"most_active_day": "N/A", "streak": 0, "top_repo": "N/A", "total_summaries": total_summaries, "average_commits_per_day": 0}
         
     try:
-        commits = await get_commits(source="github", username=username, repos=repos, days=days)
+        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")

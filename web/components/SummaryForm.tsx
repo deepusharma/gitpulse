@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { generateSummary, SummariseResponse, ApiError } from "@/lib/api";
+import React, { useState, useEffect } from "react";
+import { generateSummary, SummariseResponse, ApiError, validateUser, fetchUserRepos } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2, AlertCircle, ChevronDown, ChevronUp, Check, RotateCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { cn } from "@/lib/utils";
 
 interface SummaryFormProps {
   onSuccess: (data: SummariseResponse, generationTimeMs: number) => void;
@@ -22,20 +25,61 @@ interface ErrorState {
 
 export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormProps) {
   const [username, setUsername] = useState("");
-  const [repos, setRepos] = useState("");
-  // Store days as a string so typing works naturally; parse on submit
+  const [usernameValid, setUsernameValid] = useState<boolean | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  
+  const [availableRepos, setAvailableRepos] = useState<string[]>([]);
+  const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
+  const [isLoadingRepos, setIsLoadingRepos] = useState(false);
+
   const [daysInput, setDaysInput] = useState("7");
+  const [forceRefresh, setForceRefresh] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<ErrorState | null>(null);
   const [showTrace, setShowTrace] = useState(false);
 
   const { data: session } = useSession();
 
-  React.useEffect(() => {
-    if (session?.user?.username && !username) {
-      setUsername(session.user.username);
+  useEffect(() => {
+    if (session?.user?.name && !username) {
+      setUsername(session.user.name);
     }
   }, [session, username]);
+
+  // Debounced username validation
+  useEffect(() => {
+    if (!username.trim()) {
+      setUsernameValid(null);
+      setAvatarUrl(null);
+      setAvailableRepos([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsValidating(true);
+      try {
+        const result = await validateUser(username.trim());
+        setUsernameValid(result.valid);
+        if (result.valid) {
+          setAvatarUrl(result.avatar_url || null);
+          // Fetch repos immediately
+          setIsLoadingRepos(true);
+          const repoData = await fetchUserRepos(username.trim());
+          setAvailableRepos(repoData.repos);
+          setIsLoadingRepos(false);
+        } else {
+          setAvailableRepos([]);
+        }
+      } catch (err) {
+        console.error("Validation error:", err);
+      } finally {
+        setIsValidating(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [username]);
 
   const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Allow free typing — only allow digits
@@ -52,8 +96,8 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || !repos.trim()) {
-      setError({ message: "Username and Repositories are required." });
+    if (!username.trim() || selectedRepos.length === 0) {
+      setError({ message: "Username and at least one Repository are required." });
       return;
     }
 
@@ -64,17 +108,12 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
     onClear();
 
     try {
-      const reposArray = repos
-        .split(",")
-        .map((r) => r.trim())
-        .filter((r) => r.length > 0);
-
       const startTime = performance.now();
       const response = await generateSummary({
         username: username.trim(),
-        repos: reposArray,
+        repos: selectedRepos,
         days: parsedDays(),
-      });
+      }, forceRefresh);
       const endTime = performance.now();
       onSuccess(response, endTime - startTime);
     } catch (err: unknown) {
@@ -100,42 +139,86 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="username" className="text-sm font-medium">GitHub Username</label>
-            <Input
-              id="username"
-              placeholder="e.g. deepusharma"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={isSubmitting}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="repos" className="text-sm font-medium">Repositories</label>
-            <Input
-              id="repos"
-              placeholder="e.g. gitpulse, dotfiles (comma separated)"
-              value={repos}
-              onChange={(e) => setRepos(e.target.value)}
-              disabled={isSubmitting}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="days" className="text-sm font-medium">
-              Lookback Period (Days)
+            <label htmlFor="username" className="text-sm font-medium flex justify-between items-center">
+              GitHub Username
+              {isValidating && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
             </label>
-            <Input
-              id="days"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder="7"
-              value={daysInput}
-              onChange={handleDaysChange}
-              onBlur={() => setDaysInput(String(parsedDays()))}
-              disabled={isSubmitting}
-              className="w-24"
+            <div className="relative">
+              <Input
+                id="username"
+                placeholder="e.g. deepusharma"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={isSubmitting}
+                required
+                className={cn(
+                  "pr-10",
+                  usernameValid === true && "border-green-500/50 focus-visible:ring-green-500/20",
+                  usernameValid === false && "border-red-500/50 focus-visible:ring-red-500/20"
+                )}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                {avatarUrl && (
+                  <img src={avatarUrl} alt={username} className="h-6 w-6 rounded-full border border-border" />
+                )}
+                {usernameValid === true && <Check className="h-4 w-4 text-green-500" />}
+                {usernameValid === false && <AlertCircle className="h-4 w-4 text-red-500" />}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="repos" className="text-sm font-medium flex justify-between items-center">
+              Repositories
+              {isLoadingRepos && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+            </label>
+            <MultiSelect
+              options={availableRepos}
+              selected={selectedRepos}
+              onChange={setSelectedRepos}
+              placeholder={usernameValid ? "Select repositories..." : "Enter valid username first"}
+              disabled={isSubmitting || !usernameValid}
             />
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="space-y-2 flex-1">
+              <label htmlFor="days" className="text-sm font-medium">
+                Lookback Period (Days)
+              </label>
+              <Input
+                id="days"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="7"
+                value={daysInput}
+                onChange={handleDaysChange}
+                onBlur={() => setDaysInput(String(parsedDays()))}
+                disabled={isSubmitting}
+                className="w-full"
+              />
+            </div>
+            
+            <div className="space-y-2 flex flex-col justify-end">
+              <div 
+                className="flex items-center space-x-2 bg-muted/30 p-2 rounded-md border border-input cursor-pointer hover:bg-muted/50 transition-colors h-[40px]"
+                onClick={() => setForceRefresh(!forceRefresh)}
+              >
+                <Checkbox 
+                  id="refresh" 
+                  checked={forceRefresh} 
+                  onCheckedChange={(checked) => setForceRefresh(!!checked)}
+                  disabled={isSubmitting}
+                />
+                <label
+                  htmlFor="refresh"
+                  className="text-xs font-medium leading-none cursor-pointer flex items-center gap-1"
+                >
+                  <RotateCcw className={cn("h-3 w-3", forceRefresh && "animate-spin-once")} />
+                  Force fresh sync
+                </label>
+              </div>
+            </div>
           </div>
 
           {error && (

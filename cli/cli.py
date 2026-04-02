@@ -51,7 +51,10 @@ async def main():
         print("GROQ_API_KEY not set. Add it to .env or export it.")
         sys.exit(1)
 
-    commits = await get_commits(source="local", days=days)
+    commits, errors = await get_commits(source="local", days=days)
+    if errors:
+        for error in errors:
+            print(f"Error: {error}")
     
     if repo:
         commits = [c for c in commits if c["repo"] == repo]

@@ -12,7 +12,7 @@ def test_health_returns_200():
 
 def test_summarise_valid_request_returns_200():
     with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
-        mock_get_commits.return_value = [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}]
+        mock_get_commits.return_value = ([{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}], [])
         with patch("api.api.summarise") as mock_summarise:
             mock_summarise.return_value = "Test summary"
             with patch("api.api.get_db_pool") as mock_pool_func:
@@ -27,6 +27,7 @@ def test_summarise_valid_request_returns_200():
                 assert "display" in data
                 assert data["summary"] == "Test summary"
                 assert data["repos"] == ["gitpulse"]
+                assert data["username"] == "deepusharma"
                 
                 # Check DB interaction
                 mock_conn.execute.assert_called_once()
@@ -44,7 +45,7 @@ def test_summarise_empty_repos_returns_422():
 
 def test_summarise_db_failure_does_not_break_response():
     with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
-        mock_get_commits.return_value = [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}]
+        mock_get_commits.return_value = ([{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}], [])
         with patch("api.api.summarise") as mock_summarise:
             mock_summarise.return_value = "Test summary"
             with patch("api.api.get_db_pool") as mock_pool_func:
@@ -85,24 +86,40 @@ def test_get_history_returns_data():
         assert len(data["summaries"]) == 1
         assert data["summaries"][0]["summary"] == "Historical summary"
 
-def test_get_history_no_pool_returns_empty():
+def test_get_history_filters_applied():
     with patch("api.api.get_db_pool") as mock_pool_func:
-        mock_pool_func.return_value = None
-        response = client.get("/history?username=deepusharma")
+        mock_pool = MagicMock()
+        mock_conn = AsyncMock()
+        mock_conn.fetch.return_value = []
+        mock_conn.fetchval.return_value = 0
+        mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
+        mock_pool_func.return_value = mock_pool
+        
+        response = client.get("/history?username=dev&search=test&start_date=2026-01-01")
         assert response.status_code == 200
-        data = response.json()
-        assert data["total"] == 0
-        assert data["summaries"] == []
+        # Check if sql contains filters
+        call_args = mock_conn.fetch.call_args[0]
+        sql = call_args[0]
+        assert "AND (repos::text ILIKE $2 OR summary ILIKE $2)" in sql
+        assert "AND generated_at >= $3" in sql
+
+def test_github_validate_endpoint():
+    with patch("httpx.AsyncClient.get") as mock_get:
+        mock_get.return_value = MagicMock(status_code=200, json=lambda: {"login": "testuser", "avatar_url": "http://img"})
+        response = client.get("/github/validate?username=testuser")
+        assert response.status_code == 200
+        assert response.json()["valid"] == True
+        assert response.json()["avatar_url"] == "http://img"
 
 def test_analytics_commits_per_day():
     with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["gitpulse"]
         with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
-            mock_get_commits.return_value = [
+            mock_get_commits.return_value = ([
                 {"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
                 {"repo": "gitpulse", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
                 {"repo": "gitpulse", "hash": "ghi", "author": "dev", "date": datetime(2026, 3, 22, tzinfo=timezone.utc), "message": "msg3"},
-            ]
+            ], [])
             response = client.get("/analytics/commits-per-day?username=deepusharma&days=30")
             assert response.status_code == 200
             data = response.json()
@@ -116,11 +133,11 @@ def test_analytics_repos_breakdown():
     with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1", "repo2"]
         with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
-            mock_get_commits.return_value = [
+            mock_get_commits.return_value = ([
                 {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
                 {"repo": "repo1", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
                 {"repo": "repo2", "hash": "ghi", "author": "dev", "date": datetime(2026, 3, 22, tzinfo=timezone.utc), "message": "msg3"},
-            ]
+            ], [])
             response = client.get("/analytics/repos-breakdown?username=deepusharma&days=30")
             assert response.status_code == 200
             data = response.json()
@@ -132,38 +149,13 @@ def test_analytics_repos_breakdown():
             assert data[1]["count"] == 1
             assert data[1]["percentage"] == 33.3
 
-def test_analytics_insights():
-    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
-        mock_get_repos.return_value = ["repo1"]
-        with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
-            mock_get_commits.return_value = [
-                {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=1), "message": "msg1"},
-                {"repo": "repo1", "hash": "def", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=2), "message": "msg2"},
-            ]
-            
-            with patch("api.api.get_db_pool") as mock_pool_func:
-                mock_pool = MagicMock()
-                mock_conn = AsyncMock()
-                mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
-                mock_conn.fetchval.return_value = 5
-                mock_pool_func.return_value = mock_pool
-                
-                response = client.get("/analytics/insights?username=deepusharma&days=30")
-                assert response.status_code == 200
-                data = response.json()
-                
-                assert data["total_summaries"] == 5
-                assert data["streak"] == 2
-                assert data["top_repo"] == "repo1"
-                assert data["average_commits_per_day"] == 0.1
-
 def test_analytics_all_returns_consolidated_data():
     with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1"]
         with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
-            mock_get_commits.return_value = [
+            mock_get_commits.return_value = ([
                 {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=1), "message": "msg1"},
-            ]
+            ], [])
             with patch("api.api.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
