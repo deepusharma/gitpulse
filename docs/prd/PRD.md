@@ -79,9 +79,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Sprint 07 | ✅ Done | v0.5 | Epic #114 | DB persistence, `/history` page, `GET /history` |
 | Sprint 08 | 📋 Planned | v0.6 | Epic #115 | Email + Slack + Gist delivery, private repos, tone/language |
 | Sprint 09 | 📋 Planned | v0.7 | Epic #116 | PyPI packaging, `gitpulse init`, rich CLI help |
-| Sprint 10 | 📋 Planned | v0.5 | Epic #117 | Analytics dashboard (Recharts charts) |
+| Sprint 10 | ✅ Done | v0.5 | Epic #117 | Analytics dashboard (Recharts charts) |
 | Sprint 11 | 📋 Planned | v0.8 | Epic #118 | README, MkDocs, in-app `/docs` hub |
-| Sprint 12 | 📋 Planned | v0.5 | Epic #136 | UX fixes: error messages, repo dropdown, history filters, export |
+| Sprint 12 | 📋 Planned | v0.5 | Epic #136 | UX fixes: error messages, repo dropdown, history filters, export, caching |
 | Sprint 14 | 🆕 New | v0.9 | TBD | `/insights` dashboard, PR/issue enrichment, stats for nerds, GitHub Projects |
 | Sprint 15 | 🆕 New | v1.0 | TBD | Team standup, badge generator, presentation mode, notifications |
 | Sprint 16 | 🆕 New | v1.1 | TBD | Private org repos, shareable links, comparison mode |
@@ -196,6 +196,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Calculate and display aggregate productivity insights. | S10.3 | #107 | Sprint 10 ✅ |
 
 **Epic: Enhanced Input UX & Error Feedback (Epic #136) 📋**
+
 | Story | Internal ID | GitHub Issue | Implemented In |
 | ----- | ----------- | ------------ | -------------- |
 | Fix wrong repo name returning generic error — surface repo-specific 404 message. | S12.1 | #137 | Sprint 12 |
@@ -204,6 +205,17 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Add commit activity stats footer matching the summary stats panel. | S12.4 | #140 | Sprint 12 |
 | Add search and date-range filter controls to the `/history` page. | S12.5 | #141 | Sprint 12 |
 | Export standup summary as a downloadable `.md` file. | S12.6 | #142 | Sprint 12 |
+| Fix days input field to accept direct keyboard entry without leading zero bug. | S12.7 | #208 | Sprint 12 |
+
+**Epic: Performance & Caching (Epic TBD) 📋**
+
+| Story | Internal ID | GitHub Issue | Implemented In |
+| ----- | ----------- | ------------ | -------------- |
+| Cache repo list and commit data server-side (TTL: 5 min) to avoid repeated GitHub API calls. | S12.8 | #209 | Sprint 12 |
+| Add a "🔄 Refresh" button on Dashboard and Summary Generator to force a fresh data pull. | S12.9 | #209 | Sprint 12 |
+| Cache full analytics payload `(username, days)` server-side for sub-second dashboard reloads. | S12.10 | #211 | Sprint 12 |
+| Show last-updated timestamp on Dashboard so users know data freshness. | S12.11 | #211 | Sprint 12 |
+| Persist every generated summary to history; show non-blocking toast warning if DB save fails. | S12.12 | #210 | Sprint 12 |
 
 ### v0.6 — Integrations (Milestone #8) 📋
 
