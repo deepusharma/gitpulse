@@ -9,7 +9,12 @@ import InsightsPanel, { InsightsData } from "@/components/analytics/InsightsPane
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Search, Calendar } from "lucide-react";
+import { AlertCircle, Search, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+
+interface AnalyticsError {
+  message: string;
+  traceback?: string | null;
+}
 
 function AnalyticsContent() {
   const { data: session } = useSession();
@@ -22,14 +27,16 @@ function AnalyticsContent() {
 
   const [username, setUsername] = useState(paramUsername || "");
   const [days, setDays] = useState(parseInt(paramDays, 10));
+  const [daysInput, setDaysInput] = useState(paramDays);
   const [inputValue, setInputValue] = useState(paramUsername || "");
-  
+
   const [commitsData, setCommitsData] = useState([]);
   const [repoData, setRepoData] = useState([]);
   const [insightsData, setInsightsData] = useState<InsightsData | null>(null);
-  
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<AnalyticsError | null>(null);
+  const [showTrace, setShowTrace] = useState(false);
 
   // Sync state with URL params
   useEffect(() => {
@@ -54,29 +61,32 @@ function AnalyticsContent() {
 
     async function fetchAnalytics() {
       setLoading(true);
-      setError("");
+      setError(null);
+      setShowTrace(false);
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        
-        const [commitsRes, reposRes, insightsRes] = await Promise.all([
-          fetch(`${baseUrl}/analytics/commits-per-day?username=${username}&days=${days}`),
-          fetch(`${baseUrl}/analytics/repos-breakdown?username=${username}&days=${days}`),
-          fetch(`${baseUrl}/analytics/insights?username=${username}&days=${days}`)
-        ]);
+        const res = await fetch(`${baseUrl}/analytics/all?username=${username}&days=${days}`);
 
-        if (!commitsRes.ok || !reposRes.ok || !insightsRes.ok) {
-            throw new Error("Failed to fetch analytics data");
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          const detail = body.detail;
+          const message =
+            (typeof detail === "object" && !Array.isArray(detail) && detail?.error) ||
+            (Array.isArray(detail) && detail[0]?.msg) ||
+            body.error ||
+            `Request failed (${res.status})`;
+          const traceback =
+            typeof detail === "object" && !Array.isArray(detail) ? detail?.traceback : null;
+          throw Object.assign(new Error(message), { traceback });
         }
 
-        const commits = await commitsRes.json();
-        const repos = await reposRes.json();
-        const insights = await insightsRes.json();
-
-        setCommitsData(commits);
-        setRepoData(repos);
-        setInsightsData(insights);
-      } catch (err: any) {
-        setError(err.message || "An error occurred");
+        const data = await res.json();
+        setCommitsData(data.commits_per_day);
+        setRepoData(data.repos_breakdown);
+        setInsightsData(data.insights);
+      } catch (err: unknown) {
+        const e = err as Error & { traceback?: string | null };
+        setError({ message: e.message || "An error occurred", traceback: e.traceback });
       } finally {
         setLoading(false);
       }
@@ -85,10 +95,23 @@ function AnalyticsContent() {
     fetchAnalytics();
   }, [username, days]);
 
+  const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/^0+(?=\d)/, "");
+    if (raw === "" || /^\d+$/.test(raw)) setDaysInput(raw);
+  };
+
+  const commitDays = () => {
+    const n = parseInt(daysInput, 10);
+    return isNaN(n) || n < 1 ? 30 : Math.min(n, 90);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
-      router.push(`/analytics?username=${inputValue.trim()}&days=${days}`);
+      const d = commitDays();
+      setDays(d);
+      setDaysInput(String(d));
+      router.push(`/analytics?username=${inputValue.trim()}&days=${d}`);
     }
   };
 
@@ -118,11 +141,16 @@ function AnalyticsContent() {
            <div className="flex items-center gap-2 border-l border-zinc-800 pl-3">
               <Calendar className="h-4 w-4 text-zinc-500" />
               <Input
-                type="number"
-                min={1}
-                max={90}
-                value={days === 0 ? "" : days}
-                onChange={(e) => setDays(e.target.value === "" ? 0 : parseInt(e.target.value, 10))}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="30"
+                value={daysInput}
+                onChange={handleDaysChange}
+                onBlur={() => {
+                  const d = commitDays();
+                  setDaysInput(String(d));
+                  setDays(d);
+                }}
                 className="bg-black/40 border-zinc-800 h-10 w-20 text-sm"
               />
               <span className="text-xs text-zinc-500 font-medium whitespace-nowrap">Days</span>
@@ -133,8 +161,27 @@ function AnalyticsContent() {
       {error && (
         <Alert variant="destructive" className="border-red-500/50 bg-red-500/10 text-red-200">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error Loading Analytics</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
+          <AlertTitle className="flex items-center justify-between">
+            <span>Error Loading Analytics</span>
+            {error.traceback && (
+              <button
+                type="button"
+                onClick={() => setShowTrace((v) => !v)}
+                className="flex items-center gap-1 text-xs font-normal underline underline-offset-2 opacity-80 hover:opacity-100"
+              >
+                {showTrace ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                {showTrace ? "Hide details" : "Show details"}
+              </button>
+            )}
+          </AlertTitle>
+          <AlertDescription className="space-y-2">
+            <p>{error.message}</p>
+            {error.traceback && showTrace && (
+              <pre className="mt-2 max-h-40 overflow-auto rounded bg-black/40 p-2 text-xs text-red-200 whitespace-pre-wrap">
+                {error.traceback}
+              </pre>
+            )}
+          </AlertDescription>
         </Alert>
       )}
 

@@ -8,9 +8,11 @@ from core.summarise import format_commits, to_prompt_str, to_display_str, build_
 from core.utils import load_env
 
 
+import asyncio
+
 logger = logging.getLogger(__name__)
 
-def main():
+async def main():
     parser = argparse.ArgumentParser(description="GitPulse — weekly standup generator")
     parser.add_argument("--days", type=int, default=None, help="Number of days to look back")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
@@ -49,7 +51,7 @@ def main():
         print("GROQ_API_KEY not set. Add it to .env or export it.")
         sys.exit(1)
 
-    commits = get_commits(days)
+    commits = await get_commits(source="local", days=days)
     
     if repo:
         commits = [c for c in commits if c["repo"] == repo]
@@ -71,7 +73,7 @@ def main():
     prompt_str = to_prompt_str(formatted_commits)
     prompt = build_prompt(prompt_str)
 
-    summary = summarise(prompt)
+    summary = await summarise(prompt)
     print("Summary:\n"+ str(summary))
 
     os.makedirs(os.path.dirname(output) or "output", exist_ok=True)
@@ -80,4 +82,4 @@ def main():
     logger.debug("Summary written to %s", output)
 
 if __name__ == "__main__":    
-    main()
+    asyncio.run(main())
