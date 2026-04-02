@@ -1,6 +1,6 @@
-# gitpulse
+# gitpulse (v0.6.0)
 
-A CLI tool that reads your git repositories and generates a weekly standup summary using AI.
+A multi-client tool that reads git commit history and generates AI-powered standup summaries.
 
 ![Python](https://img.shields.io/badge/python-3.12+-blue)
 [![CI](https://github.com/deepusharma/gitpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/deepusharma/gitpulse/actions/workflows/ci.yml)
@@ -8,66 +8,26 @@ A CLI tool that reads your git repositories and generates a weekly standup summa
 ![Groq](https://img.shields.io/badge/LLM-Groq%20%7C%20llama--3.3--70b-orange)
 ![uv](https://img.shields.io/badge/package%20manager-uv-purple)
 
-Point it at your repos, run one command, get a structured summary of what you did, what's next, and any blockers — ready to paste into Slack or a standup doc.
+GitPulse automates the retrieval of git commit history—from local folders or remote GitHub repos—and leverages LLMs to generate well-structured, professional standup updates.
 
-Simple utility — no dashboards, no subscriptions, just a command that tells you what you did.
-
-## Live Demo
-
-|        | URL                                           |
-| ------ | --------------------------------------------- |
-| Web UI | <https://gitpulse-kappa.vercel.app>           |
-| API    | <https://web-production-83e65.up.railway.app> |
-
-Try it: enter your GitHub username and any public repo to generate a standup summary.
+## ✨ New in v0.6.0
+- **Searchable Repository Selection**: Pick repos from a dynamic list instead of manual typing.
+- **Server-side Caching**: Lightning-fast summary generation via in-memory caching.
+- **History Filters**: Search your past summaries by keyword and date-range.
+- **Data Export**: Download your summaries as `.md` files.
 
 ---
 
-## Why
+## 🚀 Live Demo
 
-Standups should take 2 minutes. Remembering what you did across 3 repos over the past week shouldn't take 10. gitpulse reads your commit history and does the thinking for you.
-
----
-
-## Output
-
-```MD
-### dotfiles
-  - aaf5721 | 2026-03-20
-    chore: add git config
-
-### gitpulse
-  - ad6169e | 2026-03-20
-    feat: add summariser and utils modules
-
-WHAT I DID
-* Implemented summariser module for gitpulse
-* Updated dotfiles with new configurations
-
-DETAILS
-* summariser.py added with format_commits, to_prompt_str, build_prompt, summarise
-* dotfiles updated with vscode settings and git config
-
-WHATS NEXT
-* Add CLI entry point and argument parsing
-* Write tests
-
-BLOCKERS
-* None identified
-```
+| Component | URL                                           |
+| --------- | --------------------------------------------- |
+| **Web UI**| <https://gitpulse-kappa.vercel.app>           |
+| **API**   | <https://web-production-83e65.up.railway.app> |
 
 ---
 
-## Stack
-
-- Python 3.12+
-- [Groq API](https://console.groq.com) — LLM inference (free tier)
-- [GitPython](https://gitpython.readthedocs.io) — git repo access
-- [uv](https://docs.astral.sh/uv/) — package management
-
----
-
-## Install
+## 🛠️ Installation (Local CLI)
 
 ```bash
 # Clone
@@ -79,95 +39,97 @@ uv venv
 source .venv/bin/activate
 uv pip install -e ".[dev]"
 
-# Add your Groq API key
+# Add your credentials
 cp .env.example .env
 # edit .env and add GROQ_API_KEY
 ```
 
 ---
 
-## Configure
+## ⚙️ Configure CLI
 
-Create `~/.gitpulse.toml` and list your repos:
+Create `~/.gitpulse.toml` to store your local repository paths:
 
 ```toml
 [repos]
-dotfiles = "/path/to/dotfiles"
-gitpulse = "/path/to/gitpulse"
-myproject = "/path/to/myproject"
+gitpulse = "/Users/you/projects/gitpulse"
+my-app = "/Users/you/projects/my-app"
 ```
 
 ---
 
-## Usage
+## 📖 Usage
 
+### CLI (Local Repos)
 ```bash
-# Last 7 days (default)
-python src/cli.py
+# Generate for last 7 days (default)
+gitpulse
 
-# Last 14 days
-python src/cli.py --days 14
-
-# Filter by specific repo
-python src/cli.py --repo gitpulse
-
-# Custom output path
-python src/cli.py --output reports/weekly.md
-
-# Combine flags
-python src/cli.py --days 14 --repo gitpulse --output reports/gitpulse.md
-
-# With debug logging
-python src/cli.py --days 7 --debug
+# For specific repo and duration
+gitpulse --repo gitpulse --days 14 --output report.md
 ```
 
-Output is printed to terminal and saved to `output/summary.md` by default.
+### Web UI (Remote Repos)
+1. Log in with **GitHub OAuth**.
+2. Search and select your repositories.
+3. Hit **Generate Summary**.
+4. Download the result or view it in your **History**.
 
 ---
 
-## Project structure
+## 📂 Project Structure
 
-```None
+```none
 gitpulse/
-├── src/
-│   ├── repo_reader.py   # reads git repos, returns flat list of commits
-│   ├── summarise.py     # formats commits, builds prompt, calls Groq
-│   ├── utils.py         # loads .env, validates required keys
-│   └── cli.py           # entry point, argument parsing
-├── tests/
-│   ├── test_repo_reader.py
-│   └── test_summarise.py
-├── output/              # generated summaries (gitignored)
-├── .env.example
-└── pyproject.toml
+├── core/     # Shared library: repo reading & AI summarization
+├── cli/      # Typer-based CLI tool
+├── api/      # FastAPI backend
+├── web/      # Next.js 14 frontend (App Router)
+├── docs/     # PRDs, Architecture, and Release Notes
+├── db/       # Database migrations and seeders
+└── tests/    # Comprehensive test suites
 ```
 
 ---
 
-## Run tests
+## ✅ Run Tests
 
 ```bash
-pytest -v
+uv run pytest -v
 ```
 
 ---
 
-## Roadmap
+## 🚧 Troubleshooting
 
-- [ ] GitHub Actions CI
-- [ ] `--output` flag for custom output path
-- [ ] `--repo` flag to filter specific repos
-- [ ] Slack integration
-- [ ] Weekly scheduled run via cron
-- [ ] Get a custom domain for gitpulse
-- [ ] And more ...
+### `GROQ_API_KEY` Missing
+- **Error**: `ValueError: Missing required environment variable: GROQ_API_KEY`
+- **Solution**: Ensure your `.env` file is in the root directory and contains a valid key from [console.groq.com](https://console.groq.com).
+
+### GitHub API Rate Limits
+- **Error**: `403 Forbidden` or `429 Too Many Requests`
+- **Solution**: Add a `GITHUB_TOKEN` to your `.env` file to increase your rate limit from 60 to 5000 requests per hour.
+
+### Config Not Found
+- **Error**: `FileNotFoundError: ~/.gitpulse.toml not found`
+- **Solution**: Run `gitpulse init` (planned) or manually create the file as described in the **Configure** section.
 
 ---
 
-## License
+## 🗺️ Roadmap
+
+- [x] GitHub OAuth Integration
+- [x] Analytics Dashboard (v0.5)
+- [x] Server-side Caching (v0.6)
+- [ ] Email & Slack Delivery (v0.7)
+- [ ] PyPI Distribution (v0.8)
+- [ ] VS Code Extension (v1.0)
+
+---
+
+## 📄 License
 
 MIT
 
 ---
-
-> Built with assistance from Claude (Anthropic). Tool choices, structure, and code decisions are my own.
+> Built by the GitPulse Team.

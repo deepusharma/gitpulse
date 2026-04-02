@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, GitCommit, FileText, Database, Clock } from "lucide-react";
+import { Copy, Check, GitCommit, FileText, Database, Clock, Download } from "lucide-react";
 
 function CollapsibleSection({ title, content }: { title: string; content: string }) {
   const [expanded, setExpanded] = React.useState(true);
@@ -59,6 +59,19 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
+  const handleDownload = () => {
+    if (!data) return;
+    const blob = new Blob([data.summary], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `standup-${data.username || "summary"}-${new Date().toISOString().split('T')[0]}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (data && !hasCommits && !isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center border-border bg-card/60 backdrop-blur-sm rounded-xl border w-full col-span-1 md:col-span-2">
@@ -67,7 +80,7 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
         </div>
         <h3 className="text-xl font-semibold mb-2">No commit activity found</h3>
         <p className="text-muted-foreground mb-4 max-w-md">
-          We couldn't find any commits for the selected repositories in the given time frame. Try increasing the lookback period or checking the repository names.
+          We couldn&apos;t find any commits for the selected repositories in the given time frame. Try increasing the lookback period or checking the repository names.
         </p>
       </div>
     );
@@ -136,10 +149,16 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
             </CardDescription>
           </div>
           {data && !isLoading && (
-            <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2 h-8">
-              {isCopied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
-              {isCopied ? "Copied" : "Copy"}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleDownload} className="gap-2 h-8 px-2 sm:px-3">
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Download</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2 h-8 min-w-[70px]">
+                {isCopied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                {isCopied ? "Copied" : "Copy"}
+              </Button>
+            </div>
           )}
         </CardHeader>
         <CardContent className="flex-1 relative overflow-auto">

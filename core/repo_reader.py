@@ -12,6 +12,8 @@ os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 from git import Repo, InvalidGitRepositoryError
 
 import logging
+import asyncio
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +43,17 @@ def load_config() -> dict:
     return config
 
 
-def _get_local_commits(days:int=7) -> list:
+async def _get_local_commits(days:int=7) -> tuple[list, list]:
     """
-    Get the commits from local configuration for the duration of days provided 
+    Get the commits from local configuration for the duration of days provided.
+    Returns (commits, errors).
     """
+    # Using run_in_executor to keep local git (sync) from blocking the loop
+    loop = asyncio.get_running_loop()
+    commits = await loop.run_in_executor(None, _get_local_commits_sync, days)
+    return commits, []
+
+def _get_local_commits_sync(days:int=7) -> list:
     config = load_config()
     repos = config.get("repos", {})
     logger.debug("Repos: %s", str(repos))
@@ -57,18 +66,15 @@ def _get_local_commits(days:int=7) -> list:
     for name, path in repos.items():
         try:
             logger.debug("Repo: %s", name)
-            logger.debug("Path: %s", path)
-
             repo=Repo(path)
 
             for commit in repo.iter_commits(since=since): 
-                logger.debug("Commits: %s", str(commit))
-
-                commits.append({"repo":name,
-                "message":commit.message, 
-                "author":commit.author.name,
-                "date":commit.committed_datetime,            
-                "hash":commit.hexsha,
+                commits.append({
+                    "repo":name,
+                    "message":commit.message, 
+                    "author":commit.author.name,
+                    "date":commit.committed_datetime,            
+                    "hash":commit.hexsha,
                 })
         except (InvalidGitRepositoryError, FileNotFoundError) as e:
             logger.warning("Error loading repo. Skipping %s: %s", name, e, exc_info=True)
@@ -77,7 +83,7 @@ def _get_local_commits(days:int=7) -> list:
     return commits
 
 
-def _get_github_commits(days: int = 7, username: str = None, repos: list = None) -> list:
+async def _get_github_commits(days: int = 7, username: str = None, repos: list = None) -> tuple[list, list]:
     """
     Get the commits from GitHub API for the duration of days provided.
     
@@ -87,12 +93,11 @@ def _get_github_commits(days: int = 7, username: str = None, repos: list = None)
         repos (list): List of repository names.
         
     Returns:
-        list: List of commit dicts from the given repositories.
+        tuple[list, list]: (list of commit dicts, list of error strings).
     """
     if not username or not repos:
-        return []
+        return [], []
 
-    commits = []
     since = datetime.now(timezone.utc) - timedelta(days=days)
     since_iso = since.isoformat()
 
@@ -105,47 +110,70 @@ def _get_github_commits(days: int = 7, username: str = None, repos: list = None)
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
-    with httpx.Client() as client:
-        for repo in repos:
-            url = f"https://api.github.com/repos/{username}/{repo}/commits"
-            params = {
-                "since": since_iso,
-                "per_page": 100
-            }
-            try:
-                response = client.get(url, headers=headers, params=params)
+    # Semaphore to prevent GitHub secondary rate limits (max 3 concurrent)
+    semaphore = asyncio.Semaphore(3)
 
-                if response.status_code == 404:
-                    logger.error("Repo '%s/%s' not found or is private", username, repo)
-                    raise ValueError(f"Repo '{username}/{repo}' not found or is private")
-                elif response.status_code == 429:
-                    logger.error("GitHub API rate limit exceeded")
-                    raise ValueError("GitHub API rate limit exceeded")
-                elif response.status_code == 401:
-                    logger.error("GitHub API unauthorised — check GITHUB_TOKEN")
-                    raise ValueError("GitHub API unauthorised — check GITHUB_TOKEN")
+    async def fetch_repo_commits(client: httpx.AsyncClient, repo: str, retries: int = 3) -> list:
+        url = f"https://api.github.com/repos/{username}/{repo}/commits"
+        params = {"since": since_iso, "per_page": 100}
+        
+        async with semaphore:
+            for attempt in range(retries):
+                try:
+                    response = await client.get(url, headers=headers, params=params, timeout=30.0)
+                    
+                    if response.status_code == 404:
+                        error_msg = f"Repo '{username}/{repo}' not found or is private"
+                        logger.error(error_msg)
+                        return [], error_msg
+                    elif response.status_code in [429, 403]:
+                        if attempt < retries - 1:
+                            wait_time = (attempt + 1) * 0.5
+                            logger.warning("GitHub Rate Limit hit for %s. Retrying in %ss...", repo, wait_time)
+                            await asyncio.sleep(wait_time)
+                            continue
+                        error_msg = "GitHub API rate limit exceeded permanently"
+                        logger.error("%s for %s", error_msg, repo)
+                        return [], error_msg
+                    
+                    response.raise_for_status()
+                    data = response.json()
+                    commits = [
+                        {
+                            "repo": repo,
+                            "message": commit["commit"]["message"],
+                            "author": commit["commit"]["author"]["name"],
+                            "date": datetime.fromisoformat(commit["commit"]["author"]["date"].replace("Z", "+00:00")),
+                            "hash": commit["sha"]
+                        }
+                        for commit in data
+                    ]
+                    return commits, None
+                except (httpx.RequestError, httpx.HTTPStatusError) as e:
+                    if attempt < retries - 1:
+                        logger.warning("Fetch error for %s (%s). Retrying...", repo, str(e))
+                        await asyncio.sleep((attempt + 1) * 0.5)
+                        continue
+                    error_msg = f"Failed to fetch commits for {repo}: {str(e)}"
+                    logger.error(error_msg)
+                    return [], error_msg
+        return [], "Unknown error"
 
-                response.raise_for_status()
+    async with httpx.AsyncClient() as client:
+        # TRIGGER ALL REPO FETCHES SIMULTANEOUSLY
+        tasks = [fetch_repo_commits(client, repo) for repo in repos]
+        results = await asyncio.gather(*tasks)
+        
+    all_commits = []
+    all_errors = []
+    for res_commits, error in results:
+        all_commits.extend(res_commits)
+        if error:
+            all_errors.append(error)
+            
+    return all_commits, all_errors
 
-                data = response.json()
-                for commit in data:
-                    commits.append({
-                        "repo": repo,
-                        "message": commit["commit"]["message"],
-                        "author": commit["commit"]["author"]["name"],
-                        "date": datetime.fromisoformat(commit["commit"]["author"]["date"]),
-                        "hash": commit["sha"]
-                    })
-            except httpx.RequestError as e:
-                logger.error("Network error while requesting %s: %s", url, e, exc_info=True)
-                raise
-            except httpx.HTTPStatusError as e:
-                logger.error("HTTP error %s while requesting %s: %s", response.status_code, url, e, exc_info=True)
-                raise
-
-    return commits
-
-def get_commits(source: str = "local", days: int = 7, **kwargs) -> list:
+async def get_commits(source: str = "local", days: int = 7, **kwargs) -> tuple[list, list]:
     """
     Get the commits for the duration of days provided 
     
@@ -154,15 +182,15 @@ def get_commits(source: str = "local", days: int = 7, **kwargs) -> list:
         days (int): Number of days to look back for commits. 7 by default
 
     Returns:
-        list object containing the summaries of commit across each of these repos
+        tuple[list, list]: (list of commit dicts, list of error strings).
 
     Raises:
         Exception: If Any errors found
     """
     if source == "local":
-        return _get_local_commits(days=days)
+        return await _get_local_commits(days=days)
     elif source == "github":
-        return _get_github_commits(days=days, **kwargs)
+        return await _get_github_commits(days=days, **kwargs)
     else:
         logger.error("Unknown source: %s", source)
         raise ValueError(f"Unknown source: {source}")

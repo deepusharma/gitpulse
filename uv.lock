@@ -142,7 +142,7 @@ wheels = [
 
 [[package]]
 name = "gitpulse"
-version = "0.1.0"
+version = "0.6.0"
 source = { virtual = "." }
 dependencies = [
     { name = "asyncpg" },
@@ -158,23 +158,25 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
+    { name = "anyio" },
     { name = "pytest" },
     { name = "respx" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "asyncpg" },
-    { name = "fastapi" },
-    { name = "gitpython" },
-    { name = "groq" },
-    { name = "httpx" },
-    { name = "pytest", marker = "extra == 'dev'" },
-    { name = "python-dotenv" },
-    { name = "respx", marker = "extra == 'dev'" },
-    { name = "rich" },
-    { name = "typer" },
-    { name = "uvicorn" },
+    { name = "anyio", marker = "extra == 'dev'", specifier = "==4.13.0" },
+    { name = "asyncpg", specifier = "==0.31.0" },
+    { name = "fastapi", specifier = "==0.135.2" },
+    { name = "gitpython", specifier = "==3.1.46" },
+    { name = "groq", specifier = "==1.1.2" },
+    { name = "httpx", specifier = "==0.28.1" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = "==9.0.2" },
+    { name = "python-dotenv", specifier = "==1.2.2" },
+    { name = "respx", marker = "extra == 'dev'", specifier = "==0.22.0" },
+    { name = "rich", specifier = "==14.3.3" },
+    { name = "typer", specifier = "==0.24.1" },
+    { name = "uvicorn", specifier = "==0.42.0" },
 ]
 provides-extras = ["dev"]
 

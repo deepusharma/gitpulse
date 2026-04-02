@@ -299,3 +299,19 @@ def get_commits(source: str = "local", **kwargs) -> list:
 - ❌ TODO comments left in PRs — resolve before merging
 - ❌ Untested code — tests required for all new functions
 - ❌ Secrets in code — use environment variables
+
+---
+
+## 13. Versioning & Release Protocol
+
+- **Single Source of Truth**: All version changes MUST be applied atomically to the project hierarchy (Release > Milestone > Epic > Story) as defined in **[AGENTS.md](AGENTS.md#project-management-strategy)**. Version strings must be synced across:
+  - `web/package.json`
+  - `pyproject.toml`
+  - `AGENTS.md` (Milestone History)
+  - `docs/prd/PRD.md` (Release Table)
+- **Dependency Pinning**: Always use exact versions (`==` in Python, no `^` or `~` in JS) to ensure build reproducibility and supply-chain security.
+- **Documentation**: Every release milestone MUST include:
+  - An entry in `CHANGELOG.md`
+  - A dedicated user-facing `docs/releases/vX.Y.Z.md` file
+  - An official GitHub Tag and Release (via `gh release create`)
+- **Walkthroughs**: Persist technical walkthroughs to `docs/walkthroughs/sprint-12.md` or similar for long-term historical context.

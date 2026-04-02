@@ -14,6 +14,8 @@ Global reviewer skill — see ~/.antigravity/skills/reviewer/SKILL.md
 - [ ] API changes match docs/api/api-contract.md
 - [ ] New features have corresponding GitHub issue
 - [ ] Sprint story acceptance criteria met
+- [ ] **Versioning**: Atomic sync applied to package.json, pyproject.toml, and AGENTS.md
+- [ ] **QA**: Edge-case coverage present for all new logic (empty inputs, timeouts)
 
 ### Before reviewing
 
