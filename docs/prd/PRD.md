@@ -54,8 +54,8 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | **v0.2**  | Web UI — Next.js frontend and FastAPI backend interacting via GitHub’s API.                   | ✅ Complete    |
 | **v0.3**  | UI Polish — Styling overhauls, Markdown formats, layouts, NextAuth setups.                       | ✅ Complete    |
 | **v0.4**  | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements.       | ✅ Complete    |
-| **v0.5**  | History & Analytics — PostgreSQL persistence, history page, analytics dashboard, UX improvements. | 🔄 In Progress |
-| **v0.6**  | Integrations — Email, Slack, Gist delivery; private repo support; tone/language/mode selection.   | 📋 Planned     |
+| **v0.5**  | History & Analytics — PostgreSQL persistence, history page, analytics dashboard.                          | ✅ Complete    |
+| **v0.6**  | Enhanced UX & Caching — Searchable multiselect, server-side caching, history filters, data export.       | 🔄 In Progress |
 | **v0.7**  | Packaging & DX — PyPI distribution, `gitpulse init`, rich CLI help, shell completion.            | 📋 Planned     |
 | **v0.8**  | Open Source Ready — README, MkDocs, in-app docs hub, changelog page.                            | 📋 Planned     |
 | **v0.9**  | Depth & Intelligence — PR/issue activity, `/insights` dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator. | 📋 Planned |
@@ -80,8 +80,8 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Sprint 08 | 📋 Planned | v0.6 | Epic #115 | Email + Slack + Gist delivery, private repos, tone/language |
 | Sprint 09 | 📋 Planned | v0.7 | Epic #116 | PyPI packaging, `gitpulse init`, rich CLI help |
 | Sprint 10 | ✅ Done | v0.5 | Epic #117 | Analytics dashboard (Recharts charts) |
-| Sprint 11 | 📋 Planned | v0.8 | Epic #118 | README, MkDocs, in-app `/docs` hub |
-| Sprint 12 | 📋 Planned | v0.5 | Epic #136 | UX fixes: error messages, repo dropdown, history filters, export, caching |
+| Sprint 11 | ✅ Done | v0.6 | Epic #118 | README, MkDocs, in-app `/docs` hub, project hardening |
+| Sprint 12 | ✅ Done | v0.6 | Epic #136 | UX fixes: error messages, repo dropdown, history filters, export, caching |
 | Sprint 14 | 🆕 New | v0.9 | TBD | `/insights` dashboard, PR/issue enrichment, stats for nerds, GitHub Projects |
 | Sprint 15 | 🆕 New | v1.0 | TBD | Team standup, badge generator, presentation mode, notifications |
 | Sprint 16 | 🆕 New | v1.1 | TBD | Private org repos, shareable links, comparison mode |

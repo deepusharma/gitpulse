@@ -25,6 +25,43 @@ a web interface for browser access — both sharing a common Python core library
 
 ---
 
+## Project Management Strategy
+
+GitPulse uses a structured hierarchy to bridge long-term vision with daily execution:
+
+```mermaid
+graph TD
+    subgraph "RELEASE / MILESTONE (Planning)"
+        R[Release: v0.6.0] --> M[Milestone: v0.6.0]
+        M --> E1[Epic: Enhanced UX]
+        M --> E2[Epic: Performance]
+    end
+
+    subgraph "STORIES (Unit of Work)"
+        E1 --> S1[Story: MultiSelect]
+        E1 --> S2[Story: User Validation]
+        E2 --> S3[Story: Server Caching]
+    end
+
+    subgraph "SPRINTS (Execution)"
+        S1 --> SP[Sprint 12]
+        S2 --> SP
+        S3 --> SP
+    end
+```
+
+| Level | Name | Purpose |
+| ----- | ---- | ------- |
+| **1** | **Release** | Final customer version (e.g., `v0.6.0`). |
+| **2** | **Milestone** | The GitHub container mapping 1:1 to a Release. |
+| **3** | **Epic** | High-level feature area (e.g., "Analytics Dashboard"). |
+| **4** | **Story** | Atomic requirement / Issue (e.g., "Fix button spacing"). |
+| **5** | **Sprint** | The time-boxed window (1-2 weeks) for execution. |
+
+---
+
+---
+
 ## Codebase Structure
 
 ```none
@@ -195,6 +232,11 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 - One test file per module
 - Run tests before every PR: `pytest -v`
 - CI runs automatically on every PR
+- **Single Source of Truth**: All version changes MUST be applied atomically to the project hierarchy (Release > Milestone > Epic > Story) as defined in **[AGENTS.md](AGENTS.md#project-management-strategy)**. Version strings must be synced across:
+  - `web/package.json`
+  - `pyproject.toml`
+  - `AGENTS.md` (Milestone History)
+  - `docs/prd/PRD.md` (Release Table)
 
 ---
 
@@ -202,18 +244,21 @@ NEXT_PUBLIC_API_URL=   # Required for web — FastAPI backend URL
 
 History:
 
-- v0.1 ✅ Complete
-- v0.2 ✅ Complete
-- v0.3 🔵 Active — UI Polish
+- v0.1 ✅ Complete (Core CLI)
+- v0.2 ✅ Complete (Web UI Initial)
+- v0.3 ✅ Complete (UI Polish + OAuth)
+- v0.4 ✅ Complete (Config + Packaging)
+- v0.5 ✅ Complete (Analytics Dashboard)
+- v0.6 🔵 Active — Enhanced Input UX & Caching
 
 Active stories:
 
-- #65 GitHub OAuth login
-- #66 Header and footer
-- #67 Fix markdown rendering
-- #68 Improve form and results layout
+- #136 UX Fixes (Dropdowns, Validation, Export)
+- #209 Caching (Commits & Repos)
+- #210 Caching (Summaries & History)
+- #211 Dashboard Performance
 
-Active branch: feature/v0.3-ui-polish
+Active branch: feature/sprint-12-enhanced-ux-cache
 
 ---
 
