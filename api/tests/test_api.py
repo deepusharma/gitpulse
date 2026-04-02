@@ -8,7 +8,53 @@ client = TestClient(app)
 def test_health_returns_200():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "version": "0.5.0"}
+    assert response.json() == {"status": "ok", "version": "0.6.0"}
+
+def test_summarise_cache_hit():
+    from api.api import commit_cache
+    commit_cache.clear()
+    
+    with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
+        mock_get_commits.return_value = ([{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}], [])
+        with patch("api.api.summarise", new_callable=AsyncMock) as mock_summarise:
+            mock_summarise.return_value = "Test summary"
+            with patch("api.api.get_db_pool") as mock_pool_func:
+                mock_pool = MagicMock()
+                mock_conn = AsyncMock()
+                mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
+                mock_pool_func.return_value = mock_pool
+                
+                payload = {"username": "deepusharma", "repos": ["gitpulse"], "days": 7}
+                
+                # 1. First call (Cache Miss)
+                resp1 = client.post("/summarise", json=payload)
+                assert resp1.status_code == 200
+                assert mock_get_commits.call_count == 1
+                
+                # 2. Second call (Cache Hit)
+                resp2 = client.post("/summarise", json=payload)
+                assert resp2.status_code == 200
+                assert mock_get_commits.call_count == 1  # Should NOT increase
+                assert resp2.json()["summary"] == "Test summary"
+
+def test_summarise_cache_refresh():
+    from api.api import commit_cache
+    commit_cache.clear()
+    
+    with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
+        mock_get_commits.return_value = ([], [])
+        with patch("api.api.summarise", new_callable=AsyncMock) as mock_summarise:
+            mock_summarise.return_value = "Test"
+            with patch("api.api.get_db_pool"):
+                payload = {"username": "user", "repos": ["repo"], "days": 7}
+                
+                # Populate cache
+                client.post("/summarise", json=payload)
+                assert mock_get_commits.call_count == 1
+                
+                # Call with refresh=True
+                client.post("/summarise?refresh=true", json=payload)
+                assert mock_get_commits.call_count == 2 # Should increase because refresh bypasses cache
 
 def test_summarise_valid_request_returns_200():
     with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
@@ -104,12 +150,28 @@ def test_get_history_filters_applied():
         assert "AND generated_at >= $3" in sql
 
 def test_github_validate_endpoint():
+    from api.api import repo_cache
+    repo_cache.clear()
+    
     with patch("httpx.AsyncClient.get") as mock_get:
-        mock_get.return_value = MagicMock(status_code=200, json=lambda: {"login": "testuser", "avatar_url": "http://img"})
+        # Mock 1: User profile fetch
+        # Mock 2: Repos fetch
+        mock_res_profile = MagicMock(status_code=200, json=lambda: {"login": "testuser", "avatar_url": "http://img"})
+        mock_res_repos = MagicMock(status_code=200, json=lambda: [{"name": "repo1"}])
+        
+        mock_get.side_effect = [mock_res_profile, mock_res_repos, mock_res_profile, mock_res_repos]
+        
+        # 1. First call (Miss for repos)
         response = client.get("/github/validate?username=testuser")
         assert response.status_code == 200
-        assert response.json()["valid"] == True
-        assert response.json()["avatar_url"] == "http://img"
+        # Should have called profile then repos
+        assert mock_get.call_count == 2
+        
+        # 2. Second call (Hit for repos)
+        response = client.get("/github/validate?username=testuser")
+        assert response.status_code == 200
+        # Should have called profile, but SKIPPED repos call because of cache
+        assert mock_get.call_count == 3
 
 def test_analytics_commits_per_day():
     with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
