@@ -11,7 +11,7 @@ def test_health_returns_200():
     assert response.json() == {"status": "ok", "version": "0.5.0"}
 
 def test_summarise_valid_request_returns_200():
-    with patch("api.api.get_commits") as mock_get_commits:
+    with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
         mock_get_commits.return_value = [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}]
         with patch("api.api.summarise") as mock_summarise:
             mock_summarise.return_value = "Test summary"
@@ -43,7 +43,7 @@ def test_summarise_empty_repos_returns_422():
     assert response.status_code == 422
 
 def test_summarise_db_failure_does_not_break_response():
-    with patch("api.api.get_commits") as mock_get_commits:
+    with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
         mock_get_commits.return_value = [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}]
         with patch("api.api.summarise") as mock_summarise:
             mock_summarise.return_value = "Test summary"
@@ -95,9 +95,9 @@ def test_get_history_no_pool_returns_empty():
         assert data["summaries"] == []
 
 def test_analytics_commits_per_day():
-    with patch("api.api._get_user_repos") as mock_get_repos:
+    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["gitpulse"]
-        with patch("api.api.get_commits") as mock_get_commits:
+        with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
             mock_get_commits.return_value = [
                 {"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
                 {"repo": "gitpulse", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
@@ -113,9 +113,9 @@ def test_analytics_commits_per_day():
             assert data[1]["count"] == 1
 
 def test_analytics_repos_breakdown():
-    with patch("api.api._get_user_repos") as mock_get_repos:
+    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1", "repo2"]
-        with patch("api.api.get_commits") as mock_get_commits:
+        with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
             mock_get_commits.return_value = [
                 {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
                 {"repo": "repo1", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
@@ -133,9 +133,9 @@ def test_analytics_repos_breakdown():
             assert data[1]["percentage"] == 33.3
 
 def test_analytics_insights():
-    with patch("api.api._get_user_repos") as mock_get_repos:
+    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1"]
-        with patch("api.api.get_commits") as mock_get_commits:
+        with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
             mock_get_commits.return_value = [
                 {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=1), "message": "msg1"},
                 {"repo": "repo1", "hash": "def", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=2), "message": "msg2"},
@@ -156,3 +156,27 @@ def test_analytics_insights():
                 assert data["streak"] == 2
                 assert data["top_repo"] == "repo1"
                 assert data["average_commits_per_day"] == 0.1
+
+def test_analytics_all_returns_consolidated_data():
+    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
+        mock_get_repos.return_value = ["repo1"]
+        with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get_commits:
+            mock_get_commits.return_value = [
+                {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=1), "message": "msg1"},
+            ]
+            with patch("api.api.get_db_pool") as mock_pool_func:
+                mock_pool = MagicMock()
+                mock_conn = AsyncMock()
+                mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
+                mock_conn.fetchval.return_value = 10
+                mock_pool_func.return_value = mock_pool
+                
+                response = client.get("/analytics/all?username=deepusharma&days=30")
+                assert response.status_code == 200
+                data = response.json()
+                
+                assert "commits_per_day" in data
+                assert "repos_breakdown" in data
+                assert "insights" in data
+                assert data["insights"]["total_summaries"] == 10
+                assert data["insights"]["top_repo"] == "repo1"

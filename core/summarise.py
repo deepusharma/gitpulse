@@ -176,39 +176,39 @@ def build_prompt(prompt_str:str) -> str:
 
 
 
-def summarise (prompt_str:str) -> str:
+async def summarise(prompt_str:str) -> str:
     """
-    Generates the summary based on the provided prompt string. 
+    Generates the summary based on the provided prompt string asynchronously. 
     
     Args: 
         prompt_str (str): Prompt string to be used for summarization
-
+ 
     Returns:
         summary (str): Summary of the commits
-
+ 
     Raises:
         Exception: If Any errors found
     """        
-    # 1. get GROQ_API_KEY from env, raise EnvironmentError if missing
-    # 2. init groq client
-    # 3. call client.chat.completions.create
-    #    - model: "llama-3.3-70b-versatile"
-    #    - messages: [{"role": "user", "content": prompt_str}]
-    #    - temperature: 0.3
-    # 4. extract response text from response.choices[0].message.content
-    # 5. return it
-    
     groq_api_key = os.getenv("GROQ_API_KEY")
+    if not groq_api_key:
+        logger.error("GROQ_API_KEY is not set in the environment")
+        raise EnvironmentError("GROQ_API_KEY missing")
 
-    client = groq.Groq(api_key=groq_api_key)
-    
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[{"role": "user", "content": prompt_str}],
-        temperature=0.3,
-    )
-    
-    summary = response.choices[0].message.content
-    #logger.debug("summarise: Summary: %s", str(summary))
-
-    return summary  
+    # Use AsyncGroq for non-blocking I/O
+    async with groq.AsyncGroq(api_key=groq_api_key) as client:
+        try:
+            response = await client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": "user", "content": prompt_str}],
+                temperature=0.3,
+            )
+            return response.choices[0].message.content
+        except groq.AuthenticationError:
+            logger.error("Groq API Authentication failed — check GROQ_API_KEY")
+            raise
+        except groq.RateLimitError:
+            logger.error("Groq API Rate limit exceeded")
+            raise
+        except Exception as e:
+            logger.error("Unexpected error during Groq summarization: %s", e, exc_info=True)
+            raise

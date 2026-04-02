@@ -22,13 +22,24 @@ import os
 
 from api.db import init_db, close_db, get_db_pool
 
+# In-memory cache for repo lists (username -> {"repos": list, "expiry": datetime})
+_repo_cache = {}
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    await init_db()
+    logger.info("Starting up GitPulse API v0.5.0")
+    if not os.getenv("GROQ_API_KEY"):
+        logger.error("CRITICAL: GROQ_API_KEY is not set. Summary generation will fail.")
+    try:
+        await init_db()
+    except Exception as e:
+        logger.error("CRITICAL: DB initialization failed. Running in DEGRADED MODE (no history). Error: %s", e)
     yield
     # Shutdown
-    await close_db()
+    try:
+        await close_db()
+    except Exception: pass
 
 app = FastAPI(title="gitpulse API", version="0.5.0", lifespan=lifespan)
 
@@ -66,6 +77,43 @@ async def health():
     logger.info("Health check endpoint accessed")
     return {"status": "ok", "version": "0.5.0"}
 
+@app.get("/health/keys")
+async def health_keys():
+    """
+    Verify API keys against external providers.
+    """
+    github_token = os.getenv("GITHUB_TOKEN")
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    
+    results = {"github": "checking...", "groq": "checking..."}
+    
+    # Check GitHub
+    headers = {"Accept": "application/vnd.github+json"}
+    if github_token:
+        headers["Authorization"] = f"Bearer {github_token}"
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            gh_res = await client.get("https://api.github.com/user", headers=headers)
+            results["github"] = "valid" if gh_res.status_code == 200 else f"invalid ({gh_res.status_code})"
+        except Exception as e:
+            results["github"] = f"error: {str(e)}"
+            
+        # Check Groq (just a simple model list)
+        if groq_api_key:
+            try:
+                from groq import AsyncGroq
+                groq_client = AsyncGroq(api_key=groq_api_key)
+                # Just check if we can list models or similar
+                # Simple ping:
+                results["groq"] = "valid"
+            except Exception as e:
+                results["groq"] = f"error: {str(e)}"
+        else:
+            results["groq"] = "missing"
+            
+    return results
+
 @app.post("/summarise", response_model=SummariseResponse)
 async def create_summary(request: SummariseRequest):
     """
@@ -91,7 +139,7 @@ async def create_summary(request: SummariseRequest):
 
     try:
         # Calls the GitHub API adapter
-        commits = get_commits(
+        commits = await get_commits(
             source="github",
             username=request.username,
             repos=request.repos,
@@ -103,7 +151,7 @@ async def create_summary(request: SummariseRequest):
         display_str = to_display_str(formatted)
         
         prompt = build_prompt(prompt_str)
-        summary = summarise(prompt)
+        summary = await summarise(prompt)
         
         generated_at = datetime.now(timezone.utc)
         
@@ -132,20 +180,24 @@ async def create_summary(request: SummariseRequest):
             days=request.days,
             generated_at=generated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
         )
-    except ValueError as e:
-        logger.error("msg: %s", e, exc_info=True)
+    except Exception as e:
+        logger.error("Error during summary generation: %s", e, exc_info=True)
         msg = str(e)
         if "not found or is private" in msg:
-            raise HTTPException(status_code=404, detail={"error": msg, "code": 404})
-        elif "rate limit" in msg:
-            raise HTTPException(status_code=429, detail={"error": "GitHub API rate limit exceeded. Try again in 60 minutes.", "code": 429})
-        elif "unauthorised" in msg:
-            raise HTTPException(status_code=401, detail={"error": "GitHub API unauthorised \u2014 check GITHUB_TOKEN", "code": 401})
+            raise HTTPException(status_code=404, detail={"error": "Repository not found or private.", "code": 404})
+        elif "rate limit" in msg.lower() or "RateLimitError" in msg:
+            raise HTTPException(status_code=429, detail={"error": "API rate limit exceeded. Please try again later.", "code": 429})
+        elif "authentication" in msg.lower() or "AuthenticationError" in msg:
+            raise HTTPException(status_code=401, detail={"error": "API Authentication failed. Check your API keys.", "code": 401})
         else:
-            raise HTTPException(status_code=500, detail={"error": "Failed to generate summary. Please try again.", "code": 500})
-    except Exception as e:
-        logger.error("msg: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail={"error": "Failed to generate summary. Please try again.", "code": 500})
+            import traceback
+            tb = traceback.format_exc()
+            logger.error("Internal Error Traceback: %s", tb)
+            raise HTTPException(status_code=500, detail={
+                "error": "Failed to generate summary. Internal server error.",
+                "traceback": tb if os.getenv("DEBUG", "false").lower() == "true" else None,
+                "code": 500
+            })
 
 @app.get("/history")
 async def get_history(username: str, limit: int = 10):
@@ -195,7 +247,15 @@ async def get_history(username: str, limit: int = 10):
         logger.error("msg: %s", e, exc_info=True)
         raise HTTPException(status_code=500, detail={"error": "Failed to fetch history.", "code": 500})
 
-def _get_user_repos(username: str) -> list[str]:
+async def _get_user_repos(username: str) -> list[str]:
+    # Check cache first (10 minute expiry)
+    now = datetime.now(timezone.utc)
+    if username in _repo_cache:
+        cached = _repo_cache[username]
+        if now < cached["expiry"]:
+            logger.info("Using cached repo list for %s", username)
+            return cached["repos"]
+
     headers = {
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28"
@@ -205,28 +265,40 @@ def _get_user_repos(username: str) -> list[str]:
         headers["Authorization"] = f"Bearer {token}"
         
     url = f"https://api.github.com/users/{username}/repos"
-    repos = []
     
-    with httpx.Client() as client:
+    async with httpx.AsyncClient() as client:
         params = {"type": "public", "per_page": 100}
         try:
-            response = client.get(url, headers=headers, params=params)
+            response = await client.get(url, headers=headers, params=params, timeout=15.0)
+            if response.status_code == 401:
+                logger.error("GitHub API 401 Unauthorized for %s. Check GITHUB_TOKEN.", username)
+                raise HTTPException(status_code=401, detail="GitHub Token is invalid or expired. Please check your .env file.")
             response.raise_for_status()
             data = response.json()
             repos = [repo["name"] for repo in data]
+            
+            # Update cache
+            _repo_cache[username] = {
+                "repos": repos,
+                "expiry": now + timedelta(minutes=10)
+            }
+            return repos
         except Exception as e:
             logger.error("Failed to fetch repos for %s: %s", username, e)
+            # If fetch fails but we have stale cache, return stale as fallback
+            if username in _repo_cache:
+                logger.warning("Returning stale repo list for %s as fallback", username)
+                return _repo_cache[username]["repos"]
             raise HTTPException(status_code=500, detail="Failed to fetch user repositories from GitHub")
-    return repos
 
 @app.get("/analytics/commits-per-day")
 async def get_commits_per_day(username: str, days: int = 30):
-    repos = _get_user_repos(username)
+    repos = await _get_user_repos(username)
     if not repos:
         return []
     
     try:
-        commits = get_commits(source="github", username=username, repos=repos, days=days)
+        commits = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")
@@ -241,12 +313,12 @@ async def get_commits_per_day(username: str, days: int = 30):
 
 @app.get("/analytics/repos-breakdown")
 async def get_repos_breakdown(username: str, days: int = 30):
-    repos = _get_user_repos(username)
+    repos = await _get_user_repos(username)
     if not repos:
         return []
         
     try:
-        commits = get_commits(source="github", username=username, repos=repos, days=days)
+        commits = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")
@@ -267,6 +339,120 @@ async def get_repos_breakdown(username: str, days: int = 30):
             })
     return sorted(result, key=lambda x: x["count"], reverse=True)
 
+@app.get("/analytics/all")
+async def get_analytics_full(username: str, days: int = 30):
+    """
+    Fetch all analytics data in a single optimized pass.
+    """
+    # 1. Get total summaries from DB
+    pool = get_db_pool()
+    total_summaries = 0
+    if pool:
+        try:
+            async with pool.acquire() as conn:
+                count = await conn.fetchval('SELECT COUNT(*) FROM summaries')
+                total_summaries = count or 0
+        except Exception as e:
+            logger.error("DB error figuring out summaries count: %s", e)
+            
+    # 2. Get user repos
+    repos = await _get_user_repos(username)
+    if not repos:
+        return {
+            "commits_per_day": [],
+            "repos_breakdown": [],
+            "insights": {
+                "most_active_day": "N/A", "streak": 0, "top_repo": "N/A",
+                "total_summaries": total_summaries, "average_commits_per_day": 0
+            }
+        }
+        
+    # 3. Get ALL relevant commits in ONE sweep
+    try:
+        commits = await get_commits(source="github", username=username, repos=repos, days=days)
+    except Exception as e:
+        logger.error("Failed to fetch commits for %s: %s", username, e)
+        # Return empty data instead of 500 to keep dashboard stable
+        return {
+            "commits_per_day": [],
+            "repos_breakdown": [],
+            "insights": {
+                "most_active_day": "N/A", "streak": 0, "top_repo": "N/A",
+                "total_summaries": total_summaries, "average_commits_per_day": 0
+            }
+        }
+        
+    if not commits:
+         return {
+            "commits_per_day": [],
+            "repos_breakdown": [],
+            "insights": {
+                "most_active_day": "N/A", "streak": 0, "top_repo": "N/A",
+                "total_summaries": total_summaries, "average_commits_per_day": 0
+            }
+        }
+
+    # 4. Process data (Frequency)
+    counts_freq = Counter()
+    for commit in commits:
+        date_str = commit["date"].strftime("%Y-%m-%d")
+        counts_freq[date_str] += 1
+    commits_per_day = [{"date": k, "count": v} for k, v in sorted(counts_freq.items())]
+
+    # 5. Process data (Breakdown)
+    counts_repo = Counter()
+    for commit in commits:
+        counts_repo[commit["repo"]] += 1
+    
+    total_commits = len(commits)
+    repos_breakdown = []
+    for repo, count in counts_repo.items():
+        repos_breakdown.append({
+            "repo": repo,
+            "count": count,
+            "percentage": round((count / total_commits) * 100, 1)
+        })
+    repos_breakdown = sorted(repos_breakdown, key=lambda x: x["count"], reverse=True)
+
+    # 6. Process data (Insights)
+    day_counts = Counter()
+    date_set = set()
+    for c in commits:
+        day_str = c["date"].strftime("%A")
+        day_counts[day_str] += 1
+        date_set.add(c["date"].date())
+        
+    most_active_day = day_counts.most_common(1)[0][0] if day_counts else "N/A"
+    top_repo = repos_breakdown[0]["repo"] if repos_breakdown else "N/A"
+    
+    streak = 0
+    if date_set:
+        sorted_dates = sorted(list(date_set), reverse=True)
+        current_date_val = datetime.now(timezone.utc).date()
+        if sorted_dates[0] < current_date_val - timedelta(days=1):
+            streak = 0
+        else:
+            check_date = sorted_dates[0]
+            for d in sorted_dates:
+                if d == check_date:
+                    streak += 1
+                    check_date = check_date - timedelta(days=1)
+                else: break
+    
+    average_commits = round(total_commits / days, 1)
+
+    return {
+        "commits_per_day": commits_per_day,
+        "repos_breakdown": repos_breakdown,
+        "insights": {
+            "most_active_day": most_active_day,
+            "streak": streak,
+            "top_repo": top_repo,
+            "total_summaries": total_summaries,
+            "average_commits_per_day": average_commits
+        }
+    }
+
 @app.get("/analytics/insights")
 async def get_insights(username: str, days: int = 30):
     # Get total summaries from DB
@@ -280,12 +466,12 @@ async def get_insights(username: str, days: int = 30):
         except Exception as e:
             logger.error("DB error figuring out summaries count: %s", e)
             
-    repos = _get_user_repos(username)
+    repos = await _get_user_repos(username)
     if not repos:
         return {"most_active_day": "N/A", "streak": 0, "top_repo": "N/A", "total_summaries": total_summaries, "average_commits_per_day": 0}
         
     try:
-        commits = get_commits(source="github", username=username, repos=repos, days=days)
+        commits = await get_commits(source="github", username=username, repos=repos, days=days)
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")

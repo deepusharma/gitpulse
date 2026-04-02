@@ -58,23 +58,17 @@ function AnalyticsContent() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         
-        const [commitsRes, reposRes, insightsRes] = await Promise.all([
-          fetch(`${baseUrl}/analytics/commits-per-day?username=${username}&days=${days}`),
-          fetch(`${baseUrl}/analytics/repos-breakdown?username=${username}&days=${days}`),
-          fetch(`${baseUrl}/analytics/insights?username=${username}&days=${days}`)
-        ]);
+        const res = await fetch(`${baseUrl}/analytics/all?username=${username}&days=${days}`);
 
-        if (!commitsRes.ok || !reposRes.ok || !insightsRes.ok) {
+        if (!res.ok) {
             throw new Error("Failed to fetch analytics data");
         }
 
-        const commits = await commitsRes.json();
-        const repos = await reposRes.json();
-        const insights = await insightsRes.json();
+        const data = await res.json();
 
-        setCommitsData(commits);
-        setRepoData(repos);
-        setInsightsData(insights);
+        setCommitsData(data.commits_per_day);
+        setRepoData(data.repos_breakdown);
+        setInsightsData(data.insights);
       } catch (err: any) {
         setError(err.message || "An error occurred");
       } finally {
