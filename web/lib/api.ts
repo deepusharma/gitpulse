@@ -10,6 +10,7 @@ export interface SummariseResponse {
   display: string;
   summary: string;
   repos: string[];
+  username: string;
   days: number;
   generated_at: string;
 }
@@ -41,8 +42,9 @@ export class ApiError extends Error {
 
 export async function generateSummary(
   req: SummariseRequest,
+  refresh: boolean = false
 ): Promise<SummariseResponse> {
-  const response = await fetch(`${API_URL}/summarise`, {
+  const response = await fetch(`${API_URL}/summarise?refresh=${refresh}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(req),
@@ -67,13 +69,36 @@ export async function generateSummary(
 }
 
 
-export async function fetchHistory(username: string, limit: number = 20): Promise<HistoryResponse> {
-  const response = await fetch(`${API_URL}/history?username=${encodeURIComponent(username)}&limit=${limit}`, {
+export async function fetchHistory(
+  username: string, 
+  limit: number = 20,
+  search?: string,
+  startDate?: string,
+  endDate?: string
+): Promise<HistoryResponse> {
+  let url = `${API_URL}/history?username=${encodeURIComponent(username)}&limit=${limit}`;
+  if (search) url += `&search=${encodeURIComponent(search)}`;
+  if (startDate) url += `&start_date=${encodeURIComponent(startDate)}`;
+  if (endDate) url += `&end_date=${encodeURIComponent(endDate)}`;
+
+  const response = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" }
   });
   if (!response.ok) {
     throw new Error("Failed to fetch history");
   }
+  return response.json();
+}
+
+export async function validateUser(username: string): Promise<{ valid: boolean; avatar_url?: string; error?: string }> {
+  const response = await fetch(`${API_URL}/github/validate?username=${encodeURIComponent(username)}`);
+  if (!response.ok) return { valid: false, error: "Validation failed" };
+  return response.json();
+}
+
+export async function fetchUserRepos(username: string): Promise<{ repos: string[] }> {
+  const response = await fetch(`${API_URL}/github/repos?username=${encodeURIComponent(username)}`);
+  if (!response.ok) return { repos: [] };
   return response.json();
 }

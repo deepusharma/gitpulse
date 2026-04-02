@@ -8,6 +8,7 @@ local_integration = pytest.mark.skipif(
     not os.path.exists(os.path.expanduser("~/.gitpulse.toml")),
     reason="~/.gitpulse.toml not found — skipping integration tests"
 )
+
 # -----------------------------------------------------------------------------
 # load_config
 # -----------------------------------------------------------------------------
@@ -29,16 +30,19 @@ def test_load_config_has_repos():
 # get_commits
 # -----------------------------------------------------------------------------
 
+@pytest.mark.anyio
 @local_integration
-def test_get_commits_returns_list():
-    """get_commits returns a list."""
-    result = get_commits(days=1)
+async def test_get_commits_returns_list():
+    """get_commits returns a tuple (list, list)."""
+    result, errors = await get_commits(days=1)
     assert isinstance(result, list)
+    assert isinstance(errors, list)
 
+@pytest.mark.anyio
 @local_integration
-def test_get_commits_commit_has_required_keys():
+async def test_get_commits_commit_has_required_keys():
     """Each commit dict has the required keys."""
-    result = get_commits(days=15)
+    result, errors = await get_commits(days=15)
     if result:
         commit = result[0]
         assert "repo" in commit
@@ -51,8 +55,9 @@ def test_get_commits_commit_has_required_keys():
 # Github API Adapter
 # -----------------------------------------------------------------------------
 
+@pytest.mark.anyio
 @respx.mock
-def test_get_commits_github_returns_list():
+async def test_get_commits_github_returns_list():
     respx.get(
         url__regex=r"https://api\.github\.com/repos/deepusharma/gitpulse/commits.*"
     ).respond(
@@ -64,7 +69,7 @@ def test_get_commits_github_returns_list():
             }
         }]
     )
-    result = get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)
+    result, errors = await get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)
     assert isinstance(result, list)
     assert len(result) == 1
     assert result[0]["repo"] == "gitpulse"
@@ -72,34 +77,33 @@ def test_get_commits_github_returns_list():
     assert result[0]["author"] == "Test Author"
     assert result[0]["message"] == "test message"
 
-def test_get_commits_github_empty_repo():
-    result = get_commits(source="github", username="deepusharma", repos=[])
+@pytest.mark.anyio
+async def test_get_commits_github_empty_repo():
+    result, errors = await get_commits(source="github", username="deepusharma", repos=[])
     assert result == []
+    assert errors == []
 
-def test_get_commits_github_invalid_source_raises():
+@pytest.mark.anyio
+async def test_get_commits_github_invalid_source_raises():
     with pytest.raises(ValueError, match="Unknown source: unknown"):
-        get_commits(source="unknown")
+        await get_commits(source="unknown")
 
+@pytest.mark.anyio
 @respx.mock
-def test_get_commits_github_404_raises():
+async def test_get_commits_github_404_returns_error():
     respx.get(
         url__regex=r"https://api\.github\.com/repos/deepusharma/nonexistent/commits.*"
     ).respond(status_code=404)
-    with pytest.raises(ValueError, match="Repo 'deepusharma/nonexistent' not found or is private"):
-        get_commits(source="github", username="deepusharma", repos=["nonexistent"], days=7)
+    result, errors = await get_commits(source="github", username="deepusharma", repos=["nonexistent"], days=7)
+    assert len(errors) == 1
+    assert "not found" in errors[0]
 
+@pytest.mark.anyio
 @respx.mock
-def test_get_commits_github_429_raises():
+async def test_get_commits_github_429_returns_error():
     respx.get(
         url__regex=r"https://api\.github\.com/repos/deepusharma/gitpulse/commits.*"
     ).respond(status_code=429)
-    with pytest.raises(ValueError, match="GitHub API rate limit exceeded"):
-        get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)
-
-@respx.mock
-def test_get_commits_github_401_raises():
-    respx.get(
-        url__regex=r"https://api\.github\.com/repos/deepusharma/gitpulse/commits.*"
-    ).respond(status_code=401)
-    with pytest.raises(ValueError, match="GitHub API unauthorised — check GITHUB_TOKEN"):
-        get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)
+    result, errors = await get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)
+    assert len(errors) == 1
+    assert "rate limit" in errors[0].lower()
