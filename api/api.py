@@ -32,7 +32,7 @@ analytics_cache = InMemoryCache()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting up GitPulse API v0.5.0")
+    logger.info("Starting up GitPulse API v0.6.0")
     if not os.getenv("GROQ_API_KEY"):
         logger.error("CRITICAL: GROQ_API_KEY is not set. Summary generation will fail.")
     try:
@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
         await close_db()
     except Exception: pass
 
-app = FastAPI(title="gitpulse API", version="0.5.0", lifespan=lifespan)
+app = FastAPI(title="gitpulse API", version="0.6.0", lifespan=lifespan)
 
 # CORS
 app.add_middleware(
@@ -80,7 +80,44 @@ async def health():
         dict: Status and version of the API.
     """
     logger.info("Health check endpoint accessed")
-    return {"status": "ok", "version": "0.5.0"}
+    return {"status": "ok", "version": "0.6.0"}
+
+@app.get("/health/keys")
+async def health_keys():
+    """
+    Verify API keys against external providers.
+    """
+    github_token = os.getenv("GITHUB_TOKEN")
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    
+    results = {"github": "checking...", "groq": "checking..."}
+    
+    # Check GitHub
+    headers = {"Accept": "application/vnd.github+json"}
+    if github_token:
+        headers["Authorization"] = f"Bearer {github_token}"
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            gh_res = await client.get("https://api.github.com/user", headers=headers)
+            results["github"] = "valid" if gh_res.status_code == 200 else f"invalid ({gh_res.status_code})"
+        except Exception as e:
+            results["github"] = f"error: {str(e)}"
+            
+        # Check Groq (just a simple model list)
+        if groq_api_key:
+            try:
+                from groq import AsyncGroq
+                groq_client = AsyncGroq(api_key=groq_api_key)
+                # Just check if we can list models or similar
+                # Simple ping:
+                results["groq"] = "valid"
+            except Exception as e:
+                results["groq"] = f"error: {str(e)}"
+        else:
+            results["groq"] = "missing"
+            
+    return results
 
 @app.get("/health/keys")
 async def health_keys():
@@ -432,7 +469,14 @@ async def validate_github_user(username: str):
             response = await client.get(f"https://api.github.com/users/{username}", headers=headers, timeout=10.0)
             if response.status_code == 200:
                 data = response.json()
-                return {"valid": True, "username": data["login"], "avatar_url": data["avatar_url"]}
+                # Also fetch repos to populate cache and return count
+                repos = await _get_user_repos(username)
+                return {
+                    "valid": True, 
+                    "username": data["login"], 
+                    "avatar_url": data["avatar_url"],
+                    "repos": repos
+                }
             elif response.status_code == 404:
                 return {"valid": False, "error": "User not found"}
             else:

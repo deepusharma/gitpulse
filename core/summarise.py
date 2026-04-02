@@ -1,11 +1,13 @@
 import logging
 import json
-
 import groq
 import os
 
-
 logger = logging.getLogger(__name__)
+
+# LLM Context Window Constraints
+MAX_COMMITS_PER_REPO = 50
+MAX_MESSAGE_LENGTH = 300
 
 def format_commits (commits:list) -> dict:
     """
@@ -18,29 +20,23 @@ def format_commits (commits:list) -> dict:
     Returns:
         dict object containing the cleaned commit information which will be used 
         for generating prompt and further summarize
-
-    Raises:
-        Exception: If Any errors found
     """
-    #logger.debug("format_commits: Commits: %s", str(commits))
-
     formatted_commits_grouped = {}
-    # -------------------------------------------------------------------------
-    # 1. receives a FLAT LIST of commit dicts from repo_reader.get_commits
-    # 2. format_commits: groups by repo, cleans messages -> returns dict
-    # -------------------------------------------------------------------------
+
     if not commits:
         logger.warning("format_commits: No commits to format")
         return {}
 
     for commit in commits:
         repo = commit["repo"]
-
         short_hash = commit["hash"][:7]
-
         date = commit["date"].strftime("%Y-%m-%d")
 
         clean_message = " | ".join(line.strip() for line in commit["message"].splitlines() if line.strip())
+        
+        # Truncate extremely long messages to prevent token overflow/injection
+        if len(clean_message) > MAX_MESSAGE_LENGTH:
+            clean_message = clean_message[:MAX_MESSAGE_LENGTH] + "..."
     
         cleaned_commit = {
             "hash": short_hash,
@@ -48,30 +44,16 @@ def format_commits (commits:list) -> dict:
             "message": clean_message
         }
         
-        logger.debug("Cleaned commit: %s", json.dumps(cleaned_commit, default=str))
-
         formatted_commits_grouped.setdefault(repo, []).append(cleaned_commit)
         
-    #logger.debug("Formatted Commits Grouped: %s", str(formatted_commits_grouped))
-    logger.debug("Formatted Commits Grouped:\n%s", json.dumps(formatted_commits_grouped, indent=2, default=str))
+    logger.debug("Formatted Commits Grouped: %s", len(formatted_commits_grouped))
     return formatted_commits_grouped
 
 def to_prompt_str(formatted_commits:dict) -> str:    
     """
     Get the dict with cleaned commits and generates a prompt string to be used for 
     summarization
-    
-    Args: 
-        formatted_commits (dict): formatted commits to be used for prompt creation
-
-    Returns:
-        prompt_string (str): Prompt string to be used for summarization
-
-    Raises:
-        Exception: If Any errors found
     """
-    #logger.debug("to_prompt_str: Formatted Commits: %s", str(formatted_commits))
-
     prompt_str=""
 
     if not formatted_commits:
@@ -80,28 +62,23 @@ def to_prompt_str(formatted_commits:dict) -> str:
         
     for repo, commits in formatted_commits.items():
         prompt_str += f"### {repo}\n"
-        for commit in commits:
+        
+        # Limit commits per repo to protect context window
+        for commit in commits[:MAX_COMMITS_PER_REPO]:
             prompt_str += f"  - {commit['hash']} | {commit['date']} | {commit['message']}\n"
+        
+        if len(commits) > MAX_COMMITS_PER_REPO:
+            prompt_str += f"  - ... (truncated {len(commits) - MAX_COMMITS_PER_REPO} older commits)\n"
+            
         prompt_str += "\n"  # blank line between repos 
 
-    #logger.debug("Prompt String: %s", prompt_str)
     logger.debug("to_prompt_str: Built prompt string with %s repos", len(formatted_commits))
     return prompt_str
 
 
 def to_display_str(formatted_commits:dict) -> str:    
     """
-    Similar to to_prompt_str but used primarily for dispay. Gets the dict with 
-    cleaned commits and generates a renderable string 
-    
-    Args: 
-        formatted_commits (dict): formatted commits to be used for prompt creation
-
-    Returns:
-        display_string (str): Display string to be used for summarization
-
-    Raises:
-        Exception: If Any errors found
+    Similar to to_prompt_str but used primarily for display.
     """
     display_str=""
 
@@ -116,28 +93,11 @@ def to_display_str(formatted_commits:dict) -> str:
             message_lines = commit["message"].split(" | ")
             for line in message_lines:
                 display_str += f"    {line}\n"
-        display_str += "\n"  # blank line between repos 
-
-    #logger.debug("Prompt String: %s", prompt_str)
-    logger.debug("to_display_str: Built display string with %s repos", len(formatted_commits))
+        display_str += "\n"
     return display_str
 
 
 def build_prompt(prompt_str:str) -> str:    
-    """
-    Takes the pipe formatted prompt string and converts into a Prompt that will
-    be sent to LLM for summarization 
-
-    Args: 
-        prompt_str (str): pipe formatted string to be used for prompt creation
-
-    Returns:
-        prompt (str): Prompt to be used for summarization
-
-    Raises:
-        Exception: If Any errors found
-    """
-
     role_instructions="""
     You are an expert technical writer.
     Your task is to generate a concise, professional weekly standup summary based on the commit history provided.
@@ -162,39 +122,14 @@ def build_prompt(prompt_str:str) -> str:
     - Only the four sections above
     - Keep it professional and concise
     """
-    prompt = ""
-
-    prompt+= f"""
-    {role_instructions}
-    
-    Here is the commit data:
-    {prompt_str}
-    """
-
-    #logger.debug("build_prompt: Prompt String: %s", str(prompt_str))
-    return prompt
-
+    return f"{role_instructions}\n\nHere is the commit data:\n{prompt_str}"
 
 
 async def summarise(prompt_str:str) -> str:
-    """
-    Generates the summary based on the provided prompt string asynchronously. 
-    
-    Args: 
-        prompt_str (str): Prompt string to be used for summarization
- 
-    Returns:
-        summary (str): Summary of the commits
- 
-    Raises:
-        Exception: If Any errors found
-    """        
     groq_api_key = os.getenv("GROQ_API_KEY")
     if not groq_api_key:
-        logger.error("GROQ_API_KEY is not set in the environment")
         raise EnvironmentError("GROQ_API_KEY missing")
 
-    # Use AsyncGroq for non-blocking I/O
     async with groq.AsyncGroq(api_key=groq_api_key) as client:
         try:
             response = await client.chat.completions.create(
@@ -203,12 +138,6 @@ async def summarise(prompt_str:str) -> str:
                 temperature=0.3,
             )
             return response.choices[0].message.content
-        except groq.AuthenticationError:
-            logger.error("Groq API Authentication failed — check GROQ_API_KEY")
-            raise
-        except groq.RateLimitError:
-            logger.error("Groq API Rate limit exceeded")
-            raise
         except Exception as e:
-            logger.error("Unexpected error during Groq summarization: %s", e, exc_info=True)
-            raise
+            logger.error("Error during Groq summarization: %s", e, exc_info=True)
+            raise e
