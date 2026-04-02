@@ -140,4 +140,4 @@ async def summarise(prompt_str:str) -> str:
             return response.choices[0].message.content
         except Exception as e:
             logger.error("Error during Groq summarization: %s", e, exc_info=True)
-            raise
+            raise e
