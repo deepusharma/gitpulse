@@ -160,15 +160,17 @@ async def create_summary(request: SummariseRequest, refresh: bool = False):
             days=request.days
         )
         
-        if errors:
-            # S12.1 Surface repo-specific 404 message
-            error_msg = "; ".join(errors)
-            if "not found" in error_msg.lower() or "private" in error_msg.lower():
+        if not commits and errors:
+            error_msg = errors[0]
+            if "not found or is private" in error_msg.lower() or "not found" in error_msg.lower():
+                logger.error("Repo error: %s", error_msg)
                 raise HTTPException(status_code=404, detail={"error": error_msg, "code": 404})
             elif "rate limit" in error_msg.lower():
                 raise HTTPException(status_code=429, detail={"error": error_msg, "code": 429})
             else:
-                raise HTTPException(status_code=500, detail={"error": error_msg, "code": 500})
+                raise Exception(error_msg)
+        elif errors:
+            logger.warning("Encountered partial errors during commit fetch: %s", errors)
         
         formatted = format_commits(commits)
         prompt_str = to_prompt_str(formatted)
@@ -241,6 +243,17 @@ async def get_history(
     Fetch historical summaries for a given username with filtering options.
     """
     logger.info("Fetching history for %s (limit: %d, search: %s, date: %s-%s)", username, limit, search, start_date, end_date)
+    # Validate dates early
+    start_dt = None
+    end_dt = None
+    try:
+        if start_date:
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+        if end_date:
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+
     pool = get_db_pool()
     if not pool:
         logger.warning("DB pool not initialized. Cannot fetch history.")
@@ -261,14 +274,14 @@ async def get_history(
                 params.append(f"%{search}%")
                 idx += 1
                 
-            if start_date:
+            if start_dt:
                 query += f" AND generated_at >= ${idx}"
-                params.append(datetime.strptime(start_date, "%Y-%m-%d"))
+                params.append(start_dt)
                 idx += 1
                 
-            if end_date:
+            if end_dt:
                 query += f" AND generated_at <= ${idx}"
-                params.append(datetime.strptime(end_date, "%Y-%m-%d"))
+                params.append(end_dt)
                 idx += 1
                 
             query += f" ORDER BY generated_at DESC LIMIT ${idx}"
@@ -284,13 +297,13 @@ async def get_history(
                 count_query += f" AND (repos::text ILIKE ${c_idx} OR summary ILIKE ${c_idx})"
                 count_params.append(f"%{search}%")
                 c_idx += 1
-            if start_date:
+            if start_dt:
                 count_query += f" AND generated_at >= ${c_idx}"
-                count_params.append(datetime.strptime(start_date, "%Y-%m-%d"))
+                count_params.append(start_dt)
                 c_idx += 1
-            if end_date:
+            if end_dt:
                 count_query += f" AND generated_at <= ${c_idx}"
-                count_params.append(datetime.strptime(end_date, "%Y-%m-%d"))
+                count_params.append(end_dt)
             
             total_count = await connection.fetchval(count_query, *count_params) or 0
             
