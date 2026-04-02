@@ -249,16 +249,13 @@ History:
 - v0.3 ✅ Complete (UI Polish + OAuth)
 - v0.4 ✅ Complete (Config + Packaging)
 - v0.5 ✅ Complete (Analytics Dashboard)
-- v0.6 🔵 Active — Enhanced Input UX & Caching
+- v0.6 ✅ Complete — Enhanced Input UX & Caching
 
 Active stories:
 
-- #136 UX Fixes (Dropdowns, Validation, Export)
-- #209 Caching (Commits & Repos)
-- #210 Caching (Summaries & History)
-- #211 Dashboard Performance
+- None
 
-Active branch: feature/sprint-12-enhanced-ux-cache
+Active branch: master
 
 ---
 
