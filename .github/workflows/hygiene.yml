@@ -1,0 +1,38 @@
+name: Git Hygiene Audit
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Run every Sunday at midnight
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  audit-stale-prs:
+    name: Audit and Flag Stale Pull Requests
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Identify Stale PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "### Git Hygiene Audit Report - $(date +'%Y-%m-%d')" > report.md
+          gh pr list --state open --limit 50 --json number,title,author,createdAt,updatedAt > prs.json
+          
+          # Use jq to find PRs older than 14 days with no updates
+          STALE_PRS=$(cat prs.json | jq -r '.[] | select((.updatedAt | fromdateiso8601) < (now - 1209600)) | .number')
+          
+          if [ -z "$STALE_PRS" ]; then
+            echo "No stale PRs found." >> report.md
+          else
+            echo "The following PRs are stale (no activity for 14+ days):" >> report.md
+            for pr in $STALE_PRS; do
+              echo "- #$pr" >> report.md
+              gh pr comment $pr --body "⚠️ **Git Hygiene Alert**: This PR has had no activity for 14 days. Please review if it has been superseded or needs closing to maintain repository health."
+            done
+          fi
+          
+          cat report.md
