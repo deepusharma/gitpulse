@@ -186,6 +186,7 @@ gitpulse/
   - `chore:` build, config, tooling
 - Every PR must reference an issue: `Closes #XX`
 - Squash merge only
+- **PR Hygiene**: Mandatory audit of all open PRs before every squash merge. Close stale duplicates or superseded branches during the release process.
 
 ---
 
