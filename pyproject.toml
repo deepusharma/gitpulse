@@ -1,8 +1,9 @@
 [project]
 name = "gitpulse"
-version = "0.6.0"
-description = "CLI tool that generates weekly standup summaries from git history"
+version = "0.7.0"
+description = "AI-powered standup summary generator"
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.12"
 dependencies = [
     "typer==0.24.1", 
@@ -16,8 +17,12 @@ dependencies = [
     "asyncpg==0.31.0"
 ]
 
+[project.urls]
+Homepage = "https://github.com/deepusharma/gitpulse"
+Repository = "https://github.com/deepusharma/gitpulse"
+
 [project.scripts]
-gitpulse = "cli.cli:main"
+gitpulse = "gitpulse.cli.cli:app"
 
 [tool.ruff]
 select = ["T20"]
@@ -27,7 +32,7 @@ dev = ["pytest==9.0.2", "respx==0.22.0", "anyio==4.13.0"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["core/tests", "cli/tests", "api/tests"]
+testpaths = ["gitpulse/core/tests", "gitpulse/cli/tests", "api/tests"]
 
 [tool.setuptools.packages.find]
-include = ["core*", "cli*"]
+include = ["gitpulse*"]

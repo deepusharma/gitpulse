@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt
+from gitpulse.core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt
 
 
 # -----------------------------------------------------------------------------

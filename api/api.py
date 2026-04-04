@@ -14,8 +14,8 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from core.repo_reader import get_commits
-from core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
+from gitpulse.core.repo_reader import get_commits
+from gitpulse.core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
 
 from contextlib import asynccontextmanager
 import os
@@ -32,7 +32,7 @@ analytics_cache = InMemoryCache()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting up GitPulse API v0.6.0")
+    logger.info("Starting up GitPulse API v0.7.0")
     if not os.getenv("GROQ_API_KEY"):
         logger.error("CRITICAL: GROQ_API_KEY is not set. Summary generation will fail.")
     try:
