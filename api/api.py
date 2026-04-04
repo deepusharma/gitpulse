@@ -32,7 +32,7 @@ analytics_cache = InMemoryCache()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting up GitPulse API v0.6.0")
+    logger.info("Starting up GitPulse API v0.7.0")
     if not os.getenv("GROQ_API_KEY"):
         logger.error("CRITICAL: GROQ_API_KEY is not set. Summary generation will fail.")
     try:
