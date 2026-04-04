@@ -250,12 +250,15 @@ History:
 - v0.4 ✅ Complete (Config + Packaging)
 - v0.5 ✅ Complete (Analytics Dashboard)
 - v0.6 ✅ Complete — Enhanced Input UX & Caching
+- v0.7 🔵 Active — Packaging & DX
 
 Active stories:
 
-- None
+- #102 pip install gitpulse (Namespace Refactor)
+- #103 PyPI publish workflow
+- #104 gitpulse init (Typer)
 
-Active branch: master
+Active branch: feature/sprint-09-packaging
 
 ---
 

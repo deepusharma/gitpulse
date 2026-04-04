@@ -2,7 +2,7 @@ import pytest
 import os
 import respx
 import httpx
-from core.repo_reader import load_config, get_commits
+from gitpulse.core.repo_reader import load_config, get_commits
 
 local_integration = pytest.mark.skipif(
     not os.path.exists(os.path.expanduser("~/.gitpulse.toml")),

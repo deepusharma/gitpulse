@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from core.repo_reader import _get_local_commits_sync, load_config
+from gitpulse.core.repo_reader import _get_local_commits_sync, load_config
 from git import InvalidGitRepositoryError
 
 def test_get_local_commits_invalid_repo(tmp_path):
@@ -11,7 +11,7 @@ def test_get_local_commits_invalid_repo(tmp_path):
     
     mock_config = {"repos": {"bad-repo": str(non_git_dir)}}
     
-    with patch("core.repo_reader.load_config", return_value=mock_config):
+    with patch("gitpulse.core.repo_reader.load_config", return_value=mock_config):
         # Should not raise exception, but return empty list (logging the warning)
         commits = _get_local_commits_sync(days=7)
         assert commits == []
@@ -25,7 +25,7 @@ def test_get_local_commits_empty_period(tmp_path):
     # No commits yet
     mock_config = {"repos": {"empty": str(repo_dir)}}
     
-    with patch("core.repo_reader.load_config", return_value=mock_config):
+    with patch("gitpulse.core.repo_reader.load_config", return_value=mock_config):
         # Should return empty list gracefully
         commits = _get_local_commits_sync(days=7)
         assert commits == []

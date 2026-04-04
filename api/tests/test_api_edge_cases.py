@@ -36,7 +36,7 @@ def test_get_history_sql_injection_attempt():
 async def test_partial_repo_success_in_summarise():
     """Test that some failing repos don't prevent summary generation for others."""
     # This requires mocking get_commits to return both commits and errors
-    from core.repo_reader import get_commits
+    from gitpulse.core.repo_reader import get_commits
     
     from datetime import datetime, timezone
     

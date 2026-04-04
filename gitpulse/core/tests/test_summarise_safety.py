@@ -1,5 +1,5 @@
 import pytest
-from core.summarise import format_commits, to_prompt_str, MAX_COMMITS_PER_REPO, MAX_MESSAGE_LENGTH
+from gitpulse.core.summarise import format_commits, to_prompt_str, MAX_COMMITS_PER_REPO, MAX_MESSAGE_LENGTH
 from datetime import datetime, timezone
 
 def test_summarise_truncation_message():
