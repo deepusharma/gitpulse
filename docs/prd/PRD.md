@@ -81,6 +81,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Sprint 09 | 📋 Planned | v0.7 | Epic #116 | PyPI packaging, `gitpulse init`, rich CLI help |
 | Sprint 10 | ✅ Done | v0.5 | Epic #117 | Analytics dashboard (Recharts charts) |
 | Sprint 11 | ✅ Done | v0.6 | Epic #118 | README, MkDocs, in-app `/docs` hub, project hardening |
+| Sprint 13 | 📋 Planned| v0.8 | Epic #116 | CLI Resilience: Auth & Env Validation (#220) |
 | Sprint 12 | ✅ Done | v0.6 | Epic #136 | UX fixes: error messages, repo dropdown, history filters, export, caching |
 | Sprint 14 | 🆕 New | v0.9 | TBD | `/insights` dashboard, PR/issue enrichment, stats for nerds, GitHub Projects |
 | Sprint 15 | 🆕 New | v1.0 | TBD | Team standup, badge generator, presentation mode, notifications |
@@ -245,6 +246,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Provide `CONTRIBUTING.md`, Code of Conduct, and PR templates. | S11.2 | #109 | Sprint 11 |
 | Scaffold and deploy MkDocs static site linked to GitHub Pages. | S11.3 | #110 | Sprint 11 |
 | Streamline semantic release workflow automating changelogs. | S11.4 | #111 | Sprint 11 |
+| Implement CLI pre-flight auth & env validation. | S11.5 | #220 | Sprint 11 |
 
 ---
 

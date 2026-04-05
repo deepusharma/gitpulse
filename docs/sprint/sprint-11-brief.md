@@ -112,6 +112,7 @@ Closes #111
 | #109 | S11.2: add contributing guide and code of conduct | 🔵 This Sprint | High |
 | #110 | S11.3: set up documentation site | 🔵 This Sprint | Medium |
 | #111 | S11.4: add GitHub release workflow | 🔵 This Sprint | Medium |
+| #220 | S11.5: implement CLI pre-flight auth & env validation | 🔵 This Sprint | Medium |
 
 ---
 
@@ -208,6 +209,21 @@ docs/
 - [ ] Changelog auto-generated
 - [ ] PyPI publish triggered
 - [ ] Version in pyproject.toml matches tag
+
+---
+
+### #220 — CLI Resilience: Pre-flight Auth
+
+**Goal:** Implement a 'friendly-failure' mechanism for authentication errors in the CLI.
+
+**Tasks:**
+- [ ] Update `summarise.py` to catch `groq.AuthenticationError`.
+- [ ] Update `cli.py` to catch the error and display a **Rich Instruction Panel**.
+- [ ] Panel must include steps to run `gitpulse init` or `export GROQ_API_KEY`.
+
+**Done when:**
+- [ ] No Python stack trace on 401 errors.
+- [ ] Professional Rich panel displayed with actionable resolution steps.
 
 ---
 

@@ -258,6 +258,7 @@ Active stories:
 - #102 pip install gitpulse (Namespace Refactor)
 - #103 PyPI publish workflow
 - #104 gitpulse init (Typer)
+- #220 CLI Resilience: Pre-flight Auth (Deffered to S11)
 
 Active branch: feature/sprint-09-packaging
 
