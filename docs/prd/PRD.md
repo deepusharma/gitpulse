@@ -56,8 +56,8 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | **v0.4**  | Config & Scheduling — CLI configuration defaults, dry-run flags, and frontend improvements.       | ✅ Complete    |
 | **v0.5**  | History & Analytics — PostgreSQL persistence, history page, analytics dashboard.                          | ✅ Complete    |
 | **v0.6**  | Enhanced UX & Caching — Searchable multiselect, server-side caching, history filters, data export.       | 🔄 In Progress |
-| **v0.7**  | Packaging & DX — PyPI distribution, `gitpulse init`, rich CLI help, shell completion.            | 📋 Planned     |
-| **v0.8**  | Open Source Ready — README, MkDocs, in-app docs hub, changelog page.                            | 📋 Planned     |
+| **v0.7**  | Packaging & DX — PyPI distribution, `gitpulse init`, rich CLI help, shell completion.            | ✅ Complete     |
+| **v0.8**  | Open Source Ready — README, MkDocs, in-app docs hub, changelog page.                            | 🔄 In Progress  |
 | **v0.9**  | Depth & Intelligence — PR/issue activity, `/insights` dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator. | 📋 Planned |
 | **v1.0**  | Team & Reach — Team standup view, badge generator, presentation mode, smart notifications.       | 📋 Planned     |
 | **v1.1**  | Pro Features — Private org repos, shareable summary links, comparison mode.                      | 📋 Planned     |

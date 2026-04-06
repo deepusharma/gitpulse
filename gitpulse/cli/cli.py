@@ -5,6 +5,7 @@ import asyncio
 from typing import Optional, List
 import typing
 
+import groq
 import typer
 from rich.console import Console
 from rich.panel import Panel
@@ -148,7 +149,24 @@ def generate(
         with console.status("[bold green]Generating AI standup summary...[/bold green]"):
             prompt_str = to_prompt_str(formatted_commits)
             prompt = build_prompt(prompt_str)
-            summary = await summarise(prompt)
+            try:
+                summary = await summarise(prompt)
+            except groq.AuthenticationError:
+                console.print(
+                    Panel(
+                        "[bold red]Authentication Failed[/bold red]\n\n"
+                        "Your [bold]GROQ_API_KEY[/bold] was rejected by the Groq API (HTTP 401).\n\n"
+                        "[bold yellow]Resolution steps:[/bold yellow]\n"
+                        "  1. Get a valid key from [link=https://console.groq.com]console.groq.com[/link]\n"
+                        "  2. Run: [bold cyan]export GROQ_API_KEY=gsk_...[/bold cyan]\n"
+                        "     — or add it to your [cyan].env[/cyan] file in the project root\n"
+                        "  3. Re-run [bold cyan]gitpulse generate[/bold cyan]",
+                        title="[bold red]Groq Error[/bold red]",
+                        border_style="red",
+                        expand=False,
+                    )
+                )
+                raise typer.Exit(1)
 
         # Display result
         console.print("\n[bold green]Standup Summary:[/bold green]")
@@ -183,7 +201,7 @@ def main(ctx: typer.Context):
     Subcommand router. Default behavior is to show help if no command specified.
     """
     if ctx.invoked_subcommand is None:
-        console.print("[bold cyan]GitPulse[/bold cyan] v0.7.0")
+        console.print("[bold cyan]GitPulse[/bold cyan] v0.8.0")
         console.print("Use [bold]gitpulse generate[/bold] to create a summary or [bold]gitpulse init[/bold] to set up.")
         # console.print(ctx.get_help())
 

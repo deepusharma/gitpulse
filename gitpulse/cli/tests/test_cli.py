@@ -3,6 +3,7 @@ import sys
 from datetime import datetime, timezone
 from unittest.mock import patch, MagicMock, AsyncMock
 from typer.testing import CliRunner
+import groq
 from gitpulse.cli.cli import app
 
 runner = CliRunner()
@@ -73,3 +74,23 @@ def test_cli_flags_override_defaults(mock_open, mock_makedirs, mock_build_prompt
     args, kwargs = mock_get_commits.call_args
     assert kwargs["days"] == 5
     mock_open.assert_called_once_with("flag_output.md", "w")
+
+
+@patch("gitpulse.cli.cli.load_config")
+@patch("gitpulse.cli.cli.load_env")
+@patch("gitpulse.cli.cli.get_commits", new_callable=AsyncMock)
+@patch("gitpulse.cli.cli.summarise", new_callable=AsyncMock)
+def test_auth_error_shows_rich_panel(mock_summarise, mock_get_commits, mock_load_env, mock_load_config):
+    """groq.AuthenticationError must produce a friendly Rich panel and exit 1 — no raw traceback."""
+    mock_load_config.return_value = {"repos": {"r1": "/path"}}
+    mock_get_commits.return_value = (
+        [{"repo": "r1", "message": "msg", "author": "a", "date": datetime.now(timezone.utc), "hash": "abc1234"}],
+        [],
+    )
+    mock_summarise.side_effect = groq.AuthenticationError.__new__(groq.AuthenticationError)
+
+    result = runner.invoke(app, ["generate"])
+
+    assert result.exit_code == 1
+    assert "Authentication Failed" in result.output
+    assert "GROQ_API_KEY" in result.output
