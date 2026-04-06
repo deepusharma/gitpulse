@@ -1,0 +1,35 @@
+site_name: GitPulse
+site_url: https://deepusharma.github.io/gitpulse
+repo_url: https://github.com/deepusharma/gitpulse
+repo_name: deepusharma/gitpulse
+
+theme:
+  name: material
+  palette:
+    - scheme: slate       # dark mode default for developer tool
+      primary: indigo
+      accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Quick Start: quickstart.md
+    - Configuration: configuration.md
+  - Reference:
+    - CLI Reference: cli-reference.md
+    - API Reference: api-reference.md
+    - Web UI Guide: web-ui.md
+  - Contributing:
+    - How to Contribute: contributing.md
+    - Code of Conduct: code-of-conduct.md
+    - Architecture: architecture.md
+
+plugins:
+  - search

@@ -1,93 +1,181 @@
-# gitpulse (v0.6.0)
+# gitpulse
 
-A multi-client tool that reads git commit history and generates AI-powered standup summaries.
+> AI-powered standup summaries from your git history — in seconds.
 
-![Python](https://img.shields.io/badge/python-3.12+-blue)
 [![CI](https://github.com/deepusharma/gitpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/deepusharma/gitpulse/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/gitpulse)](https://pypi.org/project/gitpulse/)
+![Python](https://img.shields.io/badge/python-3.12+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Groq](https://img.shields.io/badge/LLM-Groq%20%7C%20llama--3.3--70b-orange)
-![uv](https://img.shields.io/badge/package%20manager-uv-purple)
 
-GitPulse automates the retrieval of git commit history—from local folders or remote GitHub repos—and leverages LLMs to generate well-structured, professional standup updates.
-
-## ✨ New in v0.6.0
-- **Searchable Repository Selection**: Pick repos from a dynamic list instead of manual typing.
-- **Server-side Caching**: Lightning-fast summary generation via in-memory caching.
-- **History Filters**: Search your past summaries by keyword and date-range.
-- **Data Export**: Download your summaries as `.md` files.
+**gitpulse** reads your local git history (or remote GitHub repos), and uses the Groq LLM to generate a structured, professional standup update — in the four-section format your team already uses.
 
 ---
 
-## 🚀 Live Demo
+## 🎬 Demo
 
-| Component | URL                                           |
-| --------- | --------------------------------------------- |
-| **Web UI**| <https://gitpulse-kappa.vercel.app>           |
-| **API**   | <https://web-production-83e65.up.railway.app> |
+![gitpulse CLI demo](docs/demo.svg)
 
 ---
 
-## 🛠️ Installation (Local CLI)
+## ✨ Features
+
+- **CLI** — run `gitpulse generate` in any project directory; get a standup in seconds
+- **Web UI** — log in with GitHub OAuth, select repos, generate without installing anything
+- **Multi-repo** — combine commits across any number of repos into one summary
+- **Config-driven** — set default repos, lookback window, and output path in `~/.gitpulse.toml`
+- **History** — every summary is persisted; browse and search past standups at `/history`
+- **Analytics** — commit frequency charts and repo activity breakdowns at `/dashboard`
+
+---
+
+## 🚀 Installation
+
+### Via pip (recommended)
 
 ```bash
-# Clone
-git clone git@github.com:deepusharma/gitpulse.git
+pip install gitpulse
+```
+
+### From source (for contributors)
+
+```bash
+git clone https://github.com/deepusharma/gitpulse.git
 cd gitpulse
-
-# Set up environment
-uv venv
-source .venv/bin/activate
+uv venv && source .venv/bin/activate
 uv pip install -e ".[dev]"
-
-# Add your credentials
-cp .env.example .env
-# edit .env and add GROQ_API_KEY
 ```
 
 ---
 
-## ⚙️ Configure CLI
+## ⚡ Quick Start
 
-Create `~/.gitpulse.toml` to store your local repository paths:
+```bash
+# 1. Install
+pip install gitpulse
+
+# 2. Set your API key
+export GROQ_API_KEY=gsk_...          # get one free at console.groq.com
+
+# 3. Run interactive setup (creates ~/.gitpulse.toml)
+gitpulse init
+
+# 4. Generate your first standup
+gitpulse generate
+```
+
+You'll get a standup summary in your terminal and saved to `output/summary.md`.
+
+---
+
+## ⚙️ Configuration — `~/.gitpulse.toml`
+
+`gitpulse init` creates this file interactively. You can also edit it manually:
 
 ```toml
+# ~/.gitpulse.toml
+github_username = "deepusharma"
+
+[defaults]
+days   = 7
+output = "output/summary.md"
+
 [repos]
 gitpulse = "/Users/you/projects/gitpulse"
-my-app = "/Users/you/projects/my-app"
+my-app   = "/Users/you/projects/my-app"
 ```
+
+**Full reference:**
+
+| Key | Section | Type | Default | Description |
+|---|---|---|---|---|
+| `github_username` | root | string | — | Your GitHub username |
+| `days` | `[defaults]` | int | `7` | Default lookback window in days |
+| `output` | `[defaults]` | string | `"output/summary.md"` | Output file path |
+| `<name>` | `[repos]` | string | — | Absolute path to a local git repository |
 
 ---
 
-## 📖 Usage
+## 📖 CLI Reference
 
-### CLI (Local Repos)
 ```bash
-# Generate for last 7 days (default)
-gitpulse
-
-# For specific repo and duration
-gitpulse --repo gitpulse --days 14 --output report.md
+gitpulse init                          # Interactive setup wizard
+gitpulse generate                      # Generate for all configured repos (last 7 days)
+gitpulse generate --days 14            # Look back 14 days
+gitpulse generate --repo my-app        # Specific repo only
+gitpulse generate --output stand.md   # Custom output file
+gitpulse generate --dry-run            # Show commits only; skip the LLM call
+gitpulse generate --debug             # Verbose logging
 ```
 
-### Web UI (Remote Repos)
-1. Log in with **GitHub OAuth**.
-2. Search and select your repositories.
-3. Hit **Generate Summary**.
-4. Download the result or view it in your **History**.
+Full CLI docs: https://deepusharma.github.io/gitpulse/cli-reference/
 
 ---
 
-## 📂 Project Structure
+## 🌐 Web UI
 
-```none
-gitpulse/
-├── core/     # Shared library: repo reading & AI summarization
-├── cli/      # Typer-based CLI tool
-├── api/      # FastAPI backend
-├── web/      # Next.js 14 frontend (App Router)
-├── docs/     # PRDs, Architecture, and Release Notes
-├── db/       # Database migrations and seeders
-└── tests/    # Comprehensive test suites
+Try it live — no install required:
+
+| Component | URL |
+|---|---|
+| **Web UI** | https://gitpulse-kappa.vercel.app |
+| **API** | https://web-production-83e65.up.railway.app |
+
+1. Log in with **GitHub OAuth**
+2. Enter your username → repos load automatically
+3. Select repos, set lookback window, hit **Generate**
+4. Download the result or browse **History**
+
+> *Web UI screenshot coming soon*
+
+---
+
+## 🔌 API Quick Reference
+
+Base URL: `https://web-production-83e65.up.railway.app`
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/summarise` | Generate a standup summary |
+| `GET` | `/history` | Retrieve past summaries |
+| `GET` | `/analytics` | Commit activity data |
+| `GET` | `/health` | Service health check |
+
+**Example:**
+```bash
+curl -X POST https://web-production-83e65.up.railway.app/summarise \
+  -H "Content-Type: application/json" \
+  -d '{"username": "deepusharma", "repos": ["gitpulse"], "days": 7}'
+```
+
+Full API docs: https://deepusharma.github.io/gitpulse/api-reference/
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    CLI["gitpulse generate\n(CLI)"] --> core
+    WebUI["Web UI\n(Next.js / Vercel)"] --> API
+    API["FastAPI\n(Railway)"] --> core
+    core["gitpulse.core\nrepo_reader · summarise · utils"]
+    core --> LocalGit["Local .git\n(GitPython)"]
+    core --> GitHubAPI["GitHub API\n(httpx)"]
+    core --> GroqAPI["Groq API\nllama-3.3-70b-versatile"]
+```
+
+---
+
+## 🗂️ Project Structure
+
+```
+gitpulse/            ← pip-installable package
+├── core/            # Shared library: repo reading & AI summarization
+├── cli/             # Typer-based CLI tool
+api/                 # FastAPI backend
+web/                 # Next.js 14 frontend (App Router)
+docs/                # PRDs, architecture, and sprint docs
 ```
 
 ---
@@ -95,41 +183,59 @@ gitpulse/
 ## ✅ Run Tests
 
 ```bash
+# Python
 uv run pytest -v
+
+# Frontend
+cd web && npm run test
 ```
 
 ---
 
 ## 🚧 Troubleshooting
 
-### `GROQ_API_KEY` Missing
-- **Error**: `ValueError: Missing required environment variable: GROQ_API_KEY`
-- **Solution**: Ensure your `.env` file is in the root directory and contains a valid key from [console.groq.com](https://console.groq.com).
+### `GROQ_API_KEY` invalid or missing
+- **Error**: `Authentication Failed` Rich panel
+- **Fix**: Set a valid key → `export GROQ_API_KEY=gsk_...` or add to `.env`
+- **Get key**: https://console.groq.com
 
-### GitHub API Rate Limits
+### GitHub API rate limits
 - **Error**: `403 Forbidden` or `429 Too Many Requests`
-- **Solution**: Add a `GITHUB_TOKEN` to your `.env` file to increase your rate limit from 60 to 5000 requests per hour.
+- **Fix**: Add `GITHUB_TOKEN` to your `.env` file (raises limit from 60 → 5,000 req/hr)
 
-### Config Not Found
-- **Error**: `FileNotFoundError: ~/.gitpulse.toml not found`
-- **Solution**: Run `gitpulse init` (planned) or manually create the file as described in the **Configure** section.
+### Config not found
+- **Error**: `~/.gitpulse.toml not found`
+- **Fix**: Run `gitpulse init`
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] GitHub OAuth Integration
-- [x] Analytics Dashboard (v0.5)
-- [x] Server-side Caching (v0.6)
-- [ ] Email & Slack Delivery (v0.7)
-- [ ] PyPI Distribution (v0.8)
-- [ ] VS Code Extension (v1.0)
+| Version | Theme | Status |
+|---|---|---|
+| v0.7 | Packaging & DX (`pip install`, `gitpulse init`) | ✅ Complete |
+| v0.8 | Open Source Ready (README, MkDocs, release workflow) | 🔵 Active |
+| v0.9 | Depth & Intelligence (PR/issue enrichment, `/insights`) | 📋 Planned |
+| v1.0 | Team & Reach (team standup, badge generator) | 📋 Planned |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+
+- [Bug reports](.github/ISSUE_TEMPLATE/bug_report.md)
+- [Feature requests](.github/ISSUE_TEMPLATE/feature_request.md)
+- [Pull request template](.github/PULL_REQUEST_TEMPLATE.md)
+
+---
+
+## 📚 Documentation
+
+Full docs: **https://deepusharma.github.io/gitpulse**
 
 ---
 
 ## 📄 License
 
-MIT
-
----
-> Built by the GitPulse Team.
+[MIT](LICENSE) — built with ❤️ using [Groq](https://groq.com), [FastAPI](https://fastapi.tiangolo.com), [Next.js](https://nextjs.org), and [uv](https://github.com/astral-sh/uv).

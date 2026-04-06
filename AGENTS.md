@@ -1,6 +1,38 @@
-# AGENTS.md — gitpulse
+# CLAUDE.md
 
-This file provides shared context for all AI agents working on this project.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+---
+
+## Dev Commands
+
+### Python (core + cli + api)
+
+```bash
+uv sync --extra dev          # Install all deps including test extras
+
+uv run pytest -v             # Run all tests
+uv run pytest gitpulse/core/tests/test_repo_reader.py -v  # Single file
+uv run pytest -k "test_name" # Single test by name
+
+uv run gitpulse              # Run the CLI
+uv run uvicorn api.api:app --reload  # Run the API server (dev)
+uv run ruff check .          # Lint (blocks print statements via T20 rule)
+```
+
+### Web
+
+```bash
+cd web
+npm run dev    # Dev server
+npm run build  # Production build
+npm run lint   # ESLint
+npm run test   # Vitest unit tests
+```
+
+---
+
+This file also provides shared context for all AI agents working on this project.
 Read this before starting any task.
 
 ---
@@ -17,9 +49,9 @@ a web interface for browser access — both sharing a common Python core library
 
 | Doc          | Path                            | When to read                    |
 | ------------ | ------------------------------- | ------------------------------- |
-| PRD v0.1     | `docs/prd/prd-v01.md`           | Before any CLI work             |
-| PRD v0.2     | `docs/prd/prd-v02.md`           | Before any web UI work          |
-| PRD v0.3     | `docs/prd/prd-v03.md`           | Before any v0.3 work            |
+| PRD v0.1     | `docs/prd/archive/prd-v01.md`   | Before any CLI work             |
+| PRD v0.2     | `docs/prd/archive/prd-v02.md`   | Before any web UI work          |
+| PRD v0.3     | `docs/prd/archive/prd-v03.md`   | Before any v0.3 work            |
 | Architecture | `docs/architecture/overview.md` | Before any implementation       |
 | API Contract | `docs/api/api-contract.md`      | Before backend or frontend work |
 
@@ -65,67 +97,52 @@ graph TD
 ## Codebase Structure
 
 ```none
-gitpulse/
+gitpulse/                    ← pip-installable package root
+├── __init__.py
 ├── core/
-│   ├── __init__.py
 │   ├── repo_reader.py
 │   ├── summarise.py
 │   ├── utils.py
 │   ├── tests/
-│   │   ├── test_repo_reader.py
-│   │   ├── test_summarise.py
-│   │   └── test_utils.py
 │   └── docs/
 │       └── core-guide.md
 ├── cli/
-│   ├── __init__.py
 │   ├── cli.py
 │   ├── tests/
-│   │   └── test_cli.py
 │   └── docs/
 │       └── cli-guide.md
+api/                         ← FastAPI server (root level, not in package)
+├── api.py
+├── cache.py
+├── db.py
+├── tests/
+└── docs/
+    └── api-guide.md         # TODO: not yet created
+web/                         ← Next.js frontend
+├── src/app/
+├── tests/
+└── docs/
+    └── web-guide.md
+docs/
+├── prd/
+│   ├── PRD.md
+│   └── archive/             ← prd-v01.md, prd-v02.md, prd-v03.md
+├── architecture/
+│   └── overview.md
 ├── api/
-│   ├── __init__.py
-│   ├── api.py
-│   ├── tests/
-│   │   └── test_api.py
-│   └── docs/
-│       └── api-guide.md
-├── web/
-│   ├── src/
-│   │   └── app/
-│   │       └── page.tsx
-│   ├── tests/
-│   └── docs/
-│       └── web-guide.md
-├── docs/
-│   ├── prd/
-│   │   ├── prd-v01.md
-│   │   ├── prd-v02.md
-│   │   └── prd-v03.md
-│   ├── architecture/
-│   │   └── overview.md
-│   ├── api/
-│   │   └── api-contract.md
-│   ├── decisions/
-│   └── sphinx/
-├── AGENTS.md
-├── .antigravity/
-│   ├── rules/
-│   │   └── project-rules.md
-│   └── skills/
-│       ├── backend-dev/
-│       │   └── SKILL.md
-│       ├── frontend-dev/
-│       │   └── SKILL.md
-│       ├── reviewer/
-│       │   └── SKILL.md
-│       ├── tester-backend/
-│       │   └── SKILL.md
-│       └── tester-frontend/
-│           └── SKILL.md
-├── pyproject.toml
-└── package.json
+│   └── api-contract.md
+├── sprint/
+└── decisions/
+CLAUDE.md
+.antigravity/
+├── rules/project-rules.md
+└── skills/
+    ├── backend-dev/SKILL.md
+    ├── frontend-dev/SKILL.md
+    ├── reviewer/SKILL.md
+    ├── tester-backend/SKILL.md
+    └── tester-frontend/SKILL.md
+pyproject.toml
 ```
 
 ---
@@ -208,10 +225,10 @@ get_commits(source="github", username="deepusharma", repos=["gitpulse"], days=7)
 ### Import pattern
 
 ```python
-# Always import from core — never from src
-from core.repo_reader import get_commits
-from core.summarise import format_commits, summarise
-from core.utils import load_env
+# Always import from gitpulse.core — never relative or from src
+from gitpulse.core.repo_reader import get_commits
+from gitpulse.core.summarise import format_commits, summarise
+from gitpulse.core.utils import load_env
 ```
 
 ---
@@ -251,7 +268,8 @@ History:
 - v0.4 ✅ Complete (Config + Packaging)
 - v0.5 ✅ Complete (Analytics Dashboard)
 - v0.6 ✅ Complete — Enhanced Input UX & Caching
-- v0.7 🔵 Active — Packaging & DX
+- v0.7 ✅ Complete — Packaging & DX
+- v0.8 🔵 Active — Open Source Ready
 
 Active stories:
 
@@ -260,7 +278,6 @@ Active stories:
 - #104 gitpulse init (Typer)
 - #220 CLI Resilience: Pre-flight Auth (Deffered to S11)
 
-Active branch: feature/sprint-09-packaging
 
 ---
 

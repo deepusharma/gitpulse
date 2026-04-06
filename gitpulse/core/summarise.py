@@ -138,6 +138,9 @@ async def summarise(prompt_str:str) -> str:
                 temperature=0.3,
             )
             return response.choices[0].message.content
+        except groq.AuthenticationError as e:
+            logger.error("Groq authentication failed — invalid or expired GROQ_API_KEY: %s", e)
+            raise
         except Exception as e:
             logger.error("Error during Groq summarization: %s", e, exc_info=True)
-            raise e
+            raise
