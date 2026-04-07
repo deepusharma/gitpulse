@@ -36,16 +36,17 @@ def test_get_history_sql_injection_attempt():
 async def test_partial_repo_success_in_summarise():
     """Test that some failing repos don't prevent summary generation for others."""
     # This requires mocking get_commits to return both commits and errors
-    from gitpulse.core.repo_reader import get_commits
+    # This requires mocking get_activity to return both commits and errors
+    from gitpulse.core.repo_reader import get_activity
     
     from datetime import datetime, timezone
     
-    with patch("api.api.get_commits", new_callable=AsyncMock) as mock_get:
+    with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get:
         # 1 repo succeeds, 1 fails
-        mock_get.return_value = (
-            [{"repo": "success-repo", "message": "msg", "author": "a", "date": datetime.now(timezone.utc), "hash": "h"}],
-            ["Repo 'failed-repo' not found"]
-        )
+        mock_get.return_value = ({"commits": [
+            {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg1"},
+            {"repo": "repo3", "hash": "def", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg2"},
+        ], "prs": [], "issues": []}, ["Failed to fetch commits for repo2: 404 Not Found"])
         
         with patch("api.api.summarise") as mock_sum:
             mock_sum.return_value = "Summary for successful repo"

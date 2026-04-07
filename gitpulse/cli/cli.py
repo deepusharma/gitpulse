@@ -10,8 +10,8 @@ import typer
 from rich.console import Console
 from rich.panel import Panel
 
-from gitpulse.core.repo_reader import get_commits, load_config
-from gitpulse.core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
+from gitpulse.core.repo_reader import get_activity, load_config
+from gitpulse.core.summarise import format_activity, to_prompt_str, to_display_str, build_prompt, summarise
 from gitpulse.core.utils import load_env
 
 # Initialize Typer and Rich
@@ -124,22 +124,24 @@ def generate(
 
         # Fetch commits
         with console.status(f"[bold blue]Reading git history ({active_days} days)...[/bold blue]"):
-            commits, errors = await get_commits(source="local", days=active_days)
+            activity, errors = await get_activity(source="local", days=active_days)
+            commits = activity.get("commits", [])
         
         if errors:
             for error in errors:
                 console.print(f"[yellow]Warning:[/yellow] {error}")
         
         if active_repo:
-            commits = [c for c in commits if c["repo"] == active_repo]
+            activity["commits"] = [c for c in activity.get("commits", []) if c["repo"] == active_repo]
+            commits = activity["commits"]
 
         if not commits:
             console.print(f"[bold yellow]No commits found for the last {active_days} days.[/bold yellow] Try increasing [cyan]--days[/cyan].")
             raise typer.Exit(0)
 
-        # Format and display local commits
-        formatted_commits = format_commits(commits)
-        console.print(Panel(to_display_str(formatted_commits), title="Local Git History", border_style="blue"))
+        # Format and display local activity
+        formatted_activity = format_activity(activity)
+        console.print(Panel(to_display_str(formatted_activity), title="Local Git Activity", border_style="blue"))
 
         if dry_run:
             console.print("[bold yellow]Dry-run mode[/bold yellow] — skipping AI summarization.")
@@ -147,7 +149,7 @@ def generate(
 
         # Summarize via Groq
         with console.status("[bold green]Generating AI standup summary...[/bold green]"):
-            prompt_str = to_prompt_str(formatted_commits)
+            prompt_str = to_prompt_str(formatted_activity)
             prompt = build_prompt(prompt_str)
             try:
                 summary = await summarise(prompt)

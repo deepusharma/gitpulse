@@ -159,38 +159,114 @@ async def _get_github_commits(days: int = 7, username: str = None, repos: list =
                     return [], error_msg
         return [], "Unknown error"
 
+    async def fetch_repo_prs(client: httpx.AsyncClient, repo: str, retries: int = 3) -> list:
+        url = f"https://api.github.com/repos/{username}/{repo}/pulls"
+        params = {"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}
+        
+        async with semaphore:
+            for attempt in range(retries):
+                try:
+                    response = await client.get(url, headers=headers, params=params, timeout=30.0)
+                    if response.status_code in [404, 429, 403]: return [], None
+                    response.raise_for_status()
+                    data = response.json()
+                    prs = []
+                    for pr in data:
+                        if pr.get("merged_at"):
+                            merged_at = datetime.fromisoformat(pr["merged_at"].replace("Z", "+00:00"))
+                            if merged_at >= since:
+                                prs.append({
+                                    "repo": repo,
+                                    "title": pr["title"],
+                                    "number": pr["number"],
+                                    "merged_at": merged_at,
+                                    "url": pr["html_url"]
+                                })
+                    return prs, None
+                except Exception:
+                    return [], None
+        return [], None
+        
+    async def fetch_repo_issues(client: httpx.AsyncClient, repo: str, retries: int = 3) -> list:
+        url = f"https://api.github.com/repos/{username}/{repo}/issues"
+        params = {"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}
+        
+        async with semaphore:
+            for attempt in range(retries):
+                try:
+                    response = await client.get(url, headers=headers, params=params, timeout=30.0)
+                    if response.status_code in [404, 429, 403]: return [], None
+                    response.raise_for_status()
+                    data = response.json()
+                    issues = []
+                    for issue in data:
+                        # Skip if it's a PR masquerading as an issue
+                        if "pull_request" not in issue and issue.get("closed_at"):
+                            closed_at = datetime.fromisoformat(issue["closed_at"].replace("Z", "+00:00"))
+                            if closed_at >= since:
+                                issues.append({
+                                    "repo": repo,
+                                    "title": issue["title"],
+                                    "number": issue["number"],
+                                    "closed_at": closed_at,
+                                    "url": issue["html_url"]
+                                })
+                    return issues, None
+                except Exception:
+                    return [], None
+        return [], None
+
     async with httpx.AsyncClient() as client:
         # TRIGGER ALL REPO FETCHES SIMULTANEOUSLY
-        tasks = [fetch_repo_commits(client, repo) for repo in repos]
-        results = await asyncio.gather(*tasks)
+        commit_tasks = [fetch_repo_commits(client, repo) for repo in repos]
+        pr_tasks = [fetch_repo_prs(client, repo) for repo in repos]
+        issue_tasks = [fetch_repo_issues(client, repo) for repo in repos]
+        
+        commit_results = await asyncio.gather(*commit_tasks)
+        pr_results = await asyncio.gather(*pr_tasks)
+        issue_results = await asyncio.gather(*issue_tasks)
         
     all_commits = []
+    all_prs = []
+    all_issues = []
     all_errors = []
-    for res_commits, error in results:
+    
+    for res_commits, error in commit_results:
         all_commits.extend(res_commits)
         if error:
             all_errors.append(error)
             
-    return all_commits, all_errors
-
-async def get_commits(source: str = "local", days: int = 7, **kwargs) -> tuple[list, list]:
+    for res_prs, _ in pr_results:
+        all_prs.extend(res_prs)
+        
+    for res_issues, _ in issue_results:
+        all_issues.extend(res_issues)
+            
+    return {"commits": all_commits, "prs": all_prs, "issues": all_issues}, all_errors
+async def get_activity(source: str = "local", days: int = 7, username: str = None, repos: list[str] = None, **kwargs) -> tuple[dict, list]:
     """
-    Get the commits for the duration of days provided 
+    Get the activity (commits, PRs, issues) for the duration of days provided 
     
     Args: 
         source (str): "local" or "github".
-        days (int): Number of days to look back for commits. 7 by default
+        days (int): Number of days to look back. 7 by default
+        username (str): The GitHub username
+        repos (list[str]): The repositories to fetch
 
     Returns:
-        tuple[list, list]: (list of commit dicts, list of error strings).
+        tuple[dict, list]: (dict of activity lists, list of error strings).
 
     Raises:
         Exception: If Any errors found
     """
+    if repos is not None and not repos:
+        return {"commits": [], "prs": [], "issues": []}, []
+
     if source == "local":
-        return await _get_local_commits(days=days)
+        commits, err = await _get_local_commits(days=days)
+        return {"commits": commits, "prs": [], "issues": []}, err
     elif source == "github":
-        return await _get_github_commits(days=days, **kwargs)
+        return await _get_github_commits(days=days, username=username, repos=repos, **kwargs)
     else:
         logger.error("Unknown source: %s", source)
         raise ValueError(f"Unknown source: {source}")
