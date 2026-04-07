@@ -14,8 +14,8 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from gitpulse.core.repo_reader import get_commits
-from gitpulse.core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt, summarise
+from gitpulse.core.repo_reader import get_activity
+from gitpulse.core.summarise import format_activity, to_prompt_str, to_display_str, build_prompt, summarise
 
 from contextlib import asynccontextmanager
 import os
@@ -190,12 +190,13 @@ async def create_summary(request: SummariseRequest, refresh: bool = False):
 
     try:
         # Calls the GitHub API adapter
-        commits, errors = await get_commits(
+        activity, errors = await get_activity(
             source="github",
             username=request.username,
             repos=request.repos,
             days=request.days
         )
+        commits = activity.get("commits", [])
         
         if not commits and errors:
             error_msg = errors[0]
@@ -206,10 +207,19 @@ async def create_summary(request: SummariseRequest, refresh: bool = False):
                 raise HTTPException(status_code=429, detail={"error": error_msg, "code": 429})
             else:
                 raise Exception(error_msg)
-        elif errors:
-            logger.warning("Encountered partial errors during commit fetch: %s", errors)
-        
-        formatted = format_commits(commits)
+        if len(commits) == 0 and len(activity.get("prs", [])) == 0 and len(activity.get("issues", [])) == 0:
+            logger.info("No activity found for %s over the last %s days", request.username, request.days)
+            return {
+                "display": "No activity found.",
+                "summary": "No activity found.",
+                "repos": request.repos,
+                "username": request.username,
+                "days": request.days,
+                "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            }
+            
+        formatted = format_activity(activity)
+
         prompt_str = to_prompt_str(formatted)
         display_str = to_display_str(formatted)
         
@@ -403,13 +413,14 @@ async def _get_user_repos(username: str) -> list[str]:
             raise HTTPException(status_code=500, detail="Failed to fetch user repositories from GitHub")
 
 @app.get("/analytics/commits-per-day")
-async def get_commits_per_day(username: str, days: int = 30):
+async def get_activity_per_day(username: str, days: int = 30):
     repos = await _get_user_repos(username)
     if not repos:
         return []
     
     try:
-        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
+        activity, errors = await get_activity(source="github", username=username, repos=repos, days=days)
+        commits = activity.get("commits", [])
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")
@@ -429,7 +440,8 @@ async def get_repos_breakdown(username: str, days: int = 30):
         return []
         
     try:
-        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
+        activity, errors = await get_activity(source="github", username=username, repos=repos, days=days)
+        commits = activity.get("commits", [])
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")
@@ -537,7 +549,8 @@ async def get_analytics_full(username: str, days: int = 30, refresh: bool = Fals
         
     # 3. Get ALL relevant commits in ONE sweep
     try:
-        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
+        activity, errors = await get_activity(source="github", username=username, repos=repos, days=days)
+        commits = activity.get("commits", [])
     except Exception as e:
         logger.error("Failed to fetch commits for %s: %s", username, e)
         # Return empty data instead of 500 to keep dashboard stable
@@ -645,7 +658,8 @@ async def get_insights(username: str, days: int = 30):
         return {"most_active_day": "N/A", "streak": 0, "top_repo": "N/A", "total_summaries": total_summaries, "average_commits_per_day": 0}
         
     try:
-        commits, errors = await get_commits(source="github", username=username, repos=repos, days=days)
+        activity, errors = await get_activity(source="github", username=username, repos=repos, days=days)
+        commits = activity.get("commits", [])
     except Exception as e:
         logger.error("Failed to fetch commits: %s", e)
         raise HTTPException(status_code=500, detail="Failed to fetch commits")

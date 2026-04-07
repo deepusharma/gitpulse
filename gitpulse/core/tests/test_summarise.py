@@ -1,19 +1,19 @@
 from datetime import datetime, timezone
-from gitpulse.core.summarise import format_commits, to_prompt_str, to_display_str, build_prompt
+from gitpulse.core.summarise import format_activity, to_prompt_str, to_display_str, build_prompt
 
 
 # -----------------------------------------------------------------------------
-# format_commits
+# format_activity
 # -----------------------------------------------------------------------------
 
-def test_format_commits_empty():
-    """format_commits returns empty dict when given empty list."""
-    result = format_commits([])
+def test_format_activity_empty():
+    """format_activity returns empty dict when given empty list."""
+    result = format_activity({"commits": []})
     assert result == {}
 
 
-def test_format_commits_single():
-    """format_commits correctly cleans hash, date and message for a single commit."""
+def test_format_activity_single():
+    """format_activity correctly cleans hash, date and message for a single commit."""
     commits = [
         {
             "repo": "gitpulse",
@@ -23,17 +23,17 @@ def test_format_commits_single():
             "hash": "a1b2c3d4e5f6a1b2c3d4e5f6",
         }
     ]
-    result = format_commits(commits)
+    result = format_activity({"commits": commits})
 
     assert "gitpulse" in result
-    assert len(result["gitpulse"]) == 1
-    assert result["gitpulse"][0]["hash"] == "a1b2c3d"
-    assert result["gitpulse"][0]["date"] == "2026-03-20"
-    assert result["gitpulse"][0]["message"] == "feat: add summariser | First pass."
+    assert len(result["gitpulse"]["commits"]) == 1
+    assert result["gitpulse"]["commits"][0]["hash"] == "a1b2c3d"
+    assert result["gitpulse"]["commits"][0]["date"] == "2026-03-20"
+    assert result["gitpulse"]["commits"][0]["message"] == "feat: add summariser | First pass."
 
 
-def test_format_commits_multiple_repos():
-    """format_commits groups commits from different repos into separate keys."""
+def test_format_activity_groups_by_repo():
+    """format_activity groups commits from different repos into separate keys."""
     commits = [
         {
             "repo": "gitpulse",
@@ -50,16 +50,16 @@ def test_format_commits_multiple_repos():
             "hash": "b2c3d4e5f6a1b2c3d4e5f6a1",
         }
     ]
-    result = format_commits(commits)
+    result = format_activity({"commits": commits})
 
     assert "gitpulse" in result
     assert "dotfiles" in result
-    assert len(result["gitpulse"]) == 1
-    assert len(result["dotfiles"]) == 1
+    assert len(result["gitpulse"]["commits"]) == 1
+    assert len(result["dotfiles"]["commits"]) == 1
 
 
-def test_format_commits_multiple_commits_same_repo():
-    """format_commits groups multiple commits from the same repo into one key."""
+def test_format_activity_multiple_commits_same_repo():
+    """format_activity correctly appends multiple commits to the same repo key."""
     commits = [
         {
             "repo": "gitpulse",
@@ -76,10 +76,10 @@ def test_format_commits_multiple_commits_same_repo():
             "hash": "b2c3d4e5f6a1b2c3d4e5f6a1",
         }
     ]
-    result = format_commits(commits)
+    result = format_activity({"commits": commits})
 
     assert "gitpulse" in result
-    assert len(result["gitpulse"]) == 2
+    assert len(result["gitpulse"]["commits"]) == 2
 
 
 # -----------------------------------------------------------------------------
@@ -93,18 +93,28 @@ def test_to_prompt_str_empty():
 
 
 def test_to_prompt_str_contains_repo_and_commit():
-    """to_prompt_str output contains repo header and commit details."""
-    formatted = {
-        "gitpulse": [
-            {"hash": "a1b2c3d", "date": "2026-03-20", "message": "feat: add cli"}
-        ]
+    """to_prompt_str generates correct markdown string containing repo name and commit message."""
+    formatted_activity = {
+        "gitpulse": {
+            "commits": [
+                {
+                    "hash": "e5f6a1b2",
+                    "date": "2026-03-21",
+                    "message": "Setup project"
+                }
+            ],
+            "prs": [],
+            "issues": []
+        }
     }
-    result = to_prompt_str(formatted)
+    
+    result = to_prompt_str(formatted_activity)
 
     assert "### gitpulse" in result
-    assert "a1b2c3d" in result
-    assert "2026-03-20" in result
-    assert "feat: add cli" in result
+    assert "COMMITS:" in result
+    assert "e5f6a1b2" in result
+    assert "2026-03-21" in result
+    assert "Setup project" in result
 
 
 # -----------------------------------------------------------------------------
@@ -118,19 +128,27 @@ def test_to_display_str_empty():
 
 
 def test_to_display_str_contains_repo_and_commit():
-    """to_display_str output contains repo header, hash, date and message lines."""
-    formatted = {
-        "gitpulse": [
-            {"hash": "a1b2c3d", "date": "2026-03-20", "message": "feat: add cli | First pass."}
-        ]
+    """to_display_str generates correct Rich representation containing repo name and commit message."""
+    formatted_activity = {
+        "gitpulse": {
+            "commits": [
+                {
+                    "hash": "11223344",
+                    "date": "2026-03-21",
+                    "message": "Add visual stuff"
+                }
+            ],
+            "prs": [],
+            "issues": []
+        }
     }
-    result = to_display_str(formatted)
+    
+    result = to_display_str(formatted_activity)
 
     assert "### gitpulse" in result
-    assert "a1b2c3d" in result
-    assert "2026-03-20" in result
-    assert "feat: add cli" in result
-    assert "First pass." in result
+    assert "11223344" in result
+    assert "2026-03-21" in result
+    assert "Add visual stuff" in result
 
 
 # -----------------------------------------------------------------------------

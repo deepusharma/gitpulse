@@ -18,13 +18,13 @@ def test_cli_repo_filtering():
     
     with patch("gitpulse.cli.cli.load_config", return_value=mock_config):
         with patch("gitpulse.cli.cli.load_env"):
-            with patch("gitpulse.cli.cli.get_commits", new_callable=AsyncMock) as mock_get:
-                mock_get.return_value = (mock_commits, [])
+            with patch("gitpulse.cli.cli.get_activity", new_callable=AsyncMock) as mock_get:
+                mock_get.return_value = ({"commits": mock_commits, "prs": [], "issues": []}, [])
                 result = runner.invoke(app, ["generate", "--repo", "repo1", "--dry-run"])
                 
                 assert result.exit_code == 0
                 # Should only show repo1 in display
-                assert "Local Git History" in result.stdout
+                assert "Local Git Activity" in result.stdout
                 assert "repo1" in result.stdout
 
 def test_cli_output_auto_mkdir(tmp_path):
@@ -37,8 +37,8 @@ def test_cli_output_auto_mkdir(tmp_path):
     
     with patch("gitpulse.cli.cli.load_config", return_value=mock_config):
         with patch("gitpulse.cli.cli.load_env"):
-            with patch("gitpulse.cli.cli.get_commits", new_callable=AsyncMock) as mock_get:
-                mock_get.return_value = (mock_commits, [])
+            with patch("gitpulse.cli.cli.get_activity", new_callable=AsyncMock) as mock_get:
+                mock_get.return_value = ({"commits": mock_commits, "prs": [], "issues": []}, [])
                 with patch("gitpulse.cli.cli.summarise", new_callable=AsyncMock) as mock_sum:
                     mock_sum.return_value = "Summary content"
                     result = runner.invoke(app, ["generate", "--output", str(output_file)])
@@ -48,16 +48,16 @@ def test_cli_output_auto_mkdir(tmp_path):
     assert output_file.read_text() == "Summary content"
 
 def test_cli_days_calculation():
-    """Verify that --days flag is passed correctly to get_commits."""
+    """Verify that --days flag is passed correctly to get_activity."""
     mock_config = {"repos": {"r1": "/path"}}
     
     with patch("gitpulse.cli.cli.load_config", return_value=mock_config):
         with patch("gitpulse.cli.cli.load_env"):
-            with patch("gitpulse.cli.cli.get_commits", new_callable=AsyncMock) as mock_get:
-                mock_get.return_value = ([], ["No commits"]) # Trigger error to exit
+            with patch("gitpulse.cli.cli.get_activity", new_callable=AsyncMock) as mock_get:
+                mock_get.return_value = ({"commits": [], "prs": [], "issues": []}, ["No commits"]) # Trigger error to exit
                 result = runner.invoke(app, ["generate", "--days", "14"])
                 
                 assert result.exit_code == 0
-                # Verify get_commits was called with days=14
+                # Verify get_activity was called with days=14
                 args, kwargs = mock_get.call_args
                 assert kwargs["days"] == 14
