@@ -705,3 +705,89 @@ async def get_insights(username: str, days: int = 30):
         "total_summaries": total_summaries,
         "average_commits_per_day": average_commits
     }
+
+@app.get("/insights/metrics")
+async def get_insights_metrics(username: str, repos: str, days: int = 30):
+    repo_list = [r.strip() for r in repos.split(",") if r.strip()]
+    if not repo_list:
+        repo_list = await _get_user_repos(username)
+    if not repo_list: return []
+    
+    try:
+        activity, _ = await get_activity(source="github", username=username, repos=repo_list, days=days)
+    except Exception as e:
+        logger.error("Failed to fetch activity: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to fetch activity")
+
+    end_date = datetime.now(timezone.utc).date()
+    start_date = end_date - timedelta(days=days - 1)
+    
+    daily_metrics = {}
+    for i in range(days):
+        d = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+        daily_metrics[d] = {"date": d, "commits": 0, "prs": 0, "issues": 0}
+        
+    for item in activity.get("commits", []):
+        if "date" in item:
+            d = item["date"].strftime("%Y-%m-%d")
+            if d in daily_metrics: daily_metrics[d]["commits"] += 1
+            
+    for item in activity.get("prs", []):
+        if "merged_at" in item:
+            d = item["merged_at"].strftime("%Y-%m-%d")
+            if d in daily_metrics: daily_metrics[d]["prs"] += 1
+            
+    for item in activity.get("issues", []):
+        if "closed_at" in item:
+            d = item["closed_at"].strftime("%Y-%m-%d")
+            if d in daily_metrics: daily_metrics[d]["issues"] += 1
+            
+    return list(daily_metrics.values())
+
+@app.get("/insights/health")
+async def get_insights_health(username: str, repos: str):
+    repo_list = [r.strip() for r in repos.split(",") if r.strip()]
+    if not repo_list:
+        repo_list = await _get_user_repos(username)
+    if not repo_list: return {"health_score": 0, "repos": []}
+
+    token = os.environ.get("GITHUB_TOKEN")
+    headers = {"Accept": "application/vnd.github.v3+json"}
+    if token:
+        headers["Authorization"] = f"token {token}"
+
+    health_data = []
+    total_stars = 0
+    total_forks = 0
+    total_open_issues = 0
+
+    async with httpx.AsyncClient() as client:
+        for repo in repo_list:
+            resp = await client.get(f"https://api.github.com/repos/{username}/{repo}", headers=headers)
+            if resp.status_code == 200:
+                data = resp.json()
+                stars = data.get("stargazers_count", 0)
+                forks = data.get("forks_count", 0)
+                open_issues = data.get("open_issues_count", 0)
+                
+                total_stars += stars
+                total_forks += forks
+                total_open_issues += open_issues
+                
+                health_data.append({
+                    "repo": repo,
+                    "stars": stars,
+                    "forks": forks,
+                    "open_issues": open_issues
+                })
+                
+    score = 50 + min(total_stars, 30) + min(total_forks * 2, 20) - total_open_issues
+    score = max(0, min(100, score))
+    
+    return {
+        "health_score": score,
+        "total_stars": total_stars,
+        "total_forks": total_forks,
+        "total_open_issues": total_open_issues,
+        "repos": health_data
+    }
