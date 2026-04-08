@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Providers } from "@/components/Providers";
+import { TooltipProvider } from "@/components/ui/tooltip";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -30,11 +31,13 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen bg-background text-foreground flex flex-col`}
       >
         <Providers>
-          <Header />
-          <div className="flex-1">
-            {children}
-          </div>
-          <Footer />
+          <TooltipProvider>
+            <Header />
+            <div className="flex-1">
+              {children}
+            </div>
+            <Footer />
+          </TooltipProvider>
         </Providers>
       </body>
     </html>
