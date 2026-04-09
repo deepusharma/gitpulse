@@ -285,3 +285,51 @@ def test_get_insights_health():
             assert data["total_forks"] == 2
             assert data["total_open_issues"] == 1
             assert "health_score" in data
+
+def test_create_roster():
+    from api.api import get_db_pool
+    with patch("api.api.get_db_pool") as mock_pool_func:
+        mock_pool = MagicMock()
+        mock_conn = AsyncMock()
+        mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
+        
+        mock_conn.fetchrow.return_value = {"id": "123", "name": "Team A", "usernames": ["u1"], "created_at": datetime.now(timezone.utc)}
+        mock_pool_func.return_value = mock_pool
+        
+        response = client.post("/team/roster", json={"name": "Team A", "usernames": ["u1"]})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["name"] == "Team A"
+
+def test_team_summarise():
+    with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+        mock_get_activity.side_effect = [
+            ({"commits": [{"repo": "repo1", "hash": "1", "author": "u1", "date": datetime.now(timezone.utc), "message": "msg1"}], "prs": [], "issues": []}, []),
+            ({"commits": [{"repo": "repo1", "hash": "2", "author": "u2", "date": datetime.now(timezone.utc), "message": "msg2"}], "prs": [], "issues": []}, [])
+        ]
+        with patch("api.api.summarise", new_callable=AsyncMock) as mock_summarise:
+            mock_summarise.return_value = "Team Summary"
+            
+            response = client.post("/team/summarise", json={"usernames": ["u1", "u2"], "repos": ["repo1"]})
+            assert response.status_code == 200
+            data = response.json()
+            assert data["summary"] == "Team Summary"
+            assert "u1" in data["contributors"]
+            assert "u2" in data["contributors"]
+            
+def test_deliver_slack():
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+        
+        response = client.post("/deliver/slack", json={"summary": "hello", "webhook_url": "https://hooks.slack.com/T000"})
+        assert response.status_code == 200
+        assert mock_post.called
+
+def test_badges_streak_redirect():
+    with patch("api.api.get_insights", new_callable=AsyncMock) as mock_insights:
+        mock_insights.return_value = {"streak": 42}
+        response = client.get("/badges/streak?username=deepusharma", follow_redirects=False)
+        assert response.status_code == 307
+        assert "streak-42-brightgreen" in response.headers["location"]

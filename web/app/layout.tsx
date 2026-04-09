@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { ConditionalLayoutWrapper } from "@/components/ConditionalLayoutWrapper";
 import { Providers } from "@/components/Providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 const inter = Inter({
@@ -32,11 +31,9 @@ export default function RootLayout({
       >
         <Providers>
           <TooltipProvider>
-            <Header />
-            <div className="flex-1">
+            <ConditionalLayoutWrapper>
               {children}
-            </div>
-            <Footer />
+            </ConditionalLayoutWrapper>
           </TooltipProvider>
         </Providers>
       </body>
