@@ -102,3 +102,83 @@ export async function fetchUserRepos(username: string): Promise<{ repos: string[
   if (!response.ok) return { repos: [] };
   return response.json();
 }
+
+// --- Sprint 15: Team & Reach ---
+
+export interface RosterRequest {
+  name: string;
+  usernames: string[];
+}
+
+export interface RosterResponse {
+  id: string;
+  name: string;
+  usernames: string[];
+  created_at: string;
+}
+
+export interface TeamSummariseRequest {
+  usernames: string[];
+  repos: string[];
+  days: number;
+}
+
+export interface TeamSummariseResponse {
+  display: string;
+  summary: string;
+  repos: string[];
+  days: number;
+  contributors: string[];
+  generated_at: string;
+}
+
+export async function createRoster(req: RosterRequest): Promise<RosterResponse> {
+  const response = await fetch(`${API_URL}/team/roster`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) throw new Error("Failed to create roster");
+  return response.json();
+}
+
+export async function listRosters(): Promise<RosterResponse[]> {
+  const response = await fetch(`${API_URL}/team/rosters`);
+  if (!response.ok) throw new Error("Failed to list rosters");
+  return response.json();
+}
+
+export async function getRoster(id: string): Promise<RosterResponse> {
+  const response = await fetch(`${API_URL}/team/roster/${id}`);
+  if (!response.ok) throw new Error("Failed to get roster");
+  return response.json();
+}
+
+export async function deleteRoster(id: string): Promise<{ status: string }> {
+  const response = await fetch(`${API_URL}/team/roster/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new Error("Failed to delete roster");
+  return response.json();
+}
+
+export async function generateTeamSummary(req: TeamSummariseRequest): Promise<TeamSummariseResponse> {
+  const response = await fetch(`${API_URL}/team/summarise`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.detail || "Failed to generate team summary");
+  }
+  return response.json();
+}
+
+export async function deliverSlack(summary: string, webhookUrl: string, channel?: string): Promise<{ ok: boolean }> {
+  const response = await fetch(`${API_URL}/deliver/slack`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ summary, webhook_url: webhookUrl, channel }),
+  });
+  if (!response.ok) throw new Error("Failed to deliver to Slack");
+  return response.json();
+}

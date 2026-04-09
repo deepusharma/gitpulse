@@ -23,6 +23,12 @@ export function Header() {
               Dashboard
             </Link>
             <Link
+              href="/team"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Team
+            </Link>
+            <Link
               href="/history"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
