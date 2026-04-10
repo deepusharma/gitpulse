@@ -269,7 +269,11 @@ History:
 - v0.5 ✅ Complete (Analytics Dashboard)
 - v0.6 ✅ Complete — Enhanced Input UX & Caching
 - v0.7 ✅ Complete — Packaging & DX
-- v0.8 🔵 Active — Open Source Ready
+- v0.8 ✅ Complete — Open Source Ready
+- v0.9 ✅ Complete — Depth & Intelligence
+- v1.0 ✅ Complete — Team & Reach
+- v1.1 ✅ Complete — Pro Features
+
 
 Active stories:
 
