@@ -57,10 +57,10 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | **v0.5**  | History & Analytics — PostgreSQL persistence, history page, analytics dashboard.                          | ✅ Complete    |
 | **v0.6**  | Enhanced UX & Caching — Searchable multiselect, server-side caching, history filters, data export.       | 🔄 In Progress |
 | **v0.7**  | Packaging & DX — PyPI distribution, `gitpulse init`, rich CLI help, shell completion.            | ✅ Complete     |
-| **v0.8**  | Open Source Ready — README, MkDocs, in-app docs hub, changelog page.                            | 🔄 In Progress  |
-| **v0.9**  | Depth & Intelligence — PR/issue activity, `/insights` dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator. | 📋 Planned |
-| **v1.0**  | Team & Reach — Team standup view, badge generator, presentation mode, smart notifications.       | 📋 Planned     |
-| **v1.1**  | Pro Features — Private org repos, shareable summary links, comparison mode.                      | 📋 Planned     |
+| **v0.8**  | Open Source Ready — README, MkDocs, in-app docs hub, changelog page.                            | ✅ Complete  |
+| **v0.9**  | Depth & Intelligence — PR/issue activity, `/insights` dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator. | ✅ Complete |
+| **v1.0**  | Team & Reach — Team standup view, badge generator, presentation mode, smart notifications.       | ✅ Complete     |
+| **v1.1**  | Pro Features — Private org repos, shareable summary links, comparison mode.                      | ✅ Complete    |
 | **v1.2**  | AI & MCP — MCP server for Claude/Cursor/Windsurf, AI recommendations, prompt templates.          | 📋 Planned     |
 | **v1.3**  | Delight — Year in review, gamification, streaks, VS Code extension.                              | 📋 Planned     |
 
