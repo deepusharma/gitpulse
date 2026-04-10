@@ -83,7 +83,7 @@ def _get_local_commits_sync(days:int=7) -> list:
     return commits
 
 
-async def _get_github_commits(days: int = 7, username: str = None, repos: list = None) -> tuple[list, list]:
+async def _get_github_commits(days: int = 7, username: str = None, repos: list = None, token: str = None) -> tuple[dict, list]:
     """
     Get the commits from GitHub API for the duration of days provided.
     
@@ -91,12 +91,13 @@ async def _get_github_commits(days: int = 7, username: str = None, repos: list =
         days (int): Number of days to look back for commits. Defaults to 7.
         username (str): The GitHub username.
         repos (list): List of repository names.
+        token (str): Optional GitHub access token to override default.
         
     Returns:
-        tuple[list, list]: (list of commit dicts, list of error strings).
+        tuple[dict, list]: (dict of activity lists, list of error strings).
     """
     if not username or not repos:
-        return [], []
+        return {"commits": [], "prs": [], "issues": []}, []
 
     since = datetime.now(timezone.utc) - timedelta(days=days)
     since_iso = since.isoformat()
@@ -106,9 +107,11 @@ async def _get_github_commits(days: int = 7, username: str = None, repos: list =
         "X-GitHub-Api-Version": "2022-11-28"
     }
 
-    token = os.getenv("GITHUB_TOKEN")
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
+    # Use provided token or fall back to GITHUB_TOKEN env var
+    auth_token = token or os.getenv("GITHUB_TOKEN")
+    if auth_token:
+        headers["Authorization"] = f"Bearer {auth_token}"
+
 
     # Semaphore to prevent GitHub secondary rate limits (max 3 concurrent)
     semaphore = asyncio.Semaphore(3)

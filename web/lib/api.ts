@@ -7,12 +7,14 @@ export interface SummariseRequest {
 }
 
 export interface SummariseResponse {
+  id: string;
   display: string;
   summary: string;
   repos: string[];
   username: string;
   days: number;
   generated_at: string;
+  is_public: boolean;
 }
 
 export interface HistoryRecord {
@@ -29,6 +31,36 @@ export interface HistoryResponse {
   total: number;
 }
 
+
+export interface PublicSummaryResponse {
+  id: string;
+  username: string;
+  repos: string[];
+  days: number;
+  summary: string;
+  generated_at: string;
+}
+
+export interface CompareRecord {
+  commits: number;
+  prs: number;
+  issues: number;
+  active_days: number;
+}
+
+export interface CompareResponse {
+  username: string;
+  days: number;
+  current: CompareRecord;
+  previous: CompareRecord;
+  delta: {
+    commits: number;
+    prs: number;
+    issues: number;
+    active_days: number;
+  };
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -42,17 +74,21 @@ export class ApiError extends Error {
 
 export async function generateSummary(
   req: SummariseRequest,
-  refresh: boolean = false
+  refresh: boolean = false,
+  token?: string
 ): Promise<SummariseResponse> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) {
+    headers["X-GitHub-Token"] = token;
+  }
+
   const response = await fetch(`${API_URL}/summarise?refresh=${refresh}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(req),
   });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    // Backend returns { detail: { error: "...", code: N, traceback: "..." } }
-    // or { detail: [{ msg: "..." }] } for Pydantic validation errors
     const detail = body.detail;
     const message =
       (typeof detail === "object" && !Array.isArray(detail) && detail?.error) ||
@@ -67,6 +103,29 @@ export async function generateSummary(
   }
   return response.json();
 }
+
+export async function togglePublicSummary(id: string, isPublic: boolean): Promise<{ id: string; is_public: boolean }> {
+  const response = await fetch(`${API_URL}/history/${id}/public`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ public: isPublic }),
+  });
+  if (!response.ok) throw new Error("Failed to toggle public status");
+  return response.json();
+}
+
+export async function fetchPublicSummary(id: string): Promise<PublicSummaryResponse> {
+  const response = await fetch(`${API_URL}/summary/public/${id}`);
+  if (!response.ok) throw new Error("Public summary not found");
+  return response.json();
+}
+
+export async function fetchComparison(username: string, days: number = 30): Promise<CompareResponse> {
+  const response = await fetch(`${API_URL}/analytics/compare?username=${encodeURIComponent(username)}&days=${days}`);
+  if (!response.ok) throw new Error("Failed to fetch comparison data");
+  return response.json();
+}
+
 
 
 export async function fetchHistory(

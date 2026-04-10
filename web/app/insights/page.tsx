@@ -9,6 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Calendar, AlertCircle, GitCommit, GitPullRequest, CircleDot, Activity } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
+import { fetchComparison, CompareResponse } from "@/lib/api";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+
 
 interface HealthData {
   health_score: number;
@@ -33,6 +38,8 @@ function InsightsContent() {
 
   const [metricsData, setMetricsData] = useState<{date: string, commits: number, prs: number, issues: number}[]>([]);
   const [healthData, setHealthData] = useState<HealthData | null>(null);
+  const [comparisonData, setComparisonData] = useState<CompareResponse | null>(null);
+
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,9 +66,10 @@ function InsightsContent() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         
-        const [metricsRes, healthRes] = await Promise.all([
+        const [metricsRes, healthRes, compData] = await Promise.all([
           fetch(`${baseUrl}/insights/metrics?username=${username}&repos=&days=${days}`),
-          fetch(`${baseUrl}/insights/health?username=${username}&repos=`)
+          fetch(`${baseUrl}/insights/health?username=${username}&repos=`),
+          fetchComparison(username, days)
         ]);
 
         if (!metricsRes.ok || !healthRes.ok) {
@@ -73,6 +81,8 @@ function InsightsContent() {
 
         setMetricsData(mData);
         setHealthData(hData);
+        setComparisonData(compData);
+
       } catch (err: unknown) {
         const e = err as Error;
         setError(e.message || "An error occurred");
@@ -197,8 +207,10 @@ function InsightsContent() {
           <Tabs defaultValue="velocity" className="space-y-4">
             <TabsList className="bg-zinc-900 border border-zinc-800">
               <TabsTrigger value="velocity">Daily Velocity</TabsTrigger>
+              <TabsTrigger value="comparison">Period Comparison</TabsTrigger>
               <TabsTrigger value="nerds">Stats for Nerds</TabsTrigger>
             </TabsList>
+
             <TabsContent value="velocity" className="space-y-4">
               <Card className="bg-black/40 border-zinc-800">
                 <CardHeader>
@@ -242,6 +254,61 @@ function InsightsContent() {
                 </CardContent>
               </Card>
             </TabsContent>
+            <TabsContent value="comparison" className="space-y-4">
+              {comparisonData && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {(["commits", "prs", "issues", "active_days"] as const).map((key) => {
+                    const labels = { commits: "Commits", prs: "Merged PRs", issues: "Closed Issues", active_days: "Active Days" };
+                    const icons = { commits: GitCommit, prs: GitPullRequest, issues: CircleDot, active_days: Activity };
+                    
+                    const deltaValue = comparisonData.delta[key];
+                    const isPositive = deltaValue > 0;
+                    const isZero = deltaValue === 0;
+                    const Icon = icons[key];
+                    
+                    return (
+                      <Card key={key} className="bg-black/40 border-zinc-800">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">{labels[key]}</CardTitle>
+                          <Icon className="h-4 w-4 text-zinc-500" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-baseline justify-between">
+                            <div className="text-2xl font-bold">{comparisonData.current[key]}</div>
+                            <div className={cn(
+                              "flex items-center text-xs font-bold px-1.5 py-0.5 rounded",
+                              isPositive ? "text-emerald-500 bg-emerald-500/10" : 
+                              isZero ? "text-zinc-500 bg-zinc-500/10" : "text-rose-500 bg-rose-500/10"
+                            )}>
+                              {isPositive ? <TrendingUp className="h-3 w-3 mr-1" /> : 
+                               isZero ? <Minus className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
+                              {Math.abs(deltaValue)}%
+                            </div>
+                          </div>
+                          <p className="text-[10px] text-zinc-500 mt-2">
+                            Prev. period: {comparisonData.previous[key]}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+
+                </div>
+              )}
+              {comparisonData && (
+                <Card className="bg-black/40 border-zinc-800">
+                   <CardHeader>
+                      <CardTitle className="text-sm">Why this matters</CardTitle>
+                   </CardHeader>
+                   <CardContent className="text-xs text-zinc-400">
+                      Comparing the last {days} days against the previous {days} day period helps identify momentum shifts. 
+                      A positive delta in Active Days often indicates better work-life balance or consistent focus, 
+                      while PR delta tracks delivery throughput.
+                   </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
             <TabsContent value="nerds">
               <Card className="bg-black/40 border-zinc-800">
                 <CardHeader>
