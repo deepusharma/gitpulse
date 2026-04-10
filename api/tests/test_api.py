@@ -65,22 +65,27 @@ def test_summarise_valid_request_returns_200():
             with patch("api.api.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
+                mock_conn.fetchrow.return_value = {"id": "123e4567-e89b-12d3-a456-426614174000"}
                 mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
                 mock_pool_func.return_value = mock_pool
+
                 
                 response = client.post("/summarise", json={"username": "deepusharma", "repos": ["gitpulse"], "days": 7})
                 assert response.status_code == 200
                 data = response.json()
+                assert "id" in data
+                assert data["id"] == "123e4567-e89b-12d3-a456-426614174000"
                 assert "display" in data
                 assert data["summary"] == "Test summary"
                 assert data["repos"] == ["gitpulse"]
                 assert data["username"] == "deepusharma"
                 
                 # Check DB interaction
-                mock_conn.execute.assert_called_once()
-                args = mock_conn.execute.call_args[0]
+                mock_conn.fetchrow.assert_called_once()
+                args = mock_conn.fetchrow.call_args[0]
                 assert "INSERT INTO summaries" in args[0]
                 assert args[1] == "deepusharma"
+
 
 def test_summarise_missing_username_returns_422():
     response = client.post("/summarise", json={"repos": ["gitpulse"]})
@@ -98,7 +103,7 @@ def test_summarise_db_failure_does_not_break_response():
             with patch("api.api.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
-                mock_conn.execute.side_effect = Exception("DB failure")
+                mock_conn.fetchrow.side_effect = Exception("DB failure")
                 mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
                 mock_pool_func.return_value = mock_pool
                 

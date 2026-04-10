@@ -20,8 +20,25 @@ async def init_db():
         
         # Initialize rosters table
         await init_rosters_table()
+        # Migration: Add is_public to summaries
+        await init_summaries_public_migration()
     except Exception as e:
         logger.error("Failed to initialize asyncpg pool: %s", e)
+
+async def init_summaries_public_migration():
+    global pool
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            # PostgreSQL 9.6+ supports IF NOT EXISTS for ADD COLUMN
+            await conn.execute('''
+                ALTER TABLE summaries ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;
+            ''')
+            logger.info("Checked/migrated 'summaries' table for 'is_public' column.")
+    except Exception as e:
+        logger.error("Error migrating 'summaries' table: %s", e)
+
 
 async def init_rosters_table():
     global pool

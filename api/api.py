@@ -65,12 +65,14 @@ class SummariseRequest(BaseModel):
     days: int = 7
 
 class SummariseResponse(BaseModel):
+    id: str
     display: str
     summary: str
     repos: List[str]
     days: int
     username: str
     generated_at: str
+    is_public: bool = False
 
 class RosterRequest(BaseModel):
     name: str
@@ -99,6 +101,35 @@ class SlackDeliverRequest(BaseModel):
     summary: str
     webhook_url: str
     channel: Optional[str] = None
+
+class PublicToggleRequest(BaseModel):
+    public: bool
+
+class PublicToggleResponse(BaseModel):
+    id: str
+    is_public: bool
+
+class PublicSummaryResponse(BaseModel):
+    id: str
+    username: str
+    repos: List[str]
+    days: int
+    summary: str
+    generated_at: str
+
+class CompareRecord(BaseModel):
+    commits: int
+    prs: int
+    issues: int
+    active_days: int
+
+class CompareResponse(BaseModel):
+    username: str
+    days: int
+    current: CompareRecord
+    previous: CompareRecord
+    delta: dict
+
 
 # Routes
 @app.get("/health")
@@ -186,14 +217,21 @@ async def health_keys():
             
     return results
 
+from fastapi import Request, Header
+
 @app.post("/summarise", response_model=SummariseResponse)
-async def create_summary(request: SummariseRequest, refresh: bool = False):
+async def create_summary(
+    request: SummariseRequest, 
+    refresh: bool = False,
+    x_github_token: Optional[str] = Header(None)
+):
     """
     Generate a summary of commits for a given user and repositories.
     
     Args:
         request (SummariseRequest): The request payload containing username, repos, and days.
         refresh (bool): Whether to bypass existing cache (default False).
+        x_github_token (str): Optional GitHub token for private repo access.
         
     Returns:
         SummariseResponse: The generated summary and associated metadata.
@@ -224,7 +262,8 @@ async def create_summary(request: SummariseRequest, refresh: bool = False):
             source="github",
             username=request.username,
             repos=request.repos,
-            days=request.days
+            days=request.days,
+            token=x_github_token
         )
         commits = activity.get("commits", [])
         
@@ -237,52 +276,60 @@ async def create_summary(request: SummariseRequest, refresh: bool = False):
                 raise HTTPException(status_code=429, detail={"error": error_msg, "code": 429})
             else:
                 raise Exception(error_msg)
+
+        generated_at = datetime.now(timezone.utc)
+        
         if len(commits) == 0 and len(activity.get("prs", [])) == 0 and len(activity.get("issues", [])) == 0:
             logger.info("No activity found for %s over the last %s days", request.username, request.days)
-            return {
+            res = {
+                "id": "none",
                 "display": "No activity found.",
                 "summary": "No activity found.",
                 "repos": request.repos,
                 "username": request.username,
                 "days": request.days,
-                "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                "generated_at": generated_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "is_public": False
             }
+            return res
             
         formatted = format_activity(activity)
-
         prompt_str = to_prompt_str(formatted)
         display_str = to_display_str(formatted)
         
         prompt = build_prompt(prompt_str)
         summary = await summarise(prompt)
         
-        generated_at = datetime.now(timezone.utc)
-        
         logger.info("Successfully generated summary for username: %s", request.username)
         
+        summary_id = "none"
         # Save to DB if pool is available
         pool = get_db_pool()
         if pool:
             try:
                 async with pool.acquire() as connection:
-                    await connection.execute(
+                    row = await connection.fetchrow(
                         '''
                         INSERT INTO summaries (username, repos, days, display, summary, generated_at)
                         VALUES ($1, $2, $3, $4, $5, $6)
+                        RETURNING id
                         ''',
                         request.username, request.repos, request.days, display_str, summary, generated_at
                     )
-                logger.info("Saved summary to database for username: %s", request.username)
+                    summary_id = str(row['id'])
+                logger.info("Saved summary to database with id: %s", summary_id)
             except Exception as db_e:
                 logger.error("Failed to save summary to database: %s", db_e, exc_info=True)
 
         result = {
+            "id": summary_id,
             "display": display_str,
             "summary": summary,
             "repos": request.repos,
             "username": request.username,
             "days": request.days,
-            "generated_at": generated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+            "generated_at": generated_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "is_public": False
         }
         
         # Update cache
@@ -307,6 +354,141 @@ async def create_summary(request: SummariseRequest, refresh: bool = False):
                 "traceback": tb if os.getenv("DEBUG", "false").lower() == "true" else None,
                 "code": 500
             })
+
+@app.patch("/history/{summary_id}/public", response_model=PublicToggleResponse)
+async def toggle_summary_public(summary_id: str, req: PublicToggleRequest):
+    """Toggle the is_public flag for a summary."""
+    pool = get_db_pool()
+    if not pool:
+        raise HTTPException(status_code=503, detail="Database integration disabled")
+    try:
+        async with pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "UPDATE summaries SET is_public = $1 WHERE id::text = $2 RETURNING id, is_public",
+                req.public, summary_id
+            )
+            if not row:
+                raise HTTPException(status_code=404, detail="Summary not found")
+            return PublicToggleResponse(id=str(row['id']), is_public=row['is_public'])
+    except HTTPException: raise
+    except Exception as e:
+        logger.error("Failed to toggle public status: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to toggle public status")
+
+@app.get("/summary/public/{summary_id}", response_model=PublicSummaryResponse)
+async def get_public_summary(summary_id: str):
+    """Fetch a public summary by ID without authentication."""
+    pool = get_db_pool()
+    if not pool:
+        raise HTTPException(status_code=503, detail="Database integration disabled")
+    try:
+        async with pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT id, username, repos, days, summary, generated_at FROM summaries WHERE id::text = $1 AND is_public = TRUE",
+                summary_id
+            )
+            if not row:
+                raise HTTPException(status_code=404, detail="Public summary not found")
+            return PublicSummaryResponse(
+                id=str(row['id']),
+                username=row['username'],
+                repos=row['repos'],
+                days=row['days'],
+                summary=row['summary'],
+                generated_at=row['generated_at'].strftime("%Y-%m-%dT%H:%M:%SZ")
+            )
+    except HTTPException: raise
+    except Exception as e:
+        logger.error("Failed to fetch public summary: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to fetch public summary")
+
+@app.get("/analytics/compare", response_model=CompareResponse)
+async def compare_periods(username: str, days: int = 30):
+    """Compare performance metrics between current and previous periods."""
+    repos = await _get_user_repos(username)
+    if not repos:
+        raise HTTPException(status_code=404, detail="No repositories found for user")
+
+    # Current period
+    activity_curr, _ = await get_activity(source="github", username=username, repos=repos, days=days)
+    
+    # Previous period
+    # To get the previous period of the same length, we look back from (days) ago to (2*days) ago.
+    # However, get_activity is built to look back N days from NOW.
+    # We might need a more flexible get_activity or a custom implementation here.
+    # For now, let's assume we can use a custom fetch since get_activity is a bit fixed.
+    
+    # Actually, let's just do two calls if we can but handle the dates.
+    # current: [now - days, now]
+    # previous: [now - 2*days, now - days]
+    
+    # I'll implement a helper for this or use raw calls.
+    # Given the complexity, I'll stick to a slightly simplified comparison for this sprint:
+    # We'll fetch all activity for 2*days and split it.
+    
+    full_activity, _ = await get_activity(source="github", username=username, repos=repos, days=days * 2)
+    
+    now = datetime.now(timezone.utc)
+    split_date = now - timedelta(days=days)
+    
+    def process_activity(items, date_key, is_current):
+        count = 0
+        active_dates = set()
+        for item in items:
+            dt = item.get(date_key)
+            if dt:
+                if is_current and dt >= split_date:
+                    count += 1
+                    active_dates.add(dt.date())
+                elif not is_current and dt < split_date:
+                    count += 1
+                    active_dates.add(dt.date())
+        return count, len(active_dates)
+
+    # Process Current
+    curr_commits, curr_active_commit_days = process_activity(full_activity.get("commits", []), "date", True)
+    curr_prs, curr_active_pr_days = process_activity(full_activity.get("prs", []), "merged_at", True)
+    curr_issues, curr_active_issue_days = process_activity(full_activity.get("issues", []), "closed_at", True)
+    curr_active_days = len(set(list(full_activity.get("commits", [])) + list(full_activity.get("prs", [])) + list(full_activity.get("issues", [])))) # Simplified
+    
+    # Re-calculate active days properly
+    curr_active_total = set()
+    prev_active_total = set()
+    
+    for c in full_activity.get("commits", []):
+        d = c["date"]
+        if d >= split_date: curr_active_total.add(d.date())
+        else: prev_active_total.add(d.date())
+    for p in full_activity.get("prs", []):
+        d = p["merged_at"]
+        if d >= split_date: curr_active_total.add(d.date())
+        else: prev_active_total.add(d.date())
+    for i in full_activity.get("issues", []):
+        d = i["closed_at"]
+        if d >= split_date: curr_active_total.add(d.date())
+        else: prev_active_total.add(d.date())
+
+    # Process Previous
+    prev_commits, _ = process_activity(full_activity.get("commits", []), "date", False)
+    prev_prs, _ = process_activity(full_activity.get("prs", []), "merged_at", False)
+    prev_issues, _ = process_activity(full_activity.get("issues", []), "closed_at", False)
+
+    current = CompareRecord(commits=curr_commits, prs=curr_prs, issues=curr_issues, active_days=len(curr_active_total))
+    previous = CompareRecord(commits=prev_commits, prs=prev_prs, issues=prev_issues, active_days=len(prev_active_total))
+
+    def calc_delta(curr, prev):
+        if prev == 0: return 100 if curr > 0 else 0
+        return round(((curr - prev) / prev) * 100, 1)
+
+    delta = {
+        "commits": calc_delta(curr_commits, prev_commits),
+        "prs": calc_delta(curr_prs, prev_prs),
+        "issues": calc_delta(curr_issues, prev_issues),
+        "active_days": calc_delta(len(curr_active_total), len(prev_active_total))
+    }
+
+    return CompareResponse(username=username, days=days, current=current, previous=previous, delta=delta)
+
 
 @app.get("/history")
 async def get_history(

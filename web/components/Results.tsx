@@ -8,7 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, GitCommit, FileText, Database, Clock, Download } from "lucide-react";
+import { Copy, Check, GitCommit, FileText, Database, Clock, Download, Share2 } from "lucide-react";
+import { togglePublicSummary } from "@/lib/api";
+
+
 
 function CollapsibleSection({ title, content }: { title: string; content: string }) {
   const [expanded, setExpanded] = React.useState(true);
@@ -57,7 +60,23 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
     navigator.clipboard.writeText(data.summary);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
+    alert("Summary copied to clipboard");
   };
+
+  const handleShare = async () => {
+    if (!data || data.id === "none") return;
+    try {
+      await togglePublicSummary(data.id, true);
+      const url = `${window.location.origin}/summary/${data.id}`;
+      await navigator.clipboard.writeText(url);
+      alert("Public link created and copied to clipboard!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create public link.");
+    }
+
+  };
+
 
   const handleDownload = () => {
     if (!data) return;
@@ -150,6 +169,17 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
           </div>
           {data && !isLoading && (
             <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleShare} 
+                className="gap-2 h-8 px-2 sm:px-3 text-primary border-primary/20 hover:bg-primary/5"
+                disabled={data.id === "none"}
+                title="Create a shareable public link"
+              >
+                <Share2 className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Share</span>
+              </Button>
               <Button variant="outline" size="sm" onClick={handleDownload} className="gap-2 h-8 px-2 sm:px-3">
                 <Download className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Download</span>
@@ -160,6 +190,7 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
               </Button>
             </div>
           )}
+
         </CardHeader>
         <CardContent className="flex-1 relative overflow-auto">
           {isLoading ? (

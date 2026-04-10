@@ -36,10 +36,14 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
   const [daysInput, setDaysInput] = useState("7");
   const [forceRefresh, setForceRefresh] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [includePrivate, setIncludePrivate] = useState(false);
   const [error, setError] = useState<ErrorState | null>(null);
   const [showTrace, setShowTrace] = useState(false);
 
+
   const { data: session } = useSession();
+
+
 
   useEffect(() => {
     if (session?.user?.name && !username) {
@@ -109,12 +113,18 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
 
     try {
       const startTime = performance.now();
+      
+      // If private repo requested but and we have a session, we need to check if we have the accessToken.
+      // If we don't have repo scope, we should warn or trigger re-auth.
+      // For this sprint, we expect session?.accessToken to exist if they signed in with github-private.
+      
       const response = await generateSummary({
         username: username.trim(),
         repos: selectedRepos,
         days: parsedDays(),
-      }, forceRefresh);
+      }, forceRefresh, includePrivate ? session?.accessToken : undefined);
       const endTime = performance.now();
+
       onSuccess(response, endTime - startTime);
     } catch (err: unknown) {
       if (err instanceof ApiError) {
@@ -220,6 +230,39 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
               </div>
             </div>
           </div>
+
+          {/* Private Repo Toggle */}
+          <div className="flex items-center space-x-2 bg-primary/5 p-3 rounded-lg border border-primary/10 transition-all hover:bg-primary/10">
+            <Checkbox 
+              id="privateRepos" 
+              checked={includePrivate} 
+              onCheckedChange={async (checked) => {
+                const val = !!checked;
+                if (val && !session?.accessToken) {
+                   // Trigger re-auth if they want private repos but don't have a token.
+                   // This is S16.1 logic.
+                   const { signIn } = await import("next-auth/react");
+                   signIn("github-private");
+                   return;
+                }
+                setIncludePrivate(val);
+              }}
+              disabled={isSubmitting}
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="privateRepos"
+                className="text-sm font-semibold leading-none cursor-pointer flex items-center gap-2"
+              >
+                Include private repositories
+                {includePrivate && <span className="bg-primary/20 text-primary text-[10px] px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold">Enabled</span>}
+              </label>
+              <p className="text-[11px] text-muted-foreground">
+                Unlocks access to organization and private repos you contribute to.
+              </p>
+            </div>
+          </div>
+
 
           {error && (
             <Alert variant="destructive">
