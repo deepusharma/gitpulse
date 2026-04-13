@@ -1,8 +1,8 @@
 # Sprint 19 — API Refactor & Code Health
 
-**Sprint goal:** Break `api/api.py` from a 1,500-line monolith into focused routers, establish file-size guardrails in the coding standards, and eliminate the duplicate `/health/keys` route.
+**Sprint goal:** Break `api/api.py` into focused routers, extract nested functions from `repo_reader.py`, split `web/lib/api.ts` into types and HTTP layers, establish file-size guardrails, and eliminate the duplicate `/health/keys` route.
 **Milestone:** v1.4 — Code Health
-**Duration:** Day 13 (~3 hours)
+**Duration:** Day 13 (~4 hours)
 **Status:** Not Started
 
 ---
@@ -72,6 +72,8 @@ This limit is deliberately generous — it accommodates large docstrings and typ
 | TBD | S19.4: Split `api/tests/test_api.py` into per-router test files | 🔵 This Sprint | Medium |
 | TBD | S19.5: Fix duplicate `GET /health/keys` route (currently registered twice) | 🔵 This Sprint | Medium |
 | TBD | S19.6: Add 300-line file size rule to `AGENTS.md` and `GEMINI.md` | 🔵 This Sprint | Low |
+| TBD | S19.7: Extract nested fetchers in `repo_reader.py` to module-level + tests | 🔵 This Sprint | Low |
+| TBD | S19.8: Split `web/lib/api.ts` into `lib/types.ts` + `lib/api.ts` | 🔵 This Sprint | Low |
 
 ---
 
@@ -118,14 +120,69 @@ Add the same rule to `GEMINI.md` under **Development Conventions → Core Mandat
 
 ---
 
+### S19.7 — `repo_reader.py` — Extract nested fetchers (274 lines)
+
+**Problem:** `_get_github_commits()` contains three nested async functions
+(`fetch_repo_commits`, `fetch_repo_prs`, `fetch_repo_issues`) totalling ~160 lines.
+Nested functions cannot be individually unit-tested and force the entire 274-line file
+to be loaded to understand any single fetcher.
+
+**Fix:** Lift the three nested helpers to module-level private functions:
+
+```python
+# Before — nested inside _get_github_commits(), untestable
+async def fetch_repo_commits(client, repo, retries=3): ...
+
+# After — module-level, independently testable
+async def _fetch_commits(client, repo, username, since_iso, headers, semaphore): ...
+async def _fetch_prs(client, repo, username, since, headers, semaphore): ...
+async def _fetch_issues(client, repo, username, since, headers, semaphore): ...
+```
+
+- Zero behaviour change — `_get_github_commits` calls the same logic, now via module-level helpers.
+- Add three new unit tests (one per fetcher) using `respx` mocks, matching existing test patterns.
+- File stays within the 300-line limit.
+
+**Estimate:** ~45 min.
+
+---
+
+### S19.8 — `web/lib/api.ts` — Split types from HTTP client (243 lines, growing)
+
+**Problem:** `api.ts` currently does two unrelated jobs:
+1. Defines all TypeScript interfaces (`SummariseRequest`, `HistoryRecord`, `RosterResponse`, etc.)
+2. Implements all HTTP client functions (`generateSummary`, `fetchHistory`, etc.)
+
+Sprint 17 Stream 2 will add `RecommendationsResponse` and `PromptTemplate` interfaces,
+pushing this file past 300 lines. Any agent loading the file for a single HTTP function
+must parse all type definitions too.
+
+**Fix:**
+- Create `web/lib/types.ts` — all `interface` and `type` exports, no functions.
+- `web/lib/api.ts` — HTTP functions only; imports types from `./types`.
+- Update all component imports: `from "@/lib/api"` stays valid for functions;
+  type-only imports switch to `from "@/lib/types"`.
+
+**Estimate:** ~30 min. No component logic changes.
+
+---
+
 ## Order of Work
 
 ```text
-S19.6 (standards doc) → S19.5 (dedup) → S19.1 (scaffold) →
-S19.3 (dependencies) → S19.2 (migrate, domain-by-domain) → S19.4 (test split)
+S19.6 (standards doc)
+  → S19.5 (dedup /health/keys)
+  → S19.7 (repo_reader.py cleanup)  ← independent, do while warming up
+  → S19.8 (api.ts split)            ← independent, do while warming up
+  → S19.1 (router scaffold)
+  → S19.3 (dependencies.py)
+  → S19.2 (migrate routes, domain-by-domain, pytest after each)
+  → S19.4 (test split)
 ```
 
-Standards first so the guardrail is documented before the refactor begins.
+S19.6 first so the guardrail is documented before the refactor begins.
+S19.7 and S19.8 are independent and low-risk — good warm-up tasks before the
+larger API migration.
 
 ---
 
@@ -133,10 +190,13 @@ Standards first so the guardrail is documented before the refactor begins.
 
 - [ ] `api/api.py` is ≤ 80 lines (app init + router registration only)
 - [ ] Each router file is ≤ 300 lines
-- [ ] No routes are duplicated
+- [ ] No routes are duplicated (`/health/keys` deduped)
 - [ ] `uv run pytest -v` passes (82+ tests, same coverage)
 - [ ] `api/dependencies.py` contains `_get_user_repos` and DB pool guard
+- [ ] `repo_reader.py` nested fetchers extracted to module-level + 3 new unit tests
+- [ ] `web/lib/types.ts` exists; `web/lib/api.ts` contains only HTTP functions
 - [ ] `AGENTS.md` and `GEMINI.md` updated with the 300-line rule
+- [ ] `npm run lint` passes in `web/`
 - [ ] PR squash-merged to master
 
 ---
@@ -145,4 +205,6 @@ Standards first so the guardrail is documented before the refactor begins.
 
 - Changing any route behaviour or response schema (pure structural refactor)
 - Adding new routes
-- Migrating `gitpulse/core/` files (they are within limits today — revisit if needed)
+- `web/app/insights/page.tsx` chart extraction — handled during Sprint 17 Stream 2 while the file is already open
+- `web/components/SummaryForm.tsx` — 302 lines but a single-responsibility form; leave as-is
+- `gitpulse_mcp/server.py` — 299 lines, within limit, no split needed yet
