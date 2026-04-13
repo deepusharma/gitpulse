@@ -1,0 +1,28 @@
+[project]
+name = "gitpulse-mcp"
+version = "1.2.0"
+description = "MCP server for GitPulse — expose standup generation to Claude/Cursor"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+    "gitpulse>=1.2.0",
+    "mcp>=1.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/deepusharma/gitpulse"
+Repository = "https://github.com/deepusharma/gitpulse"
+
+[project.scripts]
+# The server.py in mcp/ is a thin shim; the real implementation is in gitpulse_mcp.server.
+gitpulse-mcp = "gitpulse_mcp.server:main_sync"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[tool.setuptools.packages.find]
+where = [".."]
+include = ["gitpulse_mcp*"]
