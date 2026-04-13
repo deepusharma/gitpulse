@@ -22,6 +22,8 @@ async def init_db():
         await init_rosters_table()
         # Migration: Add is_public to summaries
         await init_summaries_public_migration()
+        # Initialize prompt_templates table
+        await init_prompt_templates_table()
     except Exception as e:
         logger.error("Failed to initialize asyncpg pool: %s", e)
 
@@ -58,6 +60,30 @@ async def init_rosters_table():
             logger.info("Checked/created 'rosters' table.")
     except Exception as e:
         logger.error("Error creating 'rosters' table: %s", e)
+
+async def init_prompt_templates_table():
+    """Create the prompt_templates table if it does not already exist.
+
+    Idempotent — safe to call on every startup.
+    """
+    global pool
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute('''
+                CREATE TABLE IF NOT EXISTS prompt_templates (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    username TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TIMESTAMPTZ DEFAULT NOW()
+                );
+            ''')
+            logger.info("Checked/created 'prompt_templates' table.")
+    except Exception as e:
+        logger.error("Error creating 'prompt_templates' table: %s", e)
+
 
 async def close_db():
     global pool

@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 from gitpulse.core.repo_reader import get_activity
 from gitpulse.core.summarise import format_activity, to_prompt_str, to_display_str, build_prompt, summarise
+from gitpulse.core.recommendations import get_recommendations
 
 from contextlib import asynccontextmanager
 import os
@@ -129,6 +130,27 @@ class CompareResponse(BaseModel):
     current: CompareRecord
     previous: CompareRecord
     delta: dict
+
+
+class RecommendationsRequest(BaseModel):
+    username: str
+    days: int = 30
+
+class RecommendationsResponse(BaseModel):
+    recommendations: str
+    generated_at: str
+
+class PromptTemplateCreate(BaseModel):
+    username: str
+    name: str
+    content: str
+
+class PromptTemplateResponse(BaseModel):
+    id: str
+    username: str
+    name: str
+    content: str
+    created_at: str
 
 
 # Routes
@@ -1206,4 +1228,343 @@ async def get_badge_health(username: str):
         health_score = 0
     color = "brightgreen" if health_score >= 80 else "yellow" if health_score >= 50 else "red"
     return RedirectResponse(url=f"https://img.shields.io/badge/health_score-{health_score}-{color}")
+
+
+# ---------------------------------------------------------------------------
+# Sprint 17: MCP SSE Proxy  (Step 1.5)
+# ---------------------------------------------------------------------------
+
+@app.get("/mcp/sse")
+async def mcp_sse():
+    """SSE endpoint advertising the available MCP tools.
+
+    On connection the server emits a single ``event: tools`` frame containing
+    the JSON schema for the two registered tools.  Clients may follow up with
+    ``POST /mcp/sse/call`` to invoke a tool.
+
+    Returns:
+        StreamingResponse: A text/event-stream response with the tool list.
+    """
+    from fastapi.responses import StreamingResponse
+    import json as _json
+
+    tools_payload = [
+        {
+            "name": "generate_standup",
+            "description": (
+                "Fetch git activity for a GitHub user across one or more repositories "
+                "and generate a professional standup summary using Groq LLaMA 3.3."
+            ),
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {"type": "string", "description": "GitHub username."},
+                    "repos": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of repository names.",
+                    },
+                    "days": {"type": "integer", "default": 7},
+                    "source": {
+                        "type": "string",
+                        "enum": ["github", "local"],
+                        "default": "github",
+                    },
+                    "tone": {
+                        "type": "string",
+                        "enum": ["standup", "retro"],
+                        "default": "standup",
+                    },
+                },
+                "required": ["username", "repos"],
+            },
+        },
+        {
+            "name": "get_insights",
+            "description": (
+                "Return aggregated commit, PR, and issue counts for a GitHub user. "
+                "Fast — no LLM call."
+            ),
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {"type": "string"},
+                    "repos": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                    "days": {"type": "integer", "default": 7},
+                },
+                "required": ["username", "repos"],
+            },
+        },
+    ]
+
+    async def event_stream():
+        body = _json.dumps(tools_payload)
+        yield f"event: tools\ndata: {body}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@app.post("/mcp/sse/call")
+async def mcp_sse_call(body: dict):
+    """Invoke an MCP tool over HTTP and return the result as an SSE frame.
+
+    Args:
+        body: JSON body with keys ``tool`` (str) and ``params`` (dict).
+
+    Returns:
+        StreamingResponse: A text/event-stream response with ``event: result``.
+
+    Raises:
+        HTTPException 400: If body schema is invalid or tool is unknown.
+    """
+    from fastapi.responses import StreamingResponse
+    from gitpulse_mcp.server import handle_generate_standup, handle_get_insights
+    import json as _json
+
+    tool_name = body.get("tool")
+    params = body.get("params", {})
+
+    if not tool_name:
+        raise HTTPException(status_code=400, detail="'tool' is required")
+
+    async def event_stream():
+        try:
+            if tool_name == "generate_standup":
+                result = await handle_generate_standup(params)
+            elif tool_name == "get_insights":
+                result = await handle_get_insights(params)
+            else:
+                raise ValueError(f"Unknown tool: {tool_name!r}")
+
+            if isinstance(result, dict):
+                data = _json.dumps(result)
+            else:
+                data = _json.dumps({"text": result})
+            yield f"event: result\ndata: {data}\n\n"
+        except Exception as exc:
+            logger.error("MCP SSE call failed: %s", exc, exc_info=True)
+            yield f"event: error\ndata: {_json.dumps({'error': str(exc)})}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+# ---------------------------------------------------------------------------
+# Sprint 17: Proactive AI Recommendations  (Step 1.6)
+# ---------------------------------------------------------------------------
+
+@app.post("/insights/recommendations", response_model=RecommendationsResponse)
+async def insights_recommendations(req: RecommendationsRequest):
+    """Generate proactive AI recommendations for a user based on their activity.
+
+    Queries GitHub for aggregated metrics over the requested period, then
+    delegates to ``gitpulse.core.recommendations.get_recommendations``.
+
+    Args:
+        req: RecommendationsRequest with ``username`` and ``days``.
+
+    Returns:
+        RecommendationsResponse with the AI nudge string and a timestamp.
+
+    Raises:
+        HTTPException 503: If Groq API key is missing.
+        HTTPException 500: On unexpected errors.
+    """
+    if not os.getenv("GROQ_API_KEY"):
+        raise HTTPException(status_code=503, detail="GROQ_API_KEY not configured")
+
+    cache_key = f"recommendations:{req.username}:{req.days}"
+    cached = analytics_cache.get(cache_key)
+    if cached:
+        logger.info("Using cached recommendations for %s", req.username)
+        return RecommendationsResponse(**cached)
+
+    db_commits = 0
+    db_prs = 0
+    db_issues = 0
+    stale_prs = 0
+    avg_cycle_time_hrs = 0.0
+    prev_commits = 0
+    streak = 0
+
+    try:
+        repos = await _get_user_repos(req.username)
+        if repos:
+            activity, _ = await get_activity(
+                source="github", username=req.username, repos=repos, days=req.days
+            )
+            db_commits = len(activity.get("commits", []))
+            db_prs = len(activity.get("prs", []))
+            db_issues = len(activity.get("issues", []))
+
+            now = datetime.now(timezone.utc)
+            prs = activity.get("prs", [])
+            stale_prs = sum(
+                1 for p in prs
+                if (now - p["merged_at"]).total_seconds() / 3600 > 7 * 24
+            )
+
+            commit_dates = sorted(
+                {c["date"].date() for c in activity.get("commits", [])},
+                reverse=True,
+            )
+            if commit_dates:
+                check = commit_dates[0]
+                for d in commit_dates:
+                    if d == check:
+                        streak += 1
+                        check = check - timedelta(days=1)
+                    else:
+                        break
+
+            full_activity, _ = await get_activity(
+                source="github", username=req.username, repos=repos, days=req.days * 2
+            )
+            split_date = now - timedelta(days=req.days)
+            prev_commits = sum(
+                1 for c in full_activity.get("commits", [])
+                if c["date"] < split_date
+            )
+    except Exception as exc:
+        logger.error("Failed to gather metrics for recommendations: %s", exc, exc_info=True)
+
+    metrics = {
+        "commits": db_commits,
+        "prs": db_prs,
+        "issues": db_issues,
+        "avg_cycle_time_hrs": avg_cycle_time_hrs,
+        "stale_prs": stale_prs,
+        "commit_streak_days": streak,
+        "prev_commits": prev_commits,
+    }
+
+    try:
+        nudges = await get_recommendations(metrics)
+    except Exception as exc:
+        logger.error("get_recommendations failed: %s", exc, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to generate recommendations")
+
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    result = {"recommendations": nudges, "generated_at": generated_at}
+    analytics_cache.set(cache_key, result, ttl=600)
+
+    return RecommendationsResponse(**result)
+
+
+# ---------------------------------------------------------------------------
+# Sprint 17: Prompt Templates CRUD  (Step 1.7)
+# ---------------------------------------------------------------------------
+
+@app.post("/prompt-templates", response_model=PromptTemplateResponse, status_code=201)
+async def create_prompt_template(req: PromptTemplateCreate):
+    """Create a new saved prompt template.
+
+    Args:
+        req: PromptTemplateCreate with ``username``, ``name``, and ``content``.
+
+    Returns:
+        PromptTemplateResponse with the newly created template including its id.
+
+    Raises:
+        HTTPException 503: If db is disabled.
+        HTTPException 500: On db errors.
+    """
+    db_pool = get_db_pool()
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database integration disabled")
+    try:
+        async with db_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                '''
+                INSERT INTO prompt_templates (username, name, content)
+                VALUES ($1, $2, $3)
+                RETURNING id, username, name, content, created_at
+                ''',
+                req.username,
+                req.name,
+                req.content,
+            )
+            return PromptTemplateResponse(
+                id=str(row["id"]),
+                username=row["username"],
+                name=row["name"],
+                content=row["content"],
+                created_at=row["created_at"].strftime("%Y-%m-%dT%H:%M:%SZ"),
+            )
+    except Exception as exc:
+        logger.error("Failed to create prompt template: %s", exc, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to create prompt template")
+
+
+@app.get("/prompt-templates", response_model=List[PromptTemplateResponse])
+async def list_prompt_templates(username: str):
+    """List all saved prompt templates for a user, newest first.
+
+    Args:
+        username: GitHub username whose templates to list.
+
+    Returns:
+        List of PromptTemplateResponse objects.
+
+    Raises:
+        HTTPException 503: If db is disabled.
+    """
+    db_pool = get_db_pool()
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database integration disabled")
+    try:
+        async with db_pool.acquire() as conn:
+            rows = await conn.fetch(
+                '''
+                SELECT id, username, name, content, created_at
+                FROM prompt_templates
+                WHERE username = $1
+                ORDER BY created_at DESC
+                ''',
+                username,
+            )
+            return [
+                PromptTemplateResponse(
+                    id=str(r["id"]),
+                    username=r["username"],
+                    name=r["name"],
+                    content=r["content"],
+                    created_at=r["created_at"].strftime("%Y-%m-%dT%H:%M:%SZ"),
+                )
+                for r in rows
+            ]
+    except Exception as exc:
+        logger.error("Failed to list prompt templates: %s", exc, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to list prompt templates")
+
+
+@app.delete("/prompt-templates/{template_id}", status_code=204)
+async def delete_prompt_template(template_id: str):
+    """Delete a saved prompt template by id.
+
+    Args:
+        template_id: UUID string of the template to delete.
+
+    Raises:
+        HTTPException 503: If db is disabled.
+        HTTPException 404: If template not found.
+    """
+    db_pool = get_db_pool()
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database integration disabled")
+    try:
+        async with db_pool.acquire() as conn:
+            result = await conn.execute(
+                "DELETE FROM prompt_templates WHERE id::text = $1",
+                template_id,
+            )
+            if result == "DELETE 0":
+                raise HTTPException(status_code=404, detail="Template not found")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error("Failed to delete prompt template: %s", exc, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to delete prompt template")
 
