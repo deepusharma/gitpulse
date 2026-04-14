@@ -7,13 +7,28 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Calendar, AlertCircle, GitCommit, GitPullRequest, CircleDot, Activity } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
+import {
+  Search,
+  Calendar,
+  AlertCircle,
+  GitCommit,
+  GitPullRequest,
+  CircleDot,
+  Activity,
+} from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { fetchComparison, CompareResponse } from "@/lib/api";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-
+import { MetricCard } from "@/components/insights/MetricCard";
+import { ComparisonChart } from "@/components/insights/ComparisonChart";
+import { RecommendationsPanel } from "@/components/RecommendationsPanel";
 
 interface HealthData {
   health_score: number;
@@ -36,10 +51,11 @@ function InsightsContent() {
   const [daysInput, setDaysInput] = useState(paramDays);
   const [inputValue, setInputValue] = useState(paramUsername || "");
 
-  const [metricsData, setMetricsData] = useState<{date: string, commits: number, prs: number, issues: number}[]>([]);
+  const [metricsData, setMetricsData] = useState<
+    { date: string; commits: number; prs: number; issues: number }[]
+  >([]);
   const [healthData, setHealthData] = useState<HealthData | null>(null);
   const [comparisonData, setComparisonData] = useState<CompareResponse | null>(null);
-
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,11 +81,11 @@ function InsightsContent() {
       setError(null);
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        
+
         const [metricsRes, healthRes, compData] = await Promise.all([
           fetch(`${baseUrl}/insights/metrics?username=${username}&repos=&days=${days}`),
           fetch(`${baseUrl}/insights/health?username=${username}&repos=`),
-          fetchComparison(username, days)
+          fetchComparison(username, days),
         ]);
 
         if (!metricsRes.ok || !healthRes.ok) {
@@ -82,7 +98,6 @@ function InsightsContent() {
         setMetricsData(mData);
         setHealthData(hData);
         setComparisonData(compData);
-
       } catch (err: unknown) {
         const e = err as Error;
         setError(e.message || "An error occurred");
@@ -118,34 +133,34 @@ function InsightsContent() {
             {username ? `Composite metrics for ${username}.` : "Explore composite tracking."}
           </p>
         </div>
-        
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-zinc-900/40 p-2 rounded-xl border border-white/5 backdrop-blur-sm">
-           <form onSubmit={handleSearch} className="relative flex items-center">
-              <Search className="absolute left-3 h-4 w-4 text-zinc-500" />
-              <Input
-                placeholder="GitHub Username"
-                className="pl-9 bg-black/40 border-zinc-800 text-sm h-10 w-full sm:w-48"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-           </form>
 
-           <div className="flex items-center gap-2 border-l border-zinc-800 pl-3">
-              <Calendar className="h-4 w-4 text-zinc-500" />
-              <Input
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="30"
-                value={daysInput}
-                onChange={(e) => setDaysInput(e.target.value)}
-                onBlur={() => {
-                  const d = parseInt(daysInput, 10) || 30;
-                  setDaysInput(String(d));
-                }}
-                className="bg-black/40 border-zinc-800 h-10 w-20 text-sm"
-              />
-              <span className="text-xs text-zinc-500 font-medium whitespace-nowrap">Days</span>
-           </div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-zinc-900/40 p-2 rounded-xl border border-white/5 backdrop-blur-sm">
+          <form onSubmit={handleSearch} className="relative flex items-center">
+            <Search className="absolute left-3 h-4 w-4 text-zinc-500" />
+            <Input
+              placeholder="GitHub Username"
+              className="pl-9 bg-black/40 border-zinc-800 text-sm h-10 w-full sm:w-48"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          </form>
+
+          <div className="flex items-center gap-2 border-l border-zinc-800 pl-3">
+            <Calendar className="h-4 w-4 text-zinc-500" />
+            <Input
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="30"
+              value={daysInput}
+              onChange={(e) => setDaysInput(e.target.value)}
+              onBlur={() => {
+                const d = parseInt(daysInput, 10) || 30;
+                setDaysInput(String(d));
+              }}
+              className="bg-black/40 border-zinc-800 h-10 w-20 text-sm"
+            />
+            <span className="text-xs text-zinc-500 font-medium whitespace-nowrap">Days</span>
+          </div>
         </div>
       </div>
 
@@ -165,45 +180,32 @@ function InsightsContent() {
 
       {!loading && username && metricsData.length > 0 && healthData && (
         <div className="space-y-6">
+          {/* Summary metric cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="bg-black/40 border-zinc-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Commits</CardTitle>
-                <GitCommit className="h-4 w-4 text-zinc-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalCommits}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-black/40 border-zinc-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Merged PRs</CardTitle>
-                <GitPullRequest className="h-4 w-4 text-teal-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalPRs}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-black/40 border-zinc-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Closed Issues</CardTitle>
-                <CircleDot className="h-4 w-4 text-purple-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalIssues}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-black/40 border-emerald-500/20">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Health Score</CardTitle>
-                <Activity className="h-4 w-4 text-emerald-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-emerald-400">{healthData.health_score}/100</div>
-              </CardContent>
-            </Card>
+            <MetricCard title="Total Commits" value={totalCommits} icon={GitCommit} />
+            <MetricCard
+              title="Merged PRs"
+              value={totalPRs}
+              icon={GitPullRequest}
+              iconClassName="text-teal-500"
+            />
+            <MetricCard
+              title="Closed Issues"
+              value={totalIssues}
+              icon={CircleDot}
+              iconClassName="text-purple-500"
+            />
+            <MetricCard
+              title="Health Score"
+              value={`${healthData.health_score}/100`}
+              icon={Activity}
+              iconClassName="text-emerald-500"
+              cardClassName="border-emerald-500/20"
+              valueClassName="text-emerald-400"
+            />
           </div>
 
+          {/* Tabbed charts */}
           <Tabs defaultValue="velocity" className="space-y-4">
             <TabsList className="bg-zinc-900 border border-zinc-800">
               <TabsTrigger value="velocity">Daily Velocity</TabsTrigger>
@@ -227,85 +229,75 @@ function InsightsContent() {
                     >
                       <defs>
                         <linearGradient id="colorCommits" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorPRs" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorIssues" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" vertical={false} />
-                      <XAxis dataKey="date" stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
-                      <RechartsTooltip 
-                        contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }}
-                        itemStyle={{ color: '#e4e4e7' }}
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#3f3f46"
+                        vertical={false}
                       />
-                      <Area type="monotone" dataKey="commits" stroke="#10b981" fillOpacity={1} fill="url(#colorCommits)" />
-                      <Area type="monotone" dataKey="prs" stroke="#14b8a6" fillOpacity={1} fill="url(#colorPRs)" />
-                      <Area type="monotone" dataKey="issues" stroke="#a855f7" fillOpacity={1} fill="url(#colorIssues)" />
+                      <XAxis
+                        dataKey="date"
+                        stroke="#a1a1aa"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        stroke="#a1a1aa"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(value) => `${value}`}
+                      />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: "#18181b",
+                          borderColor: "#27272a",
+                          borderRadius: "8px",
+                        }}
+                        itemStyle={{ color: "#e4e4e7" }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="commits"
+                        stroke="#10b981"
+                        fillOpacity={1}
+                        fill="url(#colorCommits)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="prs"
+                        stroke="#14b8a6"
+                        fillOpacity={1}
+                        fill="url(#colorPRs)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="issues"
+                        stroke="#a855f7"
+                        fillOpacity={1}
+                        fill="url(#colorIssues)"
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
             </TabsContent>
+
             <TabsContent value="comparison" className="space-y-4">
               {comparisonData && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {(["commits", "prs", "issues", "active_days"] as const).map((key) => {
-                    const labels = { commits: "Commits", prs: "Merged PRs", issues: "Closed Issues", active_days: "Active Days" };
-                    const icons = { commits: GitCommit, prs: GitPullRequest, issues: CircleDot, active_days: Activity };
-                    
-                    const deltaValue = comparisonData.delta[key];
-                    const isPositive = deltaValue > 0;
-                    const isZero = deltaValue === 0;
-                    const Icon = icons[key];
-                    
-                    return (
-                      <Card key={key} className="bg-black/40 border-zinc-800">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">{labels[key]}</CardTitle>
-                          <Icon className="h-4 w-4 text-zinc-500" />
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex items-baseline justify-between">
-                            <div className="text-2xl font-bold">{comparisonData.current[key]}</div>
-                            <div className={cn(
-                              "flex items-center text-xs font-bold px-1.5 py-0.5 rounded",
-                              isPositive ? "text-emerald-500 bg-emerald-500/10" : 
-                              isZero ? "text-zinc-500 bg-zinc-500/10" : "text-rose-500 bg-rose-500/10"
-                            )}>
-                              {isPositive ? <TrendingUp className="h-3 w-3 mr-1" /> : 
-                               isZero ? <Minus className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
-                              {Math.abs(deltaValue)}%
-                            </div>
-                          </div>
-                          <p className="text-[10px] text-zinc-500 mt-2">
-                            Prev. period: {comparisonData.previous[key]}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-
-                </div>
-              )}
-              {comparisonData && (
-                <Card className="bg-black/40 border-zinc-800">
-                   <CardHeader>
-                      <CardTitle className="text-sm">Why this matters</CardTitle>
-                   </CardHeader>
-                   <CardContent className="text-xs text-zinc-400">
-                      Comparing the last {days} days against the previous {days} day period helps identify momentum shifts. 
-                      A positive delta in Active Days often indicates better work-life balance or consistent focus, 
-                      while PR delta tracks delivery throughput.
-                   </CardContent>
-                </Card>
+                <ComparisonChart comparisonData={comparisonData} days={days} />
               )}
             </TabsContent>
 
@@ -313,7 +305,9 @@ function InsightsContent() {
               <Card className="bg-black/40 border-zinc-800">
                 <CardHeader>
                   <CardTitle>Health Diagnostics</CardTitle>
-                  <CardDescription>Repository stars, forks, and open issues tracking.</CardDescription>
+                  <CardDescription>
+                    Repository stars, forks, and open issues tracking.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -336,6 +330,9 @@ function InsightsContent() {
               </Card>
             </TabsContent>
           </Tabs>
+
+          {/* AI Recommendations panel — non-blocking, below charts */}
+          <RecommendationsPanel username={username} days={days} />
         </div>
       )}
     </div>
@@ -347,7 +344,9 @@ export default function InsightsPage() {
     <div className="py-8 relative">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#14b8a6_0%,_transparent_25%)] opacity-10 pointer-events-none" />
       <main className="container mx-auto px-4 relative z-10">
-        <Suspense fallback={<div className="text-center py-20 text-zinc-400">Loading Insights...</div>}>
+        <Suspense
+          fallback={<div className="text-center py-20 text-zinc-400">Loading Insights...</div>}
+        >
           <InsightsContent />
         </Suspense>
       </main>

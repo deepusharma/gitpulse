@@ -241,3 +241,69 @@ export async function deliverSlack(summary: string, webhookUrl: string, channel?
   if (!response.ok) throw new Error("Failed to deliver to Slack");
   return response.json();
 }
+
+// --- Sprint 17: AI Recommendations & Prompt Templates ---
+
+export interface RecommendationsRequest {
+  username: string;
+  days: number;
+}
+
+export interface RecommendationsResponse {
+  recommendations: string;
+  generated_at: string;
+}
+
+export interface PromptTemplate {
+  id: string;
+  username: string;
+  name: string;
+  content: string;
+  created_at: string;
+}
+
+export interface PromptTemplateCreate {
+  username: string;
+  name: string;
+  content: string;
+}
+
+export async function fetchRecommendations(
+  req: RecommendationsRequest
+): Promise<RecommendationsResponse> {
+  const response = await fetch(`${API_URL}/insights/recommendations`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) throw new Error("Failed to fetch recommendations");
+  return response.json();
+}
+
+export async function listPromptTemplates(username: string): Promise<PromptTemplate[]> {
+  const response = await fetch(
+    `${API_URL}/prompt-templates?username=${encodeURIComponent(username)}`
+  );
+  if (!response.ok) throw new Error("Failed to list templates");
+  return response.json();
+}
+
+export async function createPromptTemplate(
+  req: PromptTemplateCreate
+): Promise<PromptTemplate> {
+  const response = await fetch(`${API_URL}/prompt-templates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) throw new Error("Failed to create template");
+  return response.json();
+}
+
+export async function deletePromptTemplate(id: string): Promise<void> {
+  const response = await fetch(`${API_URL}/prompt-templates/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) throw new Error("Failed to delete template");
+}
+
