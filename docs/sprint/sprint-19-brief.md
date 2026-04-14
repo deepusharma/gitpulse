@@ -1,9 +1,9 @@
 # Sprint 19 — API Refactor & Code Health
 
-**Sprint goal:** Break `api/api.py` into focused routers, extract nested functions from `repo_reader.py`, split `web/lib/api.ts` into types and HTTP layers, establish file-size guardrails, and eliminate the duplicate `/health/keys` route.
+**Sprint goal:** Break `api/api.py` into focused routers, extract nested functions from `repo_reader.py`, split `web/lib/api.ts` into types and HTTP layers, eliminate the duplicate `/health/keys` route, and resolve the duplicate API helper functions introduced in `web/app/templates/page.tsx` during Sprint 17.
 **Milestone:** v1.4 — Code Health
 **Duration:** Day 13 (~4 hours)
-**Status:** Not Started
+**Status:** Not Started — brief updated after Sprint 17 post-merge review (2026-04-15)
 
 ---
 
@@ -147,23 +147,37 @@ async def _fetch_issues(client, repo, username, since, headers, semaphore): ...
 
 ---
 
-### S19.8 — `web/lib/api.ts` — Split types from HTTP client (243 lines, growing)
+### S19.8 — `web/lib/api.ts` — Split types from HTTP client + fix template duplication
 
-**Problem:** `api.ts` currently does two unrelated jobs:
-1. Defines all TypeScript interfaces (`SummariseRequest`, `HistoryRecord`, `RosterResponse`, etc.)
-2. Implements all HTTP client functions (`generateSummary`, `fetchHistory`, etc.)
+**Problem A — file size already breached:** As of Sprint 17 Stream 2, `api.ts` stands at **309 lines** — already past the 300-line guardrail. The file now does two unrelated jobs:
+1. Defines all TypeScript interfaces (`SummariseRequest`, `HistoryRecord`, `RosterResponse`, `PromptTemplate`, `RecommendationsResponse`, etc.)
+2. Implements all HTTP client functions (`generateSummary`, `fetchHistory`, `createPromptTemplate`, etc.)
 
-Sprint 17 Stream 2 will add `RecommendationsResponse` and `PromptTemplate` interfaces,
-pushing this file past 300 lines. Any agent loading the file for a single HTTP function
-must parse all type definitions too.
+Any agent loading the file for a single HTTP function must parse all type definitions too.
+
+**Problem B — duplicate API helpers in `templates/page.tsx`:** Sprint 17 Stream 2 shipped `web/app/templates/page.tsx` with three locally-defined API helper functions:
+
+```typescript
+// In web/app/templates/page.tsx (lines 34–55) — LOCAL duplicates
+async function listTemplates(username: string): Promise<PromptTemplate[]> {...}
+async function createTemplate(payload: CreateTemplatePayload): Promise<PromptTemplate> {...}
+async function deleteTemplate(id: string): Promise<void> {...}
+```
+
+Identical logic already lives in `web/lib/api.ts` as the canonical versions:
+```typescript
+export async function listPromptTemplates(username: string): Promise<PromptTemplate[]> {...}
+export async function createPromptTemplate(req: PromptTemplateCreate): Promise<PromptTemplate> {...}
+export async function deletePromptTemplate(id: string): Promise<void> {...}
+```
 
 **Fix:**
-- Create `web/lib/types.ts` — all `interface` and `type` exports, no functions.
-- `web/lib/api.ts` — HTTP functions only; imports types from `./types`.
-- Update all component imports: `from "@/lib/api"` stays valid for functions;
-  type-only imports switch to `from "@/lib/types"`.
+1. Create `web/lib/types.ts` — all `interface` and `type` exports, no functions.
+2. `web/lib/api.ts` — HTTP functions only; imports types from `./types`.
+3. Refactor `web/app/templates/page.tsx` to delete the three local helpers and import `listPromptTemplates`, `createPromptTemplate`, `deletePromptTemplate` from `@/lib/api` instead.
+4. Update all component imports: `from "@/lib/api"` stays valid for functions; type-only imports switch to `from "@/lib/types"`.
 
-**Estimate:** ~30 min. No component logic changes.
+**Estimate:** ~45 min. No component logic changes; pure import cleanup.
 
 ---
 
@@ -205,6 +219,6 @@ larger API migration.
 
 - Changing any route behaviour or response schema (pure structural refactor)
 - Adding new routes
-- `web/app/insights/page.tsx` chart extraction — handled during Sprint 17 Stream 2 while the file is already open
+- `web/app/insights/page.tsx` chart extraction — ✅ already completed in Sprint 17 Stream 2 (`MetricCard` and `ComparisonChart` extracted to `web/components/insights/`)
 - `web/components/SummaryForm.tsx` — 302 lines but a single-responsibility form; leave as-is
 - `gitpulse_mcp/server.py` — 299 lines, within limit, no split needed yet
