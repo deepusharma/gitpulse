@@ -34,6 +34,14 @@ export function Header() {
             >
               History
             </Link>
+            {session && (
+              <Link
+                href="/templates"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Templates
+              </Link>
+            )}
           </nav>
         </div>
         <div className="flex items-center gap-4">
