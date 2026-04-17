@@ -174,6 +174,7 @@ pyproject.toml
 
 ### Python
 
+- **File size limit:** 300 lines max per file in `api/` and `gitpulse/core/`. Files approaching this limit must be split before adding new features.
 - Google docstrings on all functions
 - `logging` module — never `print`
 - `%s` format style for logger calls: `logger.debug("msg: %s", var)`

@@ -68,7 +68,8 @@ npm run lint
 3.  **Logging**: Use the standard `logging` module in Python. Never use `print`. Use `%s` style formatting and always include `exc_info=True` for errors.
 4.  **No Hardcoding**: All configurations (URLs, Model names, API keys) must come from environment variables or config files (`~/.gitpulse.toml`).
 5.  **Testing**: Tests are **mandatory** for all new functions. Mock all external calls (Groq, GitHub API).
-6.  **UI Standards**: Use **shadcn/ui** and **Tailwind CSS**. Monochrome/neutral palette with a single accent color. Mobile-first responsive design.
+6.  **File Size**: No file in `api/` or `gitpulse/core/` shall exceed **300 lines**. Split into modules before adding features if at the limit.
+7.  **UI Standards**: Use **shadcn/ui** and **Tailwind CSS**. Monochrome/neutral palette with a single accent color. Mobile-first responsive design.
 7.  **Documentation**: Use Google-style docstrings for Python and JSDoc for TypeScript.
 8.  **Versioning**: Version strings must be synced across `pyproject.toml`, `web/package.json`, and `AGENTS.md`.
 

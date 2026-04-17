@@ -1,76 +1,21 @@
+import type {
+  SummariseRequest,
+  SummariseResponse,
+  HistoryResponse,
+  PublicSummaryResponse,
+  CompareResponse,
+  RosterRequest,
+  RosterResponse,
+  TeamSummariseRequest,
+  TeamSummariseResponse,
+  RecommendationsRequest,
+  RecommendationsResponse,
+  PromptTemplate,
+  PromptTemplateCreate,
+} from "./types";
+export { ApiError } from "./types";
+
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-export interface SummariseRequest {
-  username: string;
-  repos: string[];
-  days: number;
-}
-
-export interface SummariseResponse {
-  id: string;
-  display: string;
-  summary: string;
-  repos: string[];
-  username: string;
-  days: number;
-  generated_at: string;
-  is_public: boolean;
-}
-
-export interface HistoryRecord {
-  id: string;
-  username: string;
-  repos: string[];
-  days: number;
-  summary: string;
-  generated_at: string;
-}
-
-export interface HistoryResponse {
-  summaries: HistoryRecord[];
-  total: number;
-}
-
-
-export interface PublicSummaryResponse {
-  id: string;
-  username: string;
-  repos: string[];
-  days: number;
-  summary: string;
-  generated_at: string;
-}
-
-export interface CompareRecord {
-  commits: number;
-  prs: number;
-  issues: number;
-  active_days: number;
-}
-
-export interface CompareResponse {
-  username: string;
-  days: number;
-  current: CompareRecord;
-  previous: CompareRecord;
-  delta: {
-    commits: number;
-    prs: number;
-    issues: number;
-    active_days: number;
-  };
-}
-
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-    public traceback?: string | null,
-  ) {
-    super(message);
-    this.name = "ApiError";
-  }
-}
 
 export async function generateSummary(
   req: SummariseRequest,
@@ -164,33 +109,6 @@ export async function fetchUserRepos(username: string): Promise<{ repos: string[
 
 // --- Sprint 15: Team & Reach ---
 
-export interface RosterRequest {
-  name: string;
-  usernames: string[];
-}
-
-export interface RosterResponse {
-  id: string;
-  name: string;
-  usernames: string[];
-  created_at: string;
-}
-
-export interface TeamSummariseRequest {
-  usernames: string[];
-  repos: string[];
-  days: number;
-}
-
-export interface TeamSummariseResponse {
-  display: string;
-  summary: string;
-  repos: string[];
-  days: number;
-  contributors: string[];
-  generated_at: string;
-}
-
 export async function createRoster(req: RosterRequest): Promise<RosterResponse> {
   const response = await fetch(`${API_URL}/team/roster`, {
     method: "POST",
@@ -243,30 +161,6 @@ export async function deliverSlack(summary: string, webhookUrl: string, channel?
 }
 
 // --- Sprint 17: AI Recommendations & Prompt Templates ---
-
-export interface RecommendationsRequest {
-  username: string;
-  days: number;
-}
-
-export interface RecommendationsResponse {
-  recommendations: string;
-  generated_at: string;
-}
-
-export interface PromptTemplate {
-  id: string;
-  username: string;
-  name: string;
-  content: string;
-  created_at: string;
-}
-
-export interface PromptTemplateCreate {
-  username: string;
-  name: string;
-  content: string;
-}
 
 export async function fetchRecommendations(
   req: RecommendationsRequest

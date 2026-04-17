@@ -83,6 +83,137 @@ def _get_local_commits_sync(days:int=7) -> list:
     return commits
 
 
+async def _fetch_commits(
+    client: httpx.AsyncClient,
+    repo: str,
+    username: str,
+    since_iso: str,
+    headers: dict,
+    semaphore: asyncio.Semaphore,
+) -> tuple[list, str | None]:
+    """Fetch commits for a repo from GitHub."""
+    retries = 3
+    url = f"https://api.github.com/repos/{username}/{repo}/commits"
+    params = {"since": since_iso, "per_page": 100}
+    
+    async with semaphore:
+        for attempt in range(retries):
+            try:
+                response = await client.get(url, headers=headers, params=params, timeout=30.0)
+                
+                if response.status_code == 404:
+                    error_msg = f"Repo '{username}/{repo}' not found or is private"
+                    logger.error(error_msg)
+                    return [], error_msg
+                elif response.status_code in [429, 403]:
+                    if attempt < retries - 1:
+                        wait_time = (attempt + 1) * 0.5
+                        logger.warning("GitHub Rate Limit hit for %s. Retrying in %ss...", repo, wait_time)
+                        await asyncio.sleep(wait_time)
+                        continue
+                    error_msg = "GitHub API rate limit exceeded permanently"
+                    logger.error("%s for %s", error_msg, repo)
+                    return [], error_msg
+                
+                response.raise_for_status()
+                data = response.json()
+                commits = [
+                    {
+                        "repo": repo,
+                        "message": commit["commit"]["message"],
+                        "author": commit["commit"]["author"]["name"],
+                        "date": datetime.fromisoformat(commit["commit"]["author"]["date"].replace("Z", "+00:00")),
+                        "hash": commit["sha"]
+                    }
+                    for commit in data
+                ]
+                return commits, None
+            except (httpx.RequestError, httpx.HTTPStatusError) as e:
+                if attempt < retries - 1:
+                    logger.warning("Fetch error for %s (%s). Retrying...", repo, str(e))
+                    await asyncio.sleep((attempt + 1) * 0.5)
+                    continue
+                error_msg = f"Failed to fetch commits for {repo}: {str(e)}"
+                logger.error(error_msg)
+                return [], error_msg
+    return [], "Unknown error"
+
+async def _fetch_prs(
+    client: httpx.AsyncClient,
+    repo: str,
+    username: str,
+    since: datetime,
+    headers: dict,
+    semaphore: asyncio.Semaphore,
+) -> tuple[list, str | None]:
+    """Fetch closed pull requests for a repo from GitHub."""
+    retries = 3
+    url = f"https://api.github.com/repos/{username}/{repo}/pulls"
+    params = {"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}
+    
+    async with semaphore:
+        for attempt in range(retries):
+            try:
+                response = await client.get(url, headers=headers, params=params, timeout=30.0)
+                if response.status_code in [404, 429, 403]: return [], None
+                response.raise_for_status()
+                data = response.json()
+                prs = []
+                for pr in data:
+                    if pr.get("merged_at"):
+                        merged_at = datetime.fromisoformat(pr["merged_at"].replace("Z", "+00:00"))
+                        if merged_at >= since:
+                            prs.append({
+                                "repo": repo,
+                                "title": pr["title"],
+                                "number": pr["number"],
+                                "merged_at": merged_at,
+                                "url": pr["html_url"]
+                            })
+                return prs, None
+            except Exception:
+                return [], None
+    return [], None
+
+async def _fetch_issues(
+    client: httpx.AsyncClient,
+    repo: str,
+    username: str,
+    since: datetime,
+    headers: dict,
+    semaphore: asyncio.Semaphore,
+) -> tuple[list, str | None]:
+    """Fetch closed issues for a repo from GitHub."""
+    retries = 3
+    url = f"https://api.github.com/repos/{username}/{repo}/issues"
+    params = {"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}
+    
+    async with semaphore:
+        for attempt in range(retries):
+            try:
+                response = await client.get(url, headers=headers, params=params, timeout=30.0)
+                if response.status_code in [404, 429, 403]: return [], None
+                response.raise_for_status()
+                data = response.json()
+                issues = []
+                for issue in data:
+                    # Skip if it's a PR masquerading as an issue
+                    if "pull_request" not in issue and issue.get("closed_at"):
+                        closed_at = datetime.fromisoformat(issue["closed_at"].replace("Z", "+00:00"))
+                        if closed_at >= since:
+                            issues.append({
+                                "repo": repo,
+                                "title": issue["title"],
+                                "number": issue["number"],
+                                "closed_at": closed_at,
+                                "url": issue["html_url"]
+                            })
+                return issues, None
+            except Exception:
+                return [], None
+    return [], None
+
+
 async def _get_github_commits(days: int = 7, username: str = None, repos: list = None, token: str = None) -> tuple[dict, list]:
     """
     Get the commits from GitHub API for the duration of days provided.
@@ -112,118 +243,14 @@ async def _get_github_commits(days: int = 7, username: str = None, repos: list =
     if auth_token:
         headers["Authorization"] = f"Bearer {auth_token}"
 
-
     # Semaphore to prevent GitHub secondary rate limits (max 3 concurrent)
     semaphore = asyncio.Semaphore(3)
 
-    async def fetch_repo_commits(client: httpx.AsyncClient, repo: str, retries: int = 3) -> list:
-        url = f"https://api.github.com/repos/{username}/{repo}/commits"
-        params = {"since": since_iso, "per_page": 100}
-        
-        async with semaphore:
-            for attempt in range(retries):
-                try:
-                    response = await client.get(url, headers=headers, params=params, timeout=30.0)
-                    
-                    if response.status_code == 404:
-                        error_msg = f"Repo '{username}/{repo}' not found or is private"
-                        logger.error(error_msg)
-                        return [], error_msg
-                    elif response.status_code in [429, 403]:
-                        if attempt < retries - 1:
-                            wait_time = (attempt + 1) * 0.5
-                            logger.warning("GitHub Rate Limit hit for %s. Retrying in %ss...", repo, wait_time)
-                            await asyncio.sleep(wait_time)
-                            continue
-                        error_msg = "GitHub API rate limit exceeded permanently"
-                        logger.error("%s for %s", error_msg, repo)
-                        return [], error_msg
-                    
-                    response.raise_for_status()
-                    data = response.json()
-                    commits = [
-                        {
-                            "repo": repo,
-                            "message": commit["commit"]["message"],
-                            "author": commit["commit"]["author"]["name"],
-                            "date": datetime.fromisoformat(commit["commit"]["author"]["date"].replace("Z", "+00:00")),
-                            "hash": commit["sha"]
-                        }
-                        for commit in data
-                    ]
-                    return commits, None
-                except (httpx.RequestError, httpx.HTTPStatusError) as e:
-                    if attempt < retries - 1:
-                        logger.warning("Fetch error for %s (%s). Retrying...", repo, str(e))
-                        await asyncio.sleep((attempt + 1) * 0.5)
-                        continue
-                    error_msg = f"Failed to fetch commits for {repo}: {str(e)}"
-                    logger.error(error_msg)
-                    return [], error_msg
-        return [], "Unknown error"
-
-    async def fetch_repo_prs(client: httpx.AsyncClient, repo: str, retries: int = 3) -> list:
-        url = f"https://api.github.com/repos/{username}/{repo}/pulls"
-        params = {"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}
-        
-        async with semaphore:
-            for attempt in range(retries):
-                try:
-                    response = await client.get(url, headers=headers, params=params, timeout=30.0)
-                    if response.status_code in [404, 429, 403]: return [], None
-                    response.raise_for_status()
-                    data = response.json()
-                    prs = []
-                    for pr in data:
-                        if pr.get("merged_at"):
-                            merged_at = datetime.fromisoformat(pr["merged_at"].replace("Z", "+00:00"))
-                            if merged_at >= since:
-                                prs.append({
-                                    "repo": repo,
-                                    "title": pr["title"],
-                                    "number": pr["number"],
-                                    "merged_at": merged_at,
-                                    "url": pr["html_url"]
-                                })
-                    return prs, None
-                except Exception:
-                    return [], None
-        return [], None
-        
-    async def fetch_repo_issues(client: httpx.AsyncClient, repo: str, retries: int = 3) -> list:
-        url = f"https://api.github.com/repos/{username}/{repo}/issues"
-        params = {"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}
-        
-        async with semaphore:
-            for attempt in range(retries):
-                try:
-                    response = await client.get(url, headers=headers, params=params, timeout=30.0)
-                    if response.status_code in [404, 429, 403]: return [], None
-                    response.raise_for_status()
-                    data = response.json()
-                    issues = []
-                    for issue in data:
-                        # Skip if it's a PR masquerading as an issue
-                        if "pull_request" not in issue and issue.get("closed_at"):
-                            closed_at = datetime.fromisoformat(issue["closed_at"].replace("Z", "+00:00"))
-                            if closed_at >= since:
-                                issues.append({
-                                    "repo": repo,
-                                    "title": issue["title"],
-                                    "number": issue["number"],
-                                    "closed_at": closed_at,
-                                    "url": issue["html_url"]
-                                })
-                    return issues, None
-                except Exception:
-                    return [], None
-        return [], None
-
     async with httpx.AsyncClient() as client:
         # TRIGGER ALL REPO FETCHES SIMULTANEOUSLY
-        commit_tasks = [fetch_repo_commits(client, repo) for repo in repos]
-        pr_tasks = [fetch_repo_prs(client, repo) for repo in repos]
-        issue_tasks = [fetch_repo_issues(client, repo) for repo in repos]
+        commit_tasks = [_fetch_commits(client, repo, username, since_iso, headers, semaphore) for repo in repos]
+        pr_tasks = [_fetch_prs(client, repo, username, since, headers, semaphore) for repo in repos]
+        issue_tasks = [_fetch_issues(client, repo, username, since, headers, semaphore) for repo in repos]
         
         commit_results = await asyncio.gather(*commit_tasks)
         pr_results = await asyncio.gather(*pr_tasks)

@@ -15,44 +15,8 @@ import {
   Loader2,
   FileText,
 } from "lucide-react";
-import { API_URL } from "@/lib/api";
-
-interface PromptTemplate {
-  id: string;
-  username: string;
-  name: string;
-  content: string;
-  created_at: string;
-}
-
-interface CreateTemplatePayload {
-  username: string;
-  name: string;
-  content: string;
-}
-
-async function listTemplates(username: string): Promise<PromptTemplate[]> {
-  const res = await fetch(
-    `${API_URL}/prompt-templates?username=${encodeURIComponent(username)}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch templates");
-  return res.json();
-}
-
-async function createTemplate(payload: CreateTemplatePayload): Promise<PromptTemplate> {
-  const res = await fetch(`${API_URL}/prompt-templates`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error("Failed to create template");
-  return res.json();
-}
-
-async function deleteTemplate(id: string): Promise<void> {
-  const res = await fetch(`${API_URL}/prompt-templates/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to delete template");
-}
+import { listPromptTemplates, createPromptTemplate, deletePromptTemplate } from "@/lib/api";
+import type { PromptTemplate } from "@/lib/types";
 
 /**
  * Templates management page — Create, list, and delete saved prompt templates.
@@ -87,7 +51,7 @@ export default function TemplatesPage() {
     if (!username) return;
 
     setLoading(true);
-    listTemplates(username)
+    listPromptTemplates(username)
       .then(setTemplates)
       .catch((err: unknown) => {
         const e = err as Error;
@@ -106,7 +70,7 @@ export default function TemplatesPage() {
     setFormError(null);
 
     try {
-      const created = await createTemplate({
+      const created = await createPromptTemplate({
         username,
         name: newName.trim(),
         content: newContent.trim(),
@@ -127,11 +91,11 @@ export default function TemplatesPage() {
     // Optimistic removal
     setTemplates((prev) => prev.filter((t) => t.id !== id));
     try {
-      await deleteTemplate(id);
+      await deletePromptTemplate(id);
     } catch {
       // If deletion fails, re-fetch to restore state
       if (username) {
-        const fresh = await listTemplates(username).catch(() => []);
+        const fresh = await listPromptTemplates(username).catch(() => []);
         setTemplates(fresh);
       }
     }
