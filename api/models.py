@@ -16,6 +16,18 @@ class SummariseResponse(BaseModel):
     generated_at: str
     is_public: bool = False
 
+class HistoryRecord(BaseModel):
+    id: str
+    username: str
+    repos: List[str]
+    days: int
+    summary: str
+    generated_at: str
+
+class HistoryResponse(BaseModel):
+    summaries: List[HistoryRecord]
+    total: int
+
 class RosterRequest(BaseModel):
     name: str
     usernames: List[str]

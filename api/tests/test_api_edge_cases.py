@@ -7,14 +7,16 @@ client = TestClient(app)
 
 def test_get_history_invalid_date_format():
     """Verify that malformed date strings return a 400 error."""
-    response = client.get("/history?username=dev&start_date=not-a-date")
-    # Current implementation raises ValueError which FastAPI converts to 500
-    # We should ideally fix this to return 400
-    assert response.status_code in [400, 500] 
+    with patch("api.dependencies.get_db_pool") as mock_pool_func:
+        mock_pool_func.return_value = MagicMock()
+        response = client.get("/history?username=dev&start_date=not-a-date")
+        # Current implementation raises ValueError which FastAPI converts to 500
+        # We should ideally fix this to return 400
+        assert response.status_code in [400, 500] 
 
 def test_get_history_sql_injection_attempt():
     """Verify that special characters in search don't break the query."""
-    with patch("api.api.get_db_pool") as mock_pool_func:
+    with patch("api.dependencies.get_db_pool") as mock_pool_func:
         mock_pool = MagicMock()
         mock_conn = AsyncMock()
         mock_conn.fetch.return_value = []
