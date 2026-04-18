@@ -129,3 +129,95 @@ async def test_get_activity_github_429_returns_error():
     result, errors = await get_activity(source="github", username="deepusharma", repos=["gitpulse"], days=7)
     assert len(errors) == 1
     assert "rate limit" in errors[0].lower()
+
+# -----------------------------------------------------------------------------
+# Extracted Fetchers
+# -----------------------------------------------------------------------------
+from gitpulse.core.repo_reader import _fetch_commits, _fetch_prs, _fetch_issues
+import asyncio
+from datetime import datetime, timezone
+
+@pytest.mark.anyio
+@respx.mock
+async def test_fetch_commits_returns_list():
+    respx.get(
+        url__regex=r"https://api\.github\.com/repos/testuser/testrepo/commits.*"
+    ).respond(
+        json=[{
+            "sha": "a1b2c3d",
+            "commit": {
+                "message": "test message",
+                "author": {"name": "Test Author", "date": "2026-03-21T10:00:00Z"}
+            }
+        }]
+    )
+    async with httpx.AsyncClient() as client:
+        commits, error = await _fetch_commits(
+            client=client,
+            repo="testrepo",
+            username="testuser",
+            since_iso="2026-03-01T00:00:00Z",
+            headers={},
+            semaphore=asyncio.Semaphore(1)
+        )
+    assert error is None
+    assert isinstance(commits, list)
+    assert len(commits) == 1
+    assert commits[0]["repo"] == "testrepo"
+    assert commits[0]["message"] == "test message"
+
+@pytest.mark.anyio
+@respx.mock
+async def test_fetch_prs_returns_list():
+    respx.get(
+        url__regex=r"https://api\.github\.com/repos/testuser/testrepo/pulls.*"
+    ).respond(
+        json=[{
+            "title": "Test PR",
+            "number": 1,
+            "merged_at": "2026-03-21T10:00:00Z",
+            "html_url": "http://example.com/pr/1"
+        }]
+    )
+    async with httpx.AsyncClient() as client:
+        prs, error = await _fetch_prs(
+            client=client,
+            repo="testrepo",
+            username="testuser",
+            since=datetime(2026, 3, 1, tzinfo=timezone.utc),
+            headers={},
+            semaphore=asyncio.Semaphore(1)
+        )
+    assert error is None
+    assert isinstance(prs, list)
+    assert len(prs) == 1
+    assert prs[0]["title"] == "Test PR"
+    assert "merged_at" in prs[0]
+
+@pytest.mark.anyio
+@respx.mock
+async def test_fetch_issues_returns_list():
+    respx.get(
+        url__regex=r"https://api\.github\.com/repos/testuser/testrepo/issues.*"
+    ).respond(
+        json=[{
+            "title": "Test Issue",
+            "number": 2,
+            "closed_at": "2026-03-21T10:00:00Z",
+            "html_url": "http://example.com/issue/2"
+        }]
+    )
+    async with httpx.AsyncClient() as client:
+        issues, error = await _fetch_issues(
+            client=client,
+            repo="testrepo",
+            username="testuser",
+            since=datetime(2026, 3, 1, tzinfo=timezone.utc),
+            headers={},
+            semaphore=asyncio.Semaphore(1)
+        )
+    assert error is None
+    assert isinstance(issues, list)
+    assert len(issues) == 1
+    assert issues[0]["title"] == "Test Issue"
+    assert "closed_at" in issues[0]

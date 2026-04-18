@@ -14,11 +14,11 @@ def test_summarise_cache_hit():
     from api.api import commit_cache
     commit_cache.clear()
     
-    with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+    with patch("api.routers.summarise.get_activity", new_callable=AsyncMock) as mock_get_activity:
         mock_get_activity.return_value = ({"commits": [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}], "prs": [], "issues": []}, [])
-        with patch("api.api.summarise", new_callable=AsyncMock) as mock_summarise:
+        with patch("api.routers.summarise.summarise", new_callable=AsyncMock) as mock_summarise:
             mock_summarise.return_value = "Test summary"
-            with patch("api.api.get_db_pool") as mock_pool_func:
+            with patch("api.db.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
                 mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
@@ -41,12 +41,12 @@ def test_summarise_cache_refresh():
     from api.api import commit_cache
     commit_cache.clear()
     
-    with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+    with patch("api.routers.summarise.get_activity", new_callable=AsyncMock) as mock_get_activity:
         # First call: return empty
         mock_get_activity.return_value = ({"commits": [], "prs": [], "issues": []}, [])
-        with patch("api.api.summarise", new_callable=AsyncMock) as mock_summarise:
+        with patch("api.routers.summarise.summarise", new_callable=AsyncMock) as mock_summarise:
             mock_summarise.return_value = "Test"
-            with patch("api.api.get_db_pool"):
+            with patch("api.db.get_db_pool"):
                 payload = {"username": "user", "repos": ["repo"], "days": 7}
                 
                 # Populate cache
@@ -58,11 +58,11 @@ def test_summarise_cache_refresh():
                 assert mock_get_activity.call_count == 2 # Should increase because refresh bypasses cache
 
 def test_summarise_valid_request_returns_200():
-    with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+    with patch("api.routers.summarise.get_activity", new_callable=AsyncMock) as mock_get_activity:
         mock_get_activity.return_value = ({"commits": [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}], "prs": [], "issues": []}, [])
-        with patch("api.api.summarise") as mock_summarise:
+        with patch("api.routers.summarise.summarise") as mock_summarise:
             mock_summarise.return_value = "Test summary"
-            with patch("api.api.get_db_pool") as mock_pool_func:
+            with patch("api.db.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
                 mock_conn.fetchrow.return_value = {"id": "123e4567-e89b-12d3-a456-426614174000"}
@@ -96,11 +96,11 @@ def test_summarise_empty_repos_returns_422():
     assert response.status_code == 422
 
 def test_summarise_db_failure_does_not_break_response():
-    with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+    with patch("api.routers.summarise.get_activity", new_callable=AsyncMock) as mock_get_activity:
         mock_get_activity.return_value = ({"commits": [{"repo": "gitpulse", "hash": "abc", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "msg"}], "prs": [], "issues": []}, [])
-        with patch("api.api.summarise") as mock_summarise:
+        with patch("api.routers.summarise.summarise") as mock_summarise:
             mock_summarise.return_value = "Test summary"
-            with patch("api.api.get_db_pool") as mock_pool_func:
+            with patch("api.db.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
                 mock_conn.fetchrow.side_effect = Exception("DB failure")
@@ -113,7 +113,7 @@ def test_summarise_db_failure_does_not_break_response():
                 assert data["summary"] == "Test summary"
 
 def test_get_history_returns_data():
-    with patch("api.api.get_db_pool") as mock_pool_func:
+    with patch("api.dependencies.get_db_pool") as mock_pool_func:
         mock_pool = MagicMock()
         mock_conn = AsyncMock()
         mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
@@ -139,7 +139,7 @@ def test_get_history_returns_data():
         assert data["summaries"][0]["summary"] == "Historical summary"
 
 def test_get_history_filters_applied():
-    with patch("api.api.get_db_pool") as mock_pool_func:
+    with patch("api.dependencies.get_db_pool") as mock_pool_func:
         mock_pool = MagicMock()
         mock_conn = AsyncMock()
         mock_conn.fetch.return_value = []
@@ -180,9 +180,9 @@ def test_github_validate_endpoint():
         assert mock_get.call_count == 3
 
 def test_analytics_commits_per_day():
-    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
-        mock_get_repos.return_value = ["gitpulse"]
-        with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+    with patch("api.dependencies.get_user_repos", new_callable=AsyncMock) as mock_get_repos:
+        mock_get_repos.return_value = ["repo1"]
+        with patch("api.routers.analytics.get_activity", new_callable=AsyncMock) as mock_get_activity:
             mock_get_activity.return_value = ({"commits": [
                 {"repo": "gitpulse", "hash": "111", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "m1"},
                 {"repo": "gitpulse", "hash": "222", "author": "dev", "date": datetime(2026, 3, 21, tzinfo=timezone.utc), "message": "m2"},
@@ -198,9 +198,9 @@ def test_analytics_commits_per_day():
             assert data[1]["count"] == 1
 
 def test_analytics_repos_breakdown():
-    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
+    with patch("api.dependencies.get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1", "repo2"]
-        with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+        with patch("api.routers.analytics.get_activity", new_callable=AsyncMock) as mock_get_activity:
             mock_get_activity.return_value = ({"commits": [
                 {"repo": "repo1", "hash": "111", "author": "dev", "date": datetime(2026, 3, 1, tzinfo=timezone.utc), "message": "m1"},
                 {"repo": "repo2", "hash": "222", "author": "dev", "date": datetime(2026, 3, 2, tzinfo=timezone.utc), "message": "m2"},
@@ -218,13 +218,13 @@ def test_analytics_repos_breakdown():
             assert data[1]["percentage"] == 33.3
 
 def test_analytics_all_returns_consolidated_data():
-    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
+    with patch("api.dependencies.get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1"]
-        with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
+        with patch("api.routers.analytics.get_activity", new_callable=AsyncMock) as mock_get_activity:
             mock_get_activity.return_value = ({"commits": [
                 {"repo": "repo1", "hash": "abc", "author": "dev", "date": datetime.now(timezone.utc) - timedelta(days=1), "message": "msg1"},
             ], "prs": [], "issues": []}, [])
-            with patch("api.api.get_db_pool") as mock_pool_func:
+            with patch("api.dependencies.get_db_pool") as mock_pool_func:
                 mock_pool = MagicMock()
                 mock_conn = AsyncMock()
                 mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
@@ -242,7 +242,7 @@ def test_analytics_all_returns_consolidated_data():
                 assert data["insights"]["top_repo"] == "repo1"
 
 def test_get_insights_metrics():
-    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
+    with patch("api.dependencies.get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1"]
         with patch("api.api.get_activity", new_callable=AsyncMock) as mock_get_activity:
             mock_get_activity.return_value = ({"commits": [
@@ -270,7 +270,7 @@ def test_get_insights_metrics():
             assert issue_day_metric["issues"] == 1
 
 def test_get_insights_health():
-    with patch("api.api._get_user_repos", new_callable=AsyncMock) as mock_get_repos:
+    with patch("api.dependencies.get_user_repos", new_callable=AsyncMock) as mock_get_repos:
         mock_get_repos.return_value = ["repo1"]
         with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as mock_client_get:
             mock_response = MagicMock()
@@ -333,7 +333,7 @@ def test_deliver_slack():
         assert mock_post.called
 
 def test_badges_streak_redirect():
-    with patch("api.api.get_insights", new_callable=AsyncMock) as mock_insights:
+    with patch("api.routers.analytics.get_insights", new_callable=AsyncMock) as mock_insights:
         mock_insights.return_value = {"streak": 42}
         response = client.get("/badges/streak?username=deepusharma", follow_redirects=False)
         assert response.status_code == 307

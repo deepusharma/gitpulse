@@ -42,3 +42,7 @@ class InMemoryCache:
         Clear all items from the cache.
         """
         self._cache.clear()
+
+commit_cache = InMemoryCache()
+repo_cache = InMemoryCache()
+analytics_cache = InMemoryCache()
