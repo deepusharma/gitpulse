@@ -6,7 +6,7 @@ from api.api import app
 client = TestClient(app)
 
 def test_github_validate_endpoint():
-    from api.api import repo_cache
+    from api.cache import repo_cache
     repo_cache.clear()
     
     with patch("httpx.AsyncClient.get") as mock_get:
