@@ -6,7 +6,7 @@ from api.api import app
 client = TestClient(app)
 
 def test_summarise_cache_hit():
-    from api.api import commit_cache
+    from api.cache import commit_cache
     commit_cache.clear()
     
     with patch("api.routers.summarise.get_activity", new_callable=AsyncMock) as mock_get_activity:
@@ -33,7 +33,7 @@ def test_summarise_cache_hit():
                 assert resp2.json()["summary"] == "Test summary"
 
 def test_summarise_cache_refresh():
-    from api.api import commit_cache
+    from api.cache import commit_cache
     commit_cache.clear()
     
     with patch("api.routers.summarise.get_activity", new_callable=AsyncMock) as mock_get_activity:
