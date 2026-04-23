@@ -119,3 +119,32 @@ export interface PromptTemplateCreate {
   name: string;
   content: string;
 }
+
+export interface AnalyticsFullResponse {
+  commits_per_day: { date: string; count: number }[];
+  repos_breakdown: { repo: string; count: number; percentage: number }[];
+  insights: {
+    most_active_day: string;
+    streak: number;
+    top_repo: string;
+    total_summaries: number;
+    average_commits_per_day: number;
+  };
+  last_updated: string;
+}
+
+export interface YearInReviewResponse {
+  username: string;
+  year: number;
+  total_stats: {
+    summaries: number;
+    unique_repos: number;
+  };
+  top_repos: { name: string; count: number }[];
+  monthly_breakdown: { month: string; count: number }[];
+  busiest_day: {
+    date: string;
+    count: number;
+  };
+  ai_wrap_up: string;
+}

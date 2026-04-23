@@ -201,3 +201,26 @@ export async function deletePromptTemplate(id: string): Promise<void> {
   if (!response.ok) throw new Error("Failed to delete template");
 }
 
+export async function fetchAnalyticsFull(
+  username: string,
+  days: number = 30,
+  refresh: boolean = false
+): Promise<any> {
+  const response = await fetch(
+    `${API_URL}/analytics/all?username=${encodeURIComponent(username)}&days=${days}&refresh=${refresh}`
+  );
+  if (!response.ok) throw new Error("Failed to fetch full analytics");
+  return response.json();
+}
+
+export async function fetchYearInReview(
+  username: string,
+  year?: number
+): Promise<any> {
+  let url = `${API_URL}/analytics/year-in-review?username=${encodeURIComponent(username)}`;
+  if (year) url += `&year=${year}`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Failed to fetch year in review");
+  return response.json();
+}
+

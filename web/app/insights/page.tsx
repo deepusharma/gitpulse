@@ -25,10 +25,13 @@ import {
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from "recharts";
-import { fetchComparison, CompareResponse } from "@/lib/api";
+import { fetchComparison, fetchAnalyticsFull, CompareResponse } from "@/lib/api";
 import { MetricCard } from "@/components/insights/MetricCard";
 import { ComparisonChart } from "@/components/insights/ComparisonChart";
 import { RecommendationsPanel } from "@/components/RecommendationsPanel";
+import { AnalyticsFullResponse } from "@/lib/types";
+import { Trophy, Flame, Star, ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 interface HealthData {
   health_score: number;
@@ -52,10 +55,11 @@ function InsightsContent() {
   const [inputValue, setInputValue] = useState(paramUsername || "");
 
   const [metricsData, setMetricsData] = useState<
-    { date: string; commits: number; prs: number; issues: number }[]
+    { date: string; count: number }[]
   >([]);
-  const [healthData, setHealthData] = useState<HealthData | null>(null);
+  const [healthScore, setHealthScore] = useState<number | null>(null);
   const [comparisonData, setComparisonData] = useState<CompareResponse | null>(null);
+  const [insightsData, setInsightsData] = useState<AnalyticsFullResponse["insights"] | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,23 +84,14 @@ function InsightsContent() {
       setLoading(true);
       setError(null);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-        const [metricsRes, healthRes, compData] = await Promise.all([
-          fetch(`${baseUrl}/insights/metrics?username=${username}&repos=&days=${days}`),
-          fetch(`${baseUrl}/insights/health?username=${username}&repos=`),
+        const [allData, compData] = await Promise.all([
+          fetchAnalyticsFull(username, days),
           fetchComparison(username, days),
         ]);
 
-        if (!metricsRes.ok || !healthRes.ok) {
-          throw new Error("Failed to fetch insights data.");
-        }
-
-        const mData = await metricsRes.json();
-        const hData = await healthRes.json();
-
-        setMetricsData(mData);
-        setHealthData(hData);
+        setMetricsData(allData.commits_per_day);
+        setHealthScore(allData.insights.health_score);
+        setInsightsData(allData.insights);
         setComparisonData(compData);
       } catch (err: unknown) {
         const e = err as Error;
@@ -118,9 +113,7 @@ function InsightsContent() {
     }
   };
 
-  const totalCommits = metricsData.reduce((acc, val) => acc + val.commits, 0);
-  const totalPRs = metricsData.reduce((acc, val) => acc + val.prs, 0);
-  const totalIssues = metricsData.reduce((acc, val) => acc + val.issues, 0);
+  const totalCommits = metricsData.reduce((acc, val) => acc + val.count, 0);
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
@@ -178,32 +171,54 @@ function InsightsContent() {
         </div>
       )}
 
-      {!loading && username && metricsData.length > 0 && healthData && (
+      {!loading && username && metricsData.length > 0 && insightsData && (
         <div className="space-y-6">
           {/* Summary metric cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <MetricCard title="Total Commits" value={totalCommits} icon={GitCommit} />
             <MetricCard
-              title="Merged PRs"
-              value={totalPRs}
-              icon={GitPullRequest}
-              iconClassName="text-teal-500"
+              title="Current Streak"
+              value={`${insightsData?.streak || 0} Days`}
+              icon={Flame}
+              iconClassName="text-orange-500"
+              cardClassName="border-orange-500/20"
+              valueClassName="text-orange-400"
             />
             <MetricCard
-              title="Closed Issues"
-              value={totalIssues}
-              icon={CircleDot}
-              iconClassName="text-purple-500"
+              title="Personal Best"
+              value={`${insightsData?.longest_streak || 0} Days`}
+              icon={Trophy}
+              iconClassName="text-yellow-500"
+              cardClassName="border-yellow-500/20"
+              valueClassName="text-yellow-400"
             />
             <MetricCard
               title="Health Score"
-              value={`${healthData.health_score}/100`}
+              value={`${healthScore || 0}/100`}
               icon={Activity}
               iconClassName="text-emerald-500"
               cardClassName="border-emerald-500/20"
               valueClassName="text-emerald-400"
             />
           </div>
+
+          {/* Year in Review CTA */}
+          <Link href={`/year-in-review?username=${username}`}>
+            <div className="bg-gradient-to-r from-emerald-600/20 to-blue-600/20 border border-emerald-500/30 p-4 rounded-2xl flex items-center justify-between group hover:border-emerald-500/50 transition-all cursor-pointer">
+              <div className="flex items-center gap-4">
+                <div className="bg-emerald-500/20 p-2 rounded-lg">
+                  <Star className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white">Your {new Date().getFullYear()} Year in Review is ready!</h4>
+                  <p className="text-sm text-zinc-400">See your biggest achievements and annual growth.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-emerald-400 font-medium group-hover:gap-3 transition-all">
+                View Now <ExternalLink className="h-4 w-4" />
+              </div>
+            </div>
+          </Link>
 
           {/* Tabbed charts */}
           <Tabs defaultValue="velocity" className="space-y-4">
@@ -270,24 +285,11 @@ function InsightsContent() {
                       />
                       <Area
                         type="monotone"
-                        dataKey="commits"
+                        dataKey="count"
                         stroke="#10b981"
                         fillOpacity={1}
                         fill="url(#colorCommits)"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="prs"
-                        stroke="#14b8a6"
-                        fillOpacity={1}
-                        fill="url(#colorPRs)"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="issues"
-                        stroke="#a855f7"
-                        fillOpacity={1}
-                        fill="url(#colorIssues)"
+                        name="Commits"
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -313,16 +315,16 @@ function InsightsContent() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div className="bg-zinc-900 p-4 rounded-lg">
-                        <div className="text-zinc-400 text-sm mb-1">Total Stars</div>
-                        <div className="text-xl font-medium">{healthData.total_stars}</div>
+                        <div className="text-zinc-400 text-sm mb-1">Top Repository</div>
+                        <div className="text-xl font-medium">{insightsData?.top_repo}</div>
                       </div>
                       <div className="bg-zinc-900 p-4 rounded-lg">
-                        <div className="text-zinc-400 text-sm mb-1">Total Forks</div>
-                        <div className="text-xl font-medium">{healthData.total_forks}</div>
+                        <div className="text-zinc-400 text-sm mb-1">Avg Commits/Day</div>
+                        <div className="text-xl font-medium">{insightsData?.average_commits_per_day}</div>
                       </div>
                       <div className="bg-zinc-900 p-4 rounded-lg">
-                        <div className="text-zinc-400 text-sm mb-1">Total Open Issues</div>
-                        <div className="text-xl font-medium">{healthData.total_open_issues}</div>
+                        <div className="text-zinc-400 text-sm mb-1">Total Standups</div>
+                        <div className="text-xl font-medium">{insightsData?.total_summaries}</div>
                       </div>
                     </div>
                   </div>

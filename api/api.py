@@ -19,7 +19,8 @@ from api.routers import (
     mcp, 
     prompt_templates, 
     deliver,
-    health
+    health,
+    yearly
 )
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -58,6 +59,7 @@ app.include_router(badges.router)
 app.include_router(mcp.router)
 app.include_router(prompt_templates.router)
 app.include_router(deliver.router)
+app.include_router(yearly.router)
 
 # CORS
 app.add_middleware(
