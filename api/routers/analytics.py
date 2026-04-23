@@ -7,9 +7,66 @@ from asyncpg.pool import Pool
 from api.models import CompareResponse, CompareRecord
 from api.dependencies import get_user_repos, get_db
 from gitpulse.core.repo_reader import get_activity
+from api.routers.insights import get_insights_health
 from api.cache import analytics_cache
 
 logger = logging.getLogger(__name__)
+
+def calculate_streak(dates: list[datetime.date], ignore_weekends: bool = True) -> tuple[int, int]:
+    """
+    Calculate the current and longest streak from a list of dates.
+    
+    Returns:
+        tuple[int, int]: (current_streak, longest_streak)
+    """
+    if not dates:
+        return 0, 0
+    
+    sorted_dates = sorted(list(set(dates)), reverse=True)
+    today = datetime.now(timezone.utc).date()
+    
+    # Calculate ALL streaks to find the longest one
+    all_streaks = []
+    if not sorted_dates:
+        return 0, 0
+        
+    current_iter_streak = 1
+    for i in range(len(sorted_dates) - 1):
+        curr = sorted_dates[i]
+        prev = sorted_dates[i+1]
+        diff = (curr - prev).days
+        
+        is_consecutive = (diff == 1) or (ignore_weekends and curr.weekday() == 0 and prev.weekday() == 4 and diff == 3)
+        
+        if is_consecutive:
+            current_iter_streak += 1
+        else:
+            all_streaks.append(current_iter_streak)
+            current_iter_streak = 1
+    all_streaks.append(current_iter_streak)
+    
+    longest_streak = max(all_streaks) if all_streaks else 0
+    
+    # Calculate CURRENT streak (must include today or yesterday)
+    latest = sorted_dates[0]
+    def is_recent(d1, d2):
+        if d1 == d2: return True
+        diff = (d1 - d2).days
+        if diff == 1: return True
+        if ignore_weekends:
+            if d1.weekday() == 0 and d2.weekday() == 4 and diff == 3: return True
+            if d1.weekday() == 6 and d2.weekday() == 4 and diff == 2: return True
+            if d1.weekday() == 5 and d2.weekday() == 4 and diff == 1: return True
+        return False
+
+    if not is_recent(today, latest):
+        current_streak = 0
+    else:
+        # The first streak in our all_streaks list (because we sorted descending)
+        # IS the current streak IF it's recent.
+        current_streak = all_streaks[0]
+            
+    return current_streak, longest_streak
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
@@ -190,17 +247,15 @@ async def get_analytics_full(
             }
         }
         
-    if not commits:
-         return {
-            "commits_per_day": [],
-            "repos_breakdown": [],
-            "insights": {
-                "most_active_day": "N/A", "streak": 0, "top_repo": "N/A",
-                "total_summaries": total_summaries, "average_commits_per_day": 0
-            }
-        }
+    # 4. Get health score
+    health_score = 0
+    try:
+        health_res = await get_insights_health(username, ",".join(repos))
+        health_score = health_res.get("health_score", 0)
+    except Exception as e:
+        logger.error("Failed to fetch health score for %s: %s", username, e)
 
-    # 4. Process data (Frequency)
+    # 5. Process data (Frequency)
     counts_freq = Counter()
     for commit in commits:
         date_str = commit["date"].strftime("%Y-%m-%d")
@@ -233,19 +288,7 @@ async def get_analytics_full(
     most_active_day = day_counts.most_common(1)[0][0] if day_counts else "N/A"
     top_repo = repos_breakdown[0]["repo"] if repos_breakdown else "N/A"
     
-    streak = 0
-    if date_set:
-        sorted_dates = sorted(list(date_set), reverse=True)
-        current_date_val = datetime.now(timezone.utc).date()
-        if sorted_dates[0] < current_date_val - timedelta(days=1):
-            streak = 0
-        else:
-            check_date = sorted_dates[0]
-            for d in sorted_dates:
-                if d == check_date:
-                    streak += 1
-                    check_date = check_date - timedelta(days=1)
-                else: break
+    streak, longest_streak = calculate_streak(list(date_set))
     
     average_commits = round(total_commits / days, 1)
 
@@ -255,9 +298,11 @@ async def get_analytics_full(
         "insights": {
             "most_active_day": most_active_day,
             "streak": streak,
+            "longest_streak": longest_streak,
             "top_repo": top_repo,
             "total_summaries": total_summaries,
-            "average_commits_per_day": average_commits
+            "average_commits_per_day": average_commits,
+            "health_score": health_score
         },
         "last_updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     }
@@ -309,25 +354,14 @@ async def get_insights(
     most_active_day = day_counts.most_common(1)[0][0] if day_counts else "N/A"
     top_repo = repo_counts.most_common(1)[0][0] if repo_counts else "N/A"
     
-    streak = 0
-    if date_set:
-        sorted_dates = sorted(list(date_set), reverse=True)
-        current_date_val = datetime.now(timezone.utc).date()
-        if sorted_dates[0] < current_date_val - timedelta(days=1):
-            streak = 0
-        else:
-            check_date = sorted_dates[0]
-            for d in sorted_dates:
-                if d == check_date:
-                    streak += 1
-                    check_date = check_date - timedelta(days=1)
-                else: break
+    streak, longest_streak = calculate_streak(list(date_set))
                 
     average_commits = round(len(commits) / days, 1)
     
     return {
         "most_active_day": most_active_day,
         "streak": streak,
+        "longest_streak": longest_streak,
         "top_repo": top_repo,
         "total_summaries": total_summaries,
         "average_commits_per_day": average_commits
