@@ -61,8 +61,9 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | **v0.9**  | Depth & Intelligence — PR/issue activity, `/insights` dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator. | ✅ Complete |
 | **v1.0**  | Team & Reach — Team standup view, badge generator, presentation mode, smart notifications.       | ✅ Complete     |
 | **v1.1**  | Pro Features — Private org repos, shareable summary links, comparison mode.                      | ✅ Complete    |
-| **v1.2**  | AI & MCP — MCP server for Claude/Cursor/Windsurf, AI recommendations, prompt templates.          | 📋 Planned     |
-| **v1.3**  | Delight — Year in review, gamification, streaks, VS Code extension.                              | 📋 Planned     |
+| **v1.2**  | AI & MCP — MCP server for Claude/Cursor/Windsurf, AI recommendations, prompt templates.          | ✅ Complete     |
+| **v1.3**  | Delight — Year in review, gamification, streaks, VS Code extension.                              | ✅ Complete     |
+| **v1.4**  | Code Health — API refactor, router decomposition, file size limits, technical debt.               | ✅ Complete     |
 
 ---
 
@@ -87,7 +88,10 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Sprint 15 | 🆕 New | v1.0 | TBD | Team standup, badge generator, presentation mode, notifications |
 | Sprint 16 | 🆕 New | v1.1 | TBD | Private org repos, shareable links, comparison mode |
 | Sprint 17 | 🆕 New | v1.2 | TBD | MCP server (Claude/Cursor/Windsurf), AI recommendations |
-| Sprint 18 | 🆕 New | v1.3 | TBD | Streaks, year in review, VS Code extension |
+| Sprint 18 | ✅ Done | v1.3 | TBD | Streaks, year in review, gamification |
+| Sprint 19 | ✅ Done | v1.4 | TBD | API Refactor & Code Health |
+| Sprint 20 | ✅ Done | v1.3 | TBD | VS Code Extension Completion |
+| Sprint 21 | 📋 Planned | v1.5 | TBD | Release Hardening & Packaging |
 
 > Sprint 13 is a buffer/overflow slot between v0.6 and v0.9.
 

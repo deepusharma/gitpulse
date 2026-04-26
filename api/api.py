@@ -31,7 +31,7 @@ from api.db import init_db, close_db
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting up GitPulse API v0.7.0")
+    logger.info("Starting up GitPulse API v1.4.0")
     if not os.getenv("GROQ_API_KEY"):
         logger.error("CRITICAL: GROQ_API_KEY is not set. Summary generation will fail.")
     try:
@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
         await close_db()
     except Exception: pass
 
-app = FastAPI(title="gitpulse API", version="0.6.0", lifespan=lifespan)
+app = FastAPI(title="gitpulse API", version="1.4.0", lifespan=lifespan)
 
 # Register Routers
 app.include_router(health.router)
