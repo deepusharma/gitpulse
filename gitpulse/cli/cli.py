@@ -203,7 +203,7 @@ def main(ctx: typer.Context):
     Subcommand router. Default behavior is to show help if no command specified.
     """
     if ctx.invoked_subcommand is None:
-        console.print("[bold cyan]GitPulse[/bold cyan] v0.8.0")
+        console.print("[bold cyan]GitPulse[/bold cyan] v1.4.0")
         console.print("Use [bold]gitpulse generate[/bold] to create a summary or [bold]gitpulse init[/bold] to set up.")
         # console.print(ctx.get_help())
 

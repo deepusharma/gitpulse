@@ -274,6 +274,8 @@ History:
 - v0.9 ✅ Complete — Depth & Intelligence
 - v1.0 ✅ Complete — Team & Reach
 - v1.1 ✅ Complete — Pro Features
+- v1.2 ✅ Complete — AI & MCP (Sprint 17)
+- v1.3 ✅ Complete — Delight (Sprint 18, 20)
 - v1.4 ✅ Complete — Code Health (Sprint 19)
 
 

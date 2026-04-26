@@ -26,6 +26,7 @@
 - **Config-driven** — set default repos, lookback window, and output path in `~/.gitpulse.toml`
 - **History** — every summary is persisted; browse and search past standups at `/history`
 - **Analytics** — commit frequency charts and repo activity breakdowns at `/dashboard`
+- **VS Code Extension** — generate standups and view insights directly from your IDE sidebar
 
 ---
 
@@ -214,9 +215,14 @@ cd web && npm run test
 | Version | Theme | Status |
 |---|---|---|
 | v0.7 | Packaging & DX (`pip install`, `gitpulse init`) | ✅ Complete |
-| v0.8 | Open Source Ready (README, MkDocs, release workflow) | 🔵 Active |
-| v0.9 | Depth & Intelligence (PR/issue enrichment, `/insights`) | 📋 Planned |
-| v1.0 | Team & Reach (team standup, badge generator) | 📋 Planned |
+| v0.8 | Open Source Ready (README, MkDocs, release workflow) | ✅ Complete |
+| v0.9 | Depth & Intelligence (PR/issue enrichment, `/insights`) | ✅ Complete |
+| v1.0 | Team & Reach (team standup, badge generator) | ✅ Complete |
+| v1.1 | Pro Features (private org repos, shareable links) | ✅ Complete |
+| v1.2 | AI & MCP (MCP server, prompt templates) | ✅ Complete |
+| v1.3 | Delight (streaks, year in review, VS Code extension) | ✅ Complete |
+| v1.4 | Code Health (API refactor, router decomposition) | ✅ Complete |
+| v1.5 | Release Hardening (PyPI publication, CI refinement) | 🔵 Active |
 
 ---
 
