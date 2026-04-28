@@ -117,7 +117,7 @@ Full CLI docs: https://deepusharma.github.io/gitpulse/cli-reference/
 
 Try it live — no install required:
 
-| Component | URL |
+| Component | URL  |
 |---|---|
 | **Web UI** | https://gitpulse-kappa.vercel.app |
 | **API** | https://web-production-83e65.up.railway.app |
