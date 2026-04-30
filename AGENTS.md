@@ -281,10 +281,10 @@ History:
 
 Active stories:
 
-- #102 pip install gitpulse (Namespace Refactor)
-- #103 PyPI publish workflow
-- #104 gitpulse init (Typer)
-- #220 CLI Resilience: Pre-flight Auth (Deffered to S11)
+- #102 pip install gitpulse (Namespace Refactor) - ✅ Done
+- #103 PyPI publish workflow - ✅ Done
+- #104 gitpulse init (Typer) - ✅ Done
+- #220 CLI Resilience: Pre-flight Auth - ✅ Done
 
 
 ---
