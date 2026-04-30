@@ -91,7 +91,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Sprint 18 | ✅ Done | v1.3 | TBD | Streaks, year in review, gamification |
 | Sprint 19 | ✅ Done | v1.4 | TBD | API Refactor & Code Health |
 | Sprint 20 | ✅ Done | v1.3 | TBD | VS Code Extension Completion |
-| Sprint 21 | 📋 Planned | v1.5 | TBD | Release Hardening & Packaging |
+| Sprint 21 | ✅ Done | v1.5 | TBD | Release Hardening & Packaging |
 
 > Sprint 13 is a buffer/overflow slot between v0.6 and v0.9.
 

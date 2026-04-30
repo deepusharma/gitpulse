@@ -30,7 +30,7 @@ def load_env(check_keys: bool = True):
     
     if check_keys:
         required_keys = ["GROQ_API_KEY"]
-        missing_keys = [key for key in required_keys if key not in os.environ]
+        missing_keys = [key for key in required_keys if not os.environ.get(key)]
         if missing_keys:
             for key in missing_keys:
                 logger.error("Missing required environment variable: %s", key)

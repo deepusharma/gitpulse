@@ -98,8 +98,29 @@ def generate(
         try:
             config = load_config()
         except FileNotFoundError:
-            console.print("[bold red]Error:[/bold red] ~/.gitpulse.toml not found.")
-            console.print("Run [bold cyan]gitpulse init[/bold cyan] to set up your configuration.")
+            console.print(
+                Panel(
+                    "[bold red]Configuration Not Found[/bold red]\n\n"
+                    "GitPulse requires a configuration file to know which repositories to scan.\n\n"
+                    "[bold yellow]Resolution:[/bold yellow]\n"
+                    "Run [bold cyan]gitpulse init[/bold cyan] to set up your configuration interactively.",
+                    title="[bold red]Missing Config[/bold red]",
+                    border_style="red",
+                    expand=False,
+                )
+            )
+            raise typer.Exit(1)
+        except Exception as e:
+            console.print(
+                Panel(
+                    f"Failed to load `~/.gitpulse.toml`.\n\n"
+                    f"[bold yellow]Details:[/bold yellow]\n{e}\n\n"
+                    "Please check the file syntax or run [bold cyan]gitpulse init[/bold cyan] to recreate it.",
+                    title="[bold red]Invalid Config[/bold red]",
+                    border_style="red",
+                    expand=False,
+                )
+            )
             raise typer.Exit(1)
 
         defaults = config.get("defaults", {})
@@ -119,7 +140,19 @@ def generate(
         try:
             load_env(check_keys=not dry_run)
         except EnvironmentError:
-            console.print("[bold red]Error:[/bold red] GROQ_API_KEY not set. Check your environment or .env file.")
+            console.print(
+                Panel(
+                    "Your [bold]GROQ_API_KEY[/bold] is not set in the environment.\n\n"
+                    "[bold yellow]Resolution steps:[/bold yellow]\n"
+                    "  1. Get a free API key from [link=https://console.groq.com]console.groq.com[/link]\n"
+                    "  2. Set it in your terminal: [bold cyan]export GROQ_API_KEY=gsk_...[/bold cyan]\n"
+                    "     — or add it to a [cyan].env[/cyan] file in your current directory.\n"
+                    "  3. Re-run [bold cyan]gitpulse generate[/bold cyan]",
+                    title="[bold red]Environment Error[/bold red]",
+                    border_style="red",
+                    expand=False,
+                )
+            )
             raise typer.Exit(1)
 
         # Fetch commits
