@@ -5,6 +5,8 @@ class SummariseRequest(BaseModel):
     username: str
     repos: List[str]
     days: int = 7
+    tone: str = "professional"
+    language: str = "English"
 
 class SummariseResponse(BaseModel):
     id: str
@@ -55,6 +57,17 @@ class SlackDeliverRequest(BaseModel):
     summary: str
     webhook_url: str
     channel: Optional[str] = None
+
+class EmailDeliverRequest(BaseModel):
+    to: str
+    summary: str
+
+class GistDeliverRequest(BaseModel):
+    summary: str
+    is_public: bool = False
+
+class GistDeliverResponse(BaseModel):
+    url: str
 
 class PublicToggleRequest(BaseModel):
     public: bool

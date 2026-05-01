@@ -281,10 +281,10 @@ History:
 
 Active stories:
 
-- #102 pip install gitpulse (Namespace Refactor) - ✅ Done
-- #103 PyPI publish workflow - ✅ Done
-- #104 gitpulse init (Typer) - ✅ Done
-- #220 CLI Resilience: Pre-flight Auth - ✅ Done
+- Sprint 22: Advanced Delivery & Integrations - ✅ Done
+- Email Delivery (Resend) - ✅ Done
+- GitHub Gist Delivery - ✅ Done
+- Tone & Language Customization - ✅ Done
 
 
 ---

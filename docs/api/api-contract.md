@@ -58,7 +58,9 @@ Content-Type: application/json
 {
   "username": "deepusharma",
   "repos": ["gitpulse", "dotfiles"],
-  "days": 7
+  "days": 7,
+  "tone": "casual",
+  "language": "French"
 }
 ```
 
@@ -69,6 +71,8 @@ Content-Type: application/json
 | `username` | string   | Yes      | —       | GitHub username                    |
 | `repos`    | string[] | Yes      | —       | List of repo names (not full URLs) |
 | `days`     | integer  | No       | 7       | Number of days to look back        |
+| `tone`     | string   | No       | "professional" | Tone of the summary       |
+| `language` | string   | No       | "English" | Language of the summary        |
 
 **Validation Rules:**
 
@@ -154,6 +158,59 @@ Returned when Groq API fails or unexpected error occurs.
 {
   "error": "Failed to generate summary. Please try again.",
   "code": 500
+}
+```
+
+---
+
+### `POST /deliver/email`
+
+Send a standup summary via email. Requires `RESEND_API_KEY` on the server.
+
+**Request Body:**
+
+```json
+{
+  "to": "team@example.com",
+  "summary": "### WHAT I DID..."
+}
+```
+
+**Response — 200 OK:**
+
+```json
+{
+  "ok": true,
+  "id": "re_12345"
+}
+```
+
+---
+
+### `POST /deliver/gist`
+
+Publish a standup summary to a GitHub Gist. Requires GitHub OAuth token.
+
+**Request Headers:**
+
+```
+X-GitHub-Token: gho_...
+```
+
+**Request Body:**
+
+```json
+{
+  "summary": "### WHAT I DID...",
+  "is_public": false
+}
+```
+
+**Response — 200 OK:**
+
+```json
+{
+  "url": "https://gist.github.com/deepusharma/123456"
 }
 ```
 

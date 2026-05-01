@@ -204,6 +204,10 @@ cd web && npm run test
 - **Error**: `403 Forbidden` or `429 Too Many Requests`
 - **Fix**: Add `GITHUB_TOKEN` to your `.env` file (raises limit from 60 → 5,000 req/hr)
 
+### Email Delivery Failing
+- **Error**: `Failed to send email` or `RESEND_API_KEY is not configured`
+- **Fix**: Set `RESEND_API_KEY=re_...` in your server's `.env` file.
+
 ### Config not found
 - **Error**: `~/.gitpulse.toml not found`
 - **Fix**: Run `gitpulse init`

@@ -25,7 +25,9 @@ jobs:
   publish:
     needs: test
     runs-on: ubuntu-latest
-    environment: pypi
+    environment:
+      name: pypi
+      url: https://pypi.org/p/gitpulse
     permissions:
       id-token: write
     steps:

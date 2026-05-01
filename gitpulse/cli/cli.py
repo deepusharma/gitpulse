@@ -50,6 +50,8 @@ def init():
     console.print("\n[bold yellow]Set Summarization Defaults[/bold yellow]")
     default_days = typer.prompt("Default lookback days", default=7, type=int)
     default_output = typer.prompt("Default output file", default="output/summary.md")
+    default_tone = typer.prompt("Default tone (professional, casual, pirate, etc.)", default="professional")
+    default_language = typer.prompt("Default language", default="English")
 
     # Construct TOML
     config_path = os.path.expanduser("~/.gitpulse.toml")
@@ -60,6 +62,8 @@ github_username = "{github_username}"
 [defaults]
 days = {default_days}
 output = "{default_output}"
+tone = "{default_tone}"
+language = "{default_language}"
 
 [repos]
 """
@@ -86,6 +90,8 @@ def generate(
     days: Optional[int] = typer.Option(None, "--days", "-d", help="Number of days to look back"),
     repo: Optional[str] = typer.Option(None, "--repo", "-r", help="Filter by specific repo name from config"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Output file path"),
+    tone: Optional[str] = typer.Option(None, "--tone", "-t", help="Tone of the summary (e.g. professional, casual)"),
+    language: Optional[str] = typer.Option(None, "--language", "-l", help="Language of the summary"),
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Show commits without calling Groq API"),
 ):
@@ -129,6 +135,8 @@ def generate(
         active_days = days if days is not None else defaults.get("days", 7)
         active_output = output if output is not None else defaults.get("output", "output/summary.md")
         active_repo = repo if repo is not None else defaults.get("repo")
+        active_tone = tone if tone is not None else defaults.get("tone", "professional")
+        active_language = language if language is not None else defaults.get("language", "English")
 
         if active_repo:
             all_repos = config.get("repos", {})
@@ -183,7 +191,7 @@ def generate(
         # Summarize via Groq
         with console.status("[bold green]Generating AI standup summary...[/bold green]"):
             prompt_str = to_prompt_str(formatted_activity)
-            prompt = build_prompt(prompt_str)
+            prompt = build_prompt(prompt_str, tone=active_tone, language=active_language)
             try:
                 summary = await summarise(prompt)
             except groq.AuthenticationError:

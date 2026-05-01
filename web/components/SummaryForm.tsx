@@ -34,6 +34,8 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
   const [isLoadingRepos, setIsLoadingRepos] = useState(false);
 
   const [daysInput, setDaysInput] = useState("7");
+  const [tone, setTone] = useState("professional");
+  const [language, setLanguage] = useState("English");
   const [forceRefresh, setForceRefresh] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [includePrivate, setIncludePrivate] = useState(false);
@@ -122,6 +124,8 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
         username: username.trim(),
         repos: selectedRepos,
         days: parsedDays(),
+        tone,
+        language,
       }, forceRefresh, includePrivate ? session?.accessToken : undefined);
       const endTime = performance.now();
 
@@ -189,6 +193,41 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
               placeholder={usernameValid ? "Select repositories..." : "Enter valid username first"}
               disabled={isSubmitting || !usernameValid}
             />
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="space-y-2 flex-1">
+              <label htmlFor="tone" className="text-sm font-medium">Tone</label>
+              <select
+                id="tone"
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                disabled={isSubmitting}
+                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="bullet-points">Bullet-points</option>
+                <option value="pirate">Pirate</option>
+              </select>
+            </div>
+            
+            <div className="space-y-2 flex-1">
+              <label htmlFor="language" className="text-sm font-medium">Language</label>
+              <select
+                id="language"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                disabled={isSubmitting}
+                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Japanese">Japanese</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
