@@ -2,6 +2,8 @@ export interface SummariseRequest {
   username: string;
   repos: string[];
   days: number;
+  tone?: string;
+  language?: string;
 }
 
 export interface SummariseResponse {

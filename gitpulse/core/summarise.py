@@ -102,10 +102,10 @@ def to_display_str(formatted_activity: dict) -> str:
         display_str += "\n"
     return display_str
 
-def build_prompt(prompt_str: str, mode: str = "standup") -> str:    
-    role_instructions = """
+def build_prompt(prompt_str: str, mode: str = "standup", tone: str = "professional", language: str = "English") -> str:    
+    role_instructions = f"""
     You are an expert technical writer.
-    Your task is to generate a concise, professional summary based on the github activity provided.
+    Your task is to generate a concise, {tone} summary based on the github activity provided.
     
     Output must be structured into exactly four sections:
     
@@ -125,11 +125,12 @@ def build_prompt(prompt_str: str, mode: str = "standup") -> str:
     - No preamble (e.g., "Here is your summary")
     - No sign-off (no "Thanks", no name)
     - Only the four sections above
-    - Keep it professional and concise
+    - Keep it concise and maintain a {tone} tone.
+    - IMPORTANT: The entire summary must be written in {language}.
     """
     
     if mode == "retro":
-        role_instructions = """
+        role_instructions = f"""
         You are an agile iteration manager.
         Your task is to generate a 2-week Sprint Retrospective summary based on the github activity provided.
         
@@ -149,6 +150,8 @@ def build_prompt(prompt_str: str, mode: str = "standup") -> str:
         
         Rules:
         - No preamble or sign-off.
+        - Maintain a {tone} tone.
+        - IMPORTANT: The entire summary must be written in {language}.
         """
         
     return f"{role_instructions}\n\nHere is the activity data:\n{prompt_str}"

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, GitCommit, FileText, Database, Clock, Download, Share2 } from "lucide-react";
 import { togglePublicSummary } from "@/lib/api";
+import { DeliveryModal } from "./delivery-modal";
 
 
 
@@ -48,6 +49,7 @@ interface ResultsProps {
 
 export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
   const [isCopied, setIsCopied] = React.useState(false);
+  const [isDeliveryModalOpen, setIsDeliveryModalOpen] = React.useState(false);
 
   if (!data && !isLoading) return null;
 
@@ -65,16 +67,7 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
 
   const handleShare = async () => {
     if (!data || data.id === "none") return;
-    try {
-      await togglePublicSummary(data.id, true);
-      const url = `${window.location.origin}/summary/${data.id}`;
-      await navigator.clipboard.writeText(url);
-      alert("Public link created and copied to clipboard!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create public link.");
-    }
-
+    setIsDeliveryModalOpen(true);
   };
 
 
@@ -240,7 +233,6 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
         )}
       </Card>
       
-      {/* Required styles for syntax rendering */}
       <style dangerouslySetInnerHTML={{__html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
@@ -253,6 +245,14 @@ export function Results({ data, isLoading, generationTimeMs }: ResultsProps) {
           border-radius: 4px; border: 2px solid var(--card);
         }
       `}} />
+      
+      {data && (
+        <DeliveryModal 
+          open={isDeliveryModalOpen} 
+          onOpenChange={setIsDeliveryModalOpen} 
+          summary={data.summary} 
+        />
+      )}
     </div>
   );
 }

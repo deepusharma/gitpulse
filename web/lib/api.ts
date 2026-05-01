@@ -160,6 +160,30 @@ export async function deliverSlack(summary: string, webhookUrl: string, channel?
   return response.json();
 }
 
+export async function deliverEmail(summary: string, to: string): Promise<{ ok: boolean; id: string }> {
+  const response = await fetch(`${API_URL}/deliver/email`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ summary, to }),
+  });
+  if (!response.ok) throw new Error("Failed to deliver Email");
+  return response.json();
+}
+
+export async function deliverGist(summary: string, isPublic: boolean, token?: string): Promise<{ url: string }> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) {
+    headers["X-GitHub-Token"] = token;
+  }
+  const response = await fetch(`${API_URL}/deliver/gist`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ summary, is_public: isPublic }),
+  });
+  if (!response.ok) throw new Error("Failed to create Gist");
+  return response.json();
+}
+
 // --- Sprint 17: AI Recommendations & Prompt Templates ---
 
 export async function fetchRecommendations(

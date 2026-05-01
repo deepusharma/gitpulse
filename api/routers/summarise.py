@@ -26,7 +26,7 @@ async def create_summary(
     logger.info("Received summarise request for username: %s, repos: %s", request.username, request.repos)
     
     # 1. Check cache first
-    cache_key = f"summary:{request.username}:{','.join(sorted(request.repos))}:{request.days}"
+    cache_key = f"summary:{request.username}:{','.join(sorted(request.repos))}:{request.days}:{request.tone}:{request.language}"
     if not refresh:
         cached_result = commit_cache.get(cache_key)
         if cached_result:
@@ -81,7 +81,7 @@ async def create_summary(
         prompt_str = to_prompt_str(formatted)
         display_str = to_display_str(formatted)
         
-        prompt = build_prompt(prompt_str)
+        prompt = build_prompt(prompt_str, tone=request.tone, language=request.language)
         summary = await summarise(prompt)
         
         logger.info("Successfully generated summary for username: %s", request.username)
