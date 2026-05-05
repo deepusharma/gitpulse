@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { generateSummary, SummariseResponse, ApiError, validateUser, fetchUserRepos } from "@/lib/api";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -173,7 +174,7 @@ export function SummaryForm({ onSuccess, onClear, setIsLoading }: SummaryFormPro
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                 {avatarUrl && (
-                  <img src={avatarUrl} alt={username} className="h-6 w-6 rounded-full border border-border" />
+                  <Image src={avatarUrl} alt={username} width={24} height={24} className="h-6 w-6 rounded-full border border-border" />
                 )}
                 {usernameValid === true && <Check className="h-4 w-4 text-green-500" />}
                 {usernameValid === false && <AlertCircle className="h-4 w-4 text-red-500" />}

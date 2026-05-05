@@ -38,6 +38,7 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: any) {
       if (token?.username) {
         session.user.username = token.username;
@@ -47,6 +48,7 @@ const handler = NextAuth({
       }
       return session;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, profile, account }: any) {
       if (profile) {
         token.username = profile.login;

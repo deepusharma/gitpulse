@@ -2,7 +2,7 @@
 title: Product Requirements Document
 description: gitpulse living PRD
 status: Living Document
-milestone: v1.3.0
+milestone: v1.5.0
 ---
 
 # Product Requirements Document — gitpulse
@@ -64,6 +64,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | **v1.2**  | AI & MCP — MCP server for Claude/Cursor/Windsurf, AI recommendations, prompt templates.          | ✅ Complete     |
 | **v1.3**  | Delight — Year in review, gamification, streaks, VS Code extension.                              | ✅ Complete     |
 | **v1.4**  | Code Health — API refactor, router decomposition, file size limits, technical debt.               | ✅ Complete     |
+| **v1.5**  | Release Hardening — CI/CD stability, linting sweep, packaging, v1.5.0 launch.                      | 🔄 In Progress  |
 
 ---
 
@@ -92,6 +93,7 @@ The vision is to maintain a multi-client tool that exposes this functionality an
 | Sprint 19 | ✅ Done | v1.4 | TBD | API Refactor & Code Health |
 | Sprint 20 | ✅ Done | v1.3 | TBD | VS Code Extension Completion |
 | Sprint 21 | ✅ Done | v1.5 | TBD | Release Hardening & Packaging |
+| Sprint 23 | 🔄 Active | v1.5 | TBD | v1.5.0 Final Hardening & Launch |
 
 > Sprint 13 is a buffer/overflow slot between v0.6 and v0.9.
 

@@ -45,10 +45,10 @@ function YearInReviewContent() {
     async function loadData() {
       setLoading(true);
       try {
-        const res = await fetchYearInReview(username, year);
+        const res = await fetchYearInReview(username as string, year);
         setData(res);
-      } catch (err: any) {
-        setError(err.message || "Failed to load your Year in Review.");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Failed to load your Year in Review.");
       } finally {
         setLoading(false);
       }
@@ -90,7 +90,7 @@ function YearInReviewContent() {
           {username}
         </h1>
         <p className="text-zinc-400 text-lg max-w-lg mx-auto italic">
-          "{data.ai_wrap_up.split('.')[0]}."
+          &quot;{data.ai_wrap_up.split('.')[0]}.&quot;
         </p>
       </div>
 

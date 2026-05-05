@@ -48,7 +48,7 @@ export function RecommendationsPanel({ username, days }: RecommendationsPanelPro
         throw new Error(`Request failed with status ${res.status}`);
       }
 
-      const data: RecommendationsResponse = await res.json();
+      const data = (await res.json()) as RecommendationsResponse;
       setRecommendations(data.recommendations);
       setGeneratedAt(data.generated_at);
     } catch (err: unknown) {

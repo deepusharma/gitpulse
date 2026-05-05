@@ -16,11 +16,20 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install uv and run tests
-        run: |
-          pip install uv
-          uv sync --extra dev
-          uv run pytest -v
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync --extra dev --extra mcp
+
+      - name: Lint with ruff
+        run: uv run ruff check .
+
+      - name: Run Python tests
+        run: uv run pytest -v
 
   publish:
     needs: test
@@ -38,8 +47,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install uv
-        run: pip install uv
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          version: "latest"
 
       - name: Build package
         run: uv build

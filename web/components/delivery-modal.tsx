@@ -51,8 +51,8 @@ export function DeliveryModal({ open, onOpenChange, summary }: DeliveryModalProp
       setSuccess("Successfully delivered to Slack!");
       setWebhookUrl("");
       setChannel("");
-    } catch (err: any) {
-      setError(err.message || "Failed to deliver to Slack");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to deliver to Slack");
     } finally {
       setIsLoading(false);
     }
@@ -70,8 +70,8 @@ export function DeliveryModal({ open, onOpenChange, summary }: DeliveryModalProp
       await deliverEmail(summary, emailTo);
       setSuccess("Successfully sent email!");
       setEmailTo("");
-    } catch (err: any) {
-      setError(err.message || "Failed to send email");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to send email");
     } finally {
       setIsLoading(false);
     }
@@ -84,8 +84,8 @@ export function DeliveryModal({ open, onOpenChange, summary }: DeliveryModalProp
     try {
       const response = await deliverGist(summary, gistPublic, session?.accessToken);
       setSuccess(`Successfully created Gist! URL: ${response.url}`);
-    } catch (err: any) {
-      setError(err.message || "Failed to create Gist. Are you signed in with proper permissions?");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to create Gist. Are you signed in with proper permissions?");
     } finally {
       setIsLoading(false);
     }
