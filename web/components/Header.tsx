@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Github, LogIn, LogOut } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Image from "next/image";
 
 export function Header() {
   const { data: session, status } = useSession();
@@ -53,7 +54,7 @@ export function Header() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 {session.user?.image && (
-                  <img src={session.user.image} alt="User avatar" className="h-6 w-6 rounded-full" />
+                  <Image src={session.user.image} alt="User avatar" width={24} height={24} className="h-6 w-6 rounded-full" />
                 )}
                 <span className="text-sm font-medium hidden sm:block">
                   {session.user?.name || session.user?.email || "User"}

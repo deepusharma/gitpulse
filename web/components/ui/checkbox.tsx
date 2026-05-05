@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export interface CheckboxProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,7 +9,7 @@ export interface CheckboxProps
 }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, onCheckedChange, checked, ...props }, ref) => {
+  ({ onCheckedChange, checked, ...props }, ref) => {
     return (
       <div className="relative flex items-center">
         <input

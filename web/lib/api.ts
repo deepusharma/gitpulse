@@ -12,8 +12,28 @@ import type {
   RecommendationsResponse,
   PromptTemplate,
   PromptTemplateCreate,
+  AnalyticsFullResponse,
+  YearInReviewResponse,
 } from "./types";
-export { ApiError } from "./types";
+export type {
+  SummariseRequest,
+  SummariseResponse,
+  HistoryResponse,
+  PublicSummaryResponse,
+  CompareResponse,
+  RosterRequest,
+  RosterResponse,
+  TeamSummariseRequest,
+  TeamSummariseResponse,
+  RecommendationsRequest,
+  RecommendationsResponse,
+  PromptTemplate,
+  PromptTemplateCreate,
+  AnalyticsFullResponse,
+  YearInReviewResponse,
+} from "./types";
+import { ApiError } from "./types";
+export { ApiError };
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -229,7 +249,7 @@ export async function fetchAnalyticsFull(
   username: string,
   days: number = 30,
   refresh: boolean = false
-): Promise<any> {
+): Promise<AnalyticsFullResponse> {
   const response = await fetch(
     `${API_URL}/analytics/all?username=${encodeURIComponent(username)}&days=${days}&refresh=${refresh}`
   );
@@ -240,7 +260,7 @@ export async function fetchAnalyticsFull(
 export async function fetchYearInReview(
   username: string,
   year?: number
-): Promise<any> {
+): Promise<YearInReviewResponse> {
   let url = `${API_URL}/analytics/year-in-review?username=${encodeURIComponent(username)}`;
   if (year) url += `&year=${year}`;
   const response = await fetch(url);

@@ -277,6 +277,7 @@ History:
 - v1.2 ✅ Complete — AI & MCP (Sprint 17)
 - v1.3 ✅ Complete — Delight (Sprint 18, 20)
 - v1.4 ✅ Complete — Code Health (Sprint 19)
+- v1.5 🔄 In Progress — Release Hardening (Sprint 23)
 
 
 Active stories:

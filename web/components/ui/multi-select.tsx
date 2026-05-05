@@ -3,7 +3,6 @@
 import * as React from "react";
 import { X, Check, ChevronsUpDown, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export interface MultiSelectProps {
@@ -75,7 +74,7 @@ export function MultiSelect({
                   className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-muted"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      removeOption(e as any, item);
+                      removeOption(e as unknown as React.MouseEvent, item);
                     }
                   }}
                   onMouseDown={(e) => {

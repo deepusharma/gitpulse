@@ -8,7 +8,6 @@ import RepoActivityChart from "@/components/analytics/RepoActivityChart";
 import InsightsPanel, { InsightsData } from "@/components/analytics/InsightsPanel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { AlertCircle, Search, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 
 interface AnalyticsError {

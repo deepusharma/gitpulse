@@ -128,9 +128,11 @@ export interface AnalyticsFullResponse {
   insights: {
     most_active_day: string;
     streak: number;
+    longest_streak: number;
     top_repo: string;
     total_summaries: number;
     average_commits_per_day: number;
+    health_score: number;
   };
   last_updated: string;
 }

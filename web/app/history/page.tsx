@@ -7,12 +7,13 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
-import { Database, Clock, CalendarDays, Search, X, Filter, Calendar } from "lucide-react";
+import { Database, Clock, CalendarDays, Search, X, Calendar } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
-function HistoryAccordionItem({ item }: { item: any }) {
+type HistoryItem = HistoryResponse["summaries"][number];
+
+function HistoryAccordionItem({ item }: { item: HistoryItem }) {
   const [expanded, setExpanded] = useState(false);
   const dateStr = new Date(item.generated_at).toLocaleString(undefined, {
     dateStyle: "medium",
@@ -68,11 +69,11 @@ export default function HistoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [limit, setLimit] = useState(20);
+  const [limit] = useState(20);
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      if (loading) setLoading(false);
+      Promise.resolve().then(() => setLoading(false));
       return;
     }
     
@@ -95,7 +96,7 @@ export default function HistoryPage() {
 
       return () => clearTimeout(timer);
     }
-  }, [session, status, searchQuery, startDate, endDate, limit]);
+  }, [session, status, searchQuery, startDate, endDate, limit, loading]);
 
   if (status === "loading") {
     return (

@@ -1,6 +1,6 @@
 [project]
 name = "gitpulse"
-version = "1.4.0"
+version = "1.5.0"
 
 description = "AI-powered standup summary generator"
 readme = "README.md"
@@ -26,11 +26,11 @@ Repository = "https://github.com/deepusharma/gitpulse"
 [project.scripts]
 gitpulse = "gitpulse.cli.cli:app"
 
-[tool.ruff]
+[tool.ruff.lint]
 select = ["T20"]
 
 [project.optional-dependencies]
-dev = ["pytest==9.0.2", "respx==0.22.0", "anyio==4.13.0"]
+dev = ["pytest==9.0.2", "respx==0.22.0", "anyio==4.13.0", "ruff==0.9.10"]
 docs = ["mkdocs>=1.6", "mkdocs-material>=9.5"]
 mcp = [
     "mcp>=1.0.0",

@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, GitCommit, FileText, Database, Clock, Download, Share2 } from "lucide-react";
-import { togglePublicSummary } from "@/lib/api";
 import { DeliveryModal } from "./delivery-modal";
 
 

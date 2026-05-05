@@ -243,8 +243,10 @@ export default function TeamPage() {
                     repos: data.repos,
                     username: data.contributors.join(", "),
                     days: data.days,
-                    generated_at: data.generated_at
-                  } : null} 
+                    generated_at: data.generated_at,
+                    id: "team",
+                    is_public: false
+                  } as any : null} 
                   isLoading={isLoading} 
                   generationTimeMs={generationTimeMs} 
                 />

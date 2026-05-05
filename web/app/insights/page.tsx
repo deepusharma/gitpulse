@@ -12,8 +12,6 @@ import {
   Calendar,
   AlertCircle,
   GitCommit,
-  GitPullRequest,
-  CircleDot,
   Activity,
 } from "lucide-react";
 import {
@@ -33,13 +31,7 @@ import { AnalyticsFullResponse } from "@/lib/types";
 import { Trophy, Flame, Star, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
-interface HealthData {
-  health_score: number;
-  total_stars: number;
-  total_forks: number;
-  total_open_issues: number;
-  repos: { repo: string; stars: number; forks: number; open_issues: number }[];
-}
+
 
 function InsightsContent() {
   const { data: session } = useSession();
