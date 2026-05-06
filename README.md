@@ -43,8 +43,7 @@ pip install gitpulse
 ```bash
 git clone https://github.com/deepusharma/gitpulse.git
 cd gitpulse
-uv venv && source .venv/bin/activate
-uv pip install -e ".[dev]"
+uv sync --extra dev
 ```
 
 ---
@@ -175,8 +174,10 @@ gitpulse/            ← pip-installable package
 ├── core/            # Shared library: repo reading & AI summarization
 ├── cli/             # Typer-based CLI tool
 api/                 # FastAPI backend
-web/                 # Next.js 14 frontend (App Router)
+├── routers/         # Decomposed route handlers (summarise, analytics, mcp, …)
+web/                 # Next.js 16 frontend (App Router)
 docs/                # PRDs, architecture, and sprint docs
+mcp-shim/            # Entry-point shim for gitpulse-mcp (avoids SDK name conflict)
 ```
 
 ---
@@ -208,6 +209,15 @@ cd web && npm run test
 - **Error**: `Failed to send email` or `RESEND_API_KEY is not configured`
 - **Fix**: Set `RESEND_API_KEY=re_...` in your server's `.env` file.
 
+### GitHub Gist Delivery Failing
+- **Error**: `GITHUB_TOKEN is not configured` on Gist delivery
+- **Fix**: Set `GITHUB_TOKEN=ghp_...` in your server's `.env` file (requires `gist` scope).
+
+### MCP Server Not Starting
+- **Error**: `ModuleNotFoundError: No module named 'mcp'`
+- **Fix**: Install the MCP extras — `uv sync --extra mcp`
+- **Config**: Add to `claude_desktop_config.json`: `{ "command": "uv", "args": ["run", "python", "mcp-shim/server.py"] }`
+
 ### Config not found
 - **Error**: `~/.gitpulse.toml not found`
 - **Fix**: Run `gitpulse init`
@@ -226,7 +236,7 @@ cd web && npm run test
 | v1.2 | AI & MCP (MCP server, prompt templates) | ✅ Complete |
 | v1.3 | Delight (streaks, year in review, VS Code extension) | ✅ Complete |
 | v1.4 | Code Health (API refactor, router decomposition) | ✅ Complete |
-| v1.5 | Release Hardening (PyPI publication, CI refinement) | 🔵 Active |
+| v1.5 | Release Hardening (linting sweep, CI modernization, PyPI) | ✅ Complete |
 
 ---
 
