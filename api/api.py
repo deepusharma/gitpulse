@@ -7,20 +7,24 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
 
+from api.observability import configure_observability
+from api.middleware import RequestLoggingMiddleware
+
 from api.routers import (
-    summarise as summarise_router, 
-    history, 
-    summary, 
-    analytics, 
-    github, 
-    insights, 
-    team, 
-    badges, 
-    mcp, 
-    prompt_templates, 
+    summarise as summarise_router,
+    history,
+    summary,
+    analytics,
+    github,
+    insights,
+    team,
+    badges,
+    mcp,
+    prompt_templates,
     deliver,
     health,
-    yearly
+    yearly,
+    admin,
 )
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -31,7 +35,7 @@ from api.db import init_db, close_db
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting up GitPulse API v1.4.0")
+    logger.info("Starting up GitPulse API v1.6.0")
     if not os.getenv("GROQ_API_KEY"):
         logger.error("CRITICAL: GROQ_API_KEY is not set. Summary generation will fail.")
     try:
@@ -44,7 +48,10 @@ async def lifespan(app: FastAPI):
         await close_db()
     except Exception: pass
 
-app = FastAPI(title="gitpulse API", version="1.4.0", lifespan=lifespan)
+configure_observability()
+
+app = FastAPI(title="gitpulse API", version="1.6.0", lifespan=lifespan)
+app.add_middleware(RequestLoggingMiddleware)
 
 # Register Routers
 app.include_router(health.router)
@@ -60,6 +67,7 @@ app.include_router(mcp.router)
 app.include_router(prompt_templates.router)
 app.include_router(deliver.router)
 app.include_router(yearly.router)
+app.include_router(admin.router)
 
 # CORS
 app.add_middleware(

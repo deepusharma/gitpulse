@@ -116,3 +116,12 @@ class PromptTemplateResponse(BaseModel):
     name: str
     content: str
     created_at: str
+
+
+class AdminStatsResponse(BaseModel):
+    total_summaries: int
+    unique_users: int
+    summaries_last_n_days: int
+    top_repos: List[dict]
+    error_rate_pct: float
+    generated_at: str

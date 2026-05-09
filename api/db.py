@@ -24,6 +24,9 @@ async def init_db():
         await init_summaries_public_migration()
         # Initialize prompt_templates table
         await init_prompt_templates_table()
+        # Opt-in: request log table (ENABLE_DB_LOG=true)
+        if os.environ.get("ENABLE_DB_LOG", "false").lower() == "true":
+            await init_request_log_table()
     except Exception as e:
         logger.error("Failed to initialize asyncpg pool: %s", e)
 
@@ -83,6 +86,35 @@ async def init_prompt_templates_table():
             logger.info("Checked/created 'prompt_templates' table.")
     except Exception as e:
         logger.error("Error creating 'prompt_templates' table: %s", e)
+
+
+
+async def init_request_log_table() -> None:
+    """Create the request_logs table if it does not already exist.
+
+    Only called when ENABLE_DB_LOG=true. Idempotent.
+    """
+    global pool
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute('''
+                CREATE TABLE IF NOT EXISTS request_logs (
+                    id          BIGSERIAL PRIMARY KEY,
+                    path        TEXT NOT NULL,
+                    method      TEXT NOT NULL,
+                    status_code INTEGER NOT NULL,
+                    latency_ms  INTEGER NOT NULL,
+                    username    TEXT,
+                    logged_at   TIMESTAMPTZ DEFAULT NOW()
+                );
+                CREATE INDEX IF NOT EXISTS idx_request_logs_logged_at
+                    ON request_logs(logged_at);
+            ''')
+            logger.info("Checked/created 'request_logs' table.")
+    except Exception as e:
+        logger.error("Error creating 'request_logs' table: %s", e)
 
 
 async def close_db():

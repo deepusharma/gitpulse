@@ -1,7 +1,9 @@
+import json
 import logging
 import sys
 import os
 import asyncio
+from datetime import datetime, timezone
 from typing import Optional, List
 import typing
 
@@ -92,6 +94,7 @@ def generate(
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Output file path"),
     tone: Optional[str] = typer.Option(None, "--tone", "-t", help="Tone of the summary (e.g. professional, casual)"),
     language: Optional[str] = typer.Option(None, "--language", "-l", help="Language of the summary"),
+    format: str = typer.Option("pretty", "--format", "-f", help="Output format: 'pretty' (default) or 'json'"),
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Show commits without calling Groq API"),
 ):
@@ -193,7 +196,7 @@ def generate(
             prompt_str = to_prompt_str(formatted_activity)
             prompt = build_prompt(prompt_str, tone=active_tone, language=active_language)
             try:
-                summary = await summarise(prompt)
+                summary_text = await summarise(prompt)
             except groq.AuthenticationError:
                 console.print(
                     Panel(
@@ -212,14 +215,25 @@ def generate(
                 raise typer.Exit(1)
 
         # Display result
-        console.print("\n[bold green]Standup Summary:[/bold green]")
-        console.print(summary)
+        if format == "json":
+            payload = {
+                "username": config.get("github_username", "unknown"),
+                "repos": list(config.get("repos", {}).keys()) if not active_repo else [active_repo],
+                "days": active_days,
+                "summary": summary_text,
+                "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            }
+            print(json.dumps(payload))  # noqa: T201 — intentional JSON output to stdout
+        else:
+            console.print("\n[bold green]Standup Summary:[/bold green]")
+            console.print(summary_text)
 
         # Write to file
         os.makedirs(os.path.dirname(active_output) or "output", exist_ok=True)
         with open(active_output, "w") as f:
-            f.write(summary)
-        console.print(f"\n[dim]Summary written to {active_output}[/dim]")
+            f.write(summary_text)
+        if format != "json":
+            console.print(f"\n[dim]Summary written to {active_output}[/dim]")
 
     # Run the async logic
     try:
@@ -244,9 +258,86 @@ def main(ctx: typer.Context):
     Subcommand router. Default behavior is to show help if no command specified.
     """
     if ctx.invoked_subcommand is None:
-        console.print("[bold cyan]GitPulse[/bold cyan] v1.4.0")
+        console.print("[bold cyan]GitPulse[/bold cyan] v1.6.0")
         console.print("Use [bold]gitpulse generate[/bold] to create a summary or [bold]gitpulse init[/bold] to set up.")
         # console.print(ctx.get_help())
+
+
+
+@app.command(name="status")
+def status():
+    """Show current config, API key health, and API connectivity.
+
+    A quick sanity check for new users and CI environments.
+    """
+    import httpx
+    from rich.table import Table
+
+    table = Table(title="GitPulse Status", show_header=True, header_style="bold cyan")
+    table.add_column("Check", style="bold")
+    table.add_column("Status")
+    table.add_column("Details", overflow="fold")
+
+    # 1. Config file
+    config_path = os.path.expanduser("~/.gitpulse.toml")
+    if os.path.exists(config_path):
+        table.add_row("Config file", "[green]\u2705 Found[/green]", config_path)
+        try:
+            config = load_config()
+        except Exception:
+            config = {}
+    else:
+        table.add_row("Config file", "[red]\u274c Missing[/red]", "Run 'gitpulse init' to create it")
+        config = {}
+
+    # 2. GROQ_API_KEY
+    if os.getenv("GROQ_API_KEY"):
+        table.add_row("GROQ_API_KEY", "[green]\u2705 Set[/green]", "")
+    else:
+        table.add_row("GROQ_API_KEY", "[red]\u274c Missing[/red]", "export GROQ_API_KEY=gsk_...")
+
+    # 3. GITHUB_TOKEN
+    if os.getenv("GITHUB_TOKEN"):
+        table.add_row("GITHUB_TOKEN", "[green]\u2705 Set[/green]", "")
+    else:
+        table.add_row("GITHUB_TOKEN", "[yellow]\u26a0\ufe0f  Not set[/yellow]", "Rate limits apply (60 req/hr)")
+
+    # 4. API reachability
+    api_url = os.getenv("NEXT_PUBLIC_API_URL")
+    if api_url:
+        health_url = f"{api_url.rstrip('/')}/health"
+        try:
+            resp = httpx.get(health_url, timeout=3.0)
+            if resp.status_code == 200:
+                table.add_row("API health", "[green]\u2705 OK[/green]", health_url)
+            else:
+                table.add_row("API health", f"[yellow]\u26a0\ufe0f  HTTP {resp.status_code}[/yellow]", health_url)
+        except Exception:
+            table.add_row("API health", "[red]\u274c Unreachable[/red]", health_url)
+    else:
+        table.add_row("API health", "[dim]Skipped[/dim]", "NEXT_PUBLIC_API_URL not set")
+
+    # 5. Repos from config
+    repos = config.get("repos", {})
+    if repos:
+        repo_list = ", ".join(repos.keys())
+        table.add_row("Configured repos", f"[cyan]{len(repos)} repo(s)[/cyan]", repo_list)
+    else:
+        table.add_row("Configured repos", "[dim]None[/dim]", "")
+
+    # 6. Defaults
+    defaults = config.get("defaults", {})
+    if defaults:
+        details = (
+            f"days={defaults.get('days', 7)}, "
+            f"tone={defaults.get('tone', 'professional')}, "
+            f"lang={defaults.get('language', 'English')}"
+        )
+        table.add_row("Defaults", "[cyan]Set[/cyan]", details)
+    else:
+        table.add_row("Defaults", "[dim]Using built-in defaults[/dim]", "")
+
+    console.print(table)
 
 if __name__ == "__main__":
     app()
