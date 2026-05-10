@@ -125,3 +125,16 @@ class AdminStatsResponse(BaseModel):
     top_repos: List[dict]
     error_rate_pct: float
     generated_at: str
+
+
+class PublicProfileResponse(BaseModel):
+    username: str
+    avatar_url: str
+    bio: Optional[str]
+    recent_summary: Optional[str]
+    current_streak: int
+    longest_streak: int
+    top_repos: List[str]
+    health_score: int
+    total_summaries: int
+    generated_at: str

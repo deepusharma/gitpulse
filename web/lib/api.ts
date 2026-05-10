@@ -91,7 +91,16 @@ export async function fetchComparison(username: string, days: number = 30): Prom
   return response.json();
 }
 
-
+export async function fetchPublicProfile(username: string, days: number = 30): Promise<import("@/types/profile").PublicProfile> {
+  const response = await fetch(`${API_URL}/profile/${encodeURIComponent(username)}?days=${days}`, {
+    next: { revalidate: 300 } // Cache for 5 minutes in Next.js
+  });
+  if (!response.ok) {
+    if (response.status === 404) throw new Error("Profile not found");
+    throw new Error("Failed to fetch profile");
+  }
+  return response.json();
+}
 
 export async function fetchHistory(
   username: string, 

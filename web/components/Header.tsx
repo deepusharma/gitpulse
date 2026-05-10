@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Github, LogIn, LogOut } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
+import { ShareProfileButton } from "./ShareProfileButton";
 
 export function Header() {
   const { data: session, status } = useSession();
@@ -60,6 +61,7 @@ export function Header() {
                   {session.user?.name || session.user?.email || "User"}
                 </span>
               </div>
+              <ShareProfileButton />
               <button
                 onClick={() => signOut()}
                 className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-sm font-medium"
