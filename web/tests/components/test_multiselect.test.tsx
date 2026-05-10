@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { MultiSelect } from '@/components/ui/multi-select';
+import { MultiSelect } from '../../components/ui/multi-select';
 import React from 'react';
 
 // Mock components used inside MultiSelect if necessary, 

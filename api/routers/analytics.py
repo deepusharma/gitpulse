@@ -9,64 +9,9 @@ from api.dependencies import get_user_repos, get_db
 from gitpulse.core.repo_reader import get_activity
 from api.routers.insights import get_insights_health
 from api.cache import analytics_cache
+from api.utils import calculate_streak
 
 logger = logging.getLogger(__name__)
-
-def calculate_streak(dates: list[datetime.date], ignore_weekends: bool = True) -> tuple[int, int]:
-    """
-    Calculate the current and longest streak from a list of dates.
-    
-    Returns:
-        tuple[int, int]: (current_streak, longest_streak)
-    """
-    if not dates:
-        return 0, 0
-    
-    sorted_dates = sorted(list(set(dates)), reverse=True)
-    today = datetime.now(timezone.utc).date()
-    
-    # Calculate ALL streaks to find the longest one
-    all_streaks = []
-    if not sorted_dates:
-        return 0, 0
-        
-    current_iter_streak = 1
-    for i in range(len(sorted_dates) - 1):
-        curr = sorted_dates[i]
-        prev = sorted_dates[i+1]
-        diff = (curr - prev).days
-        
-        is_consecutive = (diff == 1) or (ignore_weekends and curr.weekday() == 0 and prev.weekday() == 4 and diff == 3)
-        
-        if is_consecutive:
-            current_iter_streak += 1
-        else:
-            all_streaks.append(current_iter_streak)
-            current_iter_streak = 1
-    all_streaks.append(current_iter_streak)
-    
-    longest_streak = max(all_streaks) if all_streaks else 0
-    
-    # Calculate CURRENT streak (must include today or yesterday)
-    latest = sorted_dates[0]
-    def is_recent(d1, d2):
-        if d1 == d2: return True
-        diff = (d1 - d2).days
-        if diff == 1: return True
-        if ignore_weekends:
-            if d1.weekday() == 0 and d2.weekday() == 4 and diff == 3: return True
-            if d1.weekday() == 6 and d2.weekday() == 4 and diff == 2: return True
-            if d1.weekday() == 5 and d2.weekday() == 4 and diff == 1: return True
-        return False
-
-    if not is_recent(today, latest):
-        current_streak = 0
-    else:
-        # The first streak in our all_streaks list (because we sorted descending)
-        # IS the current streak IF it's recent.
-        current_streak = all_streaks[0]
-            
-    return current_streak, longest_streak
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
