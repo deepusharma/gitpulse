@@ -24,6 +24,8 @@ async def init_db():
         await init_summaries_public_migration()
         # Initialize prompt_templates table
         await init_prompt_templates_table()
+        # Initialize digest_schedules table
+        await init_schedules_table()
         # Opt-in: request log table (ENABLE_DB_LOG=true)
         if os.environ.get("ENABLE_DB_LOG", "false").lower() == "true":
             await init_request_log_table()
@@ -115,6 +117,38 @@ async def init_request_log_table() -> None:
             logger.info("Checked/created 'request_logs' table.")
     except Exception as e:
         logger.error("Error creating 'request_logs' table: %s", e)
+
+
+async def init_schedules_table():
+    global pool
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute('''
+                CREATE TABLE IF NOT EXISTS digest_schedules (
+                    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    username      TEXT NOT NULL UNIQUE,
+                    enabled       BOOLEAN NOT NULL DEFAULT TRUE,
+                    frequency     TEXT NOT NULL CHECK (frequency IN ('daily', 'weekly')),
+                    hour_utc      INTEGER NOT NULL CHECK (hour_utc BETWEEN 0 AND 23),
+                    day_of_week   INTEGER CHECK (day_of_week BETWEEN 0 AND 6),  -- NULL for daily
+                    channel       TEXT NOT NULL CHECK (channel IN ('email', 'slack')),
+                    email_to      TEXT,
+                    slack_webhook TEXT,
+                    repos         TEXT[] NOT NULL,
+                    days          INTEGER NOT NULL DEFAULT 7,
+                    tone          TEXT NOT NULL DEFAULT 'professional',
+                    language      TEXT NOT NULL DEFAULT 'English',
+                    last_sent_at  TIMESTAMPTZ,
+                    created_at    TIMESTAMPTZ DEFAULT NOW(),
+                    updated_at    TIMESTAMPTZ DEFAULT NOW()
+                );
+                CREATE INDEX IF NOT EXISTS idx_digest_schedules_username ON digest_schedules(username);
+            ''')
+            logger.info("Checked/created 'digest_schedules' table.")
+    except Exception as e:
+        logger.error("Error creating 'digest_schedules' table: %s", e)
 
 
 async def close_db():

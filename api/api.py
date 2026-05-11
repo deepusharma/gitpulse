@@ -26,6 +26,7 @@ from api.routers import (
     yearly,
     admin,
     profile,
+    schedule,
 )
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -70,6 +71,7 @@ app.include_router(deliver.router)
 app.include_router(yearly.router)
 app.include_router(admin.router)
 app.include_router(profile.router)
+app.include_router(schedule.router)
 
 # CORS
 app.add_middleware(

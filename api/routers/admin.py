@@ -5,11 +5,12 @@ import os
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, BackgroundTasks
 from asyncpg.pool import Pool
 
 from api.dependencies import get_db
 from api.models import AdminStatsResponse
+from api.worker import process_schedules
 
 logger = logging.getLogger(__name__)
 
@@ -93,3 +94,8 @@ async def get_admin_stats(
         error_rate_pct=0.0,  # placeholder — wire up request_logs in v1.7
         generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     )
+
+@router.post("/trigger-worker", dependencies=[Depends(_verify_admin_token)])
+async def trigger_worker(background_tasks: BackgroundTasks):
+    background_tasks.add_task(process_schedules)
+    return {"ok": True, "message": "Worker triggered in background"}

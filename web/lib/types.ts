@@ -152,3 +152,34 @@ export interface YearInReviewResponse {
   };
   ai_wrap_up: string;
 }
+
+export interface DigestScheduleRequest {
+  username: string;
+  enabled?: boolean;
+  frequency: "daily" | "weekly";
+  hour_utc: number;
+  day_of_week?: number;
+  channel: "email" | "slack";
+  email_to?: string;
+  slack_webhook?: string;
+  repos: string[];
+  days: number;
+  tone?: string;
+  language?: string;
+}
+
+export interface DigestSchedule {
+  id: string;
+  username: string;
+  enabled: boolean;
+  frequency: "daily" | "weekly";
+  hour_utc: number;
+  day_of_week?: number;
+  channel: "email" | "slack";
+  email_to?: string;
+  slack_webhook?: string;
+  repos: string[];
+  days: number;
+  last_sent_at?: string;
+  created_at: string;
+}
