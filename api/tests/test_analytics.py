@@ -40,7 +40,7 @@ def test_calculate_streak_ignore_weekends():
     monday = datetime(2026, 3, 23).date() # Monday
     
     # We need to mock today to be Monday
-    with patch("api.routers.analytics.datetime") as mock_datetime:
+    with patch("api.utils.datetime") as mock_datetime:
         mock_datetime.now.return_value.date.return_value = monday
         mock_datetime.utc = timezone.utc
         

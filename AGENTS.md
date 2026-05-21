@@ -278,15 +278,15 @@ History:
 - v1.3 ✅ Complete — Delight (Sprint 18, 20)
 - v1.4 ✅ Complete — Code Health (Sprint 19)
 - v1.5 ✅ Complete — Release Hardening (Sprint 23)
-- v1.6 🔄 In Progress — Observability & Growth (Sprint 24)
+- v1.6 ✅ Complete — Observability & Growth (Sprint 24)
 
 
 Active stories:
 
-- Sprint 23: Release Hardening — ✅ Done
+- Sprint 24: Observability & Growth — ✅ Done
 
 Active:
-- Sprint 24: Observability & Growth — 📋 Briefed, awaiting plan approval
+- Awaiting v1.7 Brief & Planning
 
 
 ---

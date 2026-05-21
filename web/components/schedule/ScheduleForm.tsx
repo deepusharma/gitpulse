@@ -21,7 +21,7 @@ export function ScheduleForm({
   const [channel, setChannel] = useState<"email" | "slack">(initialSchedule?.channel ?? "email");
   const [emailTo, setEmailTo] = useState(initialSchedule?.email_to ?? "");
   const [slackWebhook, setSlackWebhook] = useState(initialSchedule?.slack_webhook ?? "");
-  const [repos, setRepos] = useState(initialSchedule?.repos.join(", ") ?? "");
+  const [repos, setRepos] = useState(initialSchedule?.repos?.join(", ") ?? "");
   const [days, setDays] = useState(initialSchedule?.days ?? 7);
 
   async function onSubmit(e: React.FormEvent) {
@@ -110,13 +110,13 @@ export function ScheduleForm({
         </div>
         {channel === "email" ? (
           <div>
-            <label className="block text-sm font-medium mb-1">Email Address</label>
-            <input type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} required className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            <label htmlFor="emailTo" className="block text-sm font-medium mb-1">Email Address</label>
+            <input id="emailTo" type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} required className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
           </div>
         ) : (
           <div>
-            <label className="block text-sm font-medium mb-1">Slack Webhook URL</label>
-            <input type="url" value={slackWebhook} onChange={(e) => setSlackWebhook(e.target.value)} required className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            <label htmlFor="slackWebhook" className="block text-sm font-medium mb-1">Slack Webhook URL</label>
+            <input id="slackWebhook" type="url" value={slackWebhook} onChange={(e) => setSlackWebhook(e.target.value)} required className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
           </div>
         )}
       </div>
