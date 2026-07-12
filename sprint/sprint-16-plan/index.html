@@ -1,0 +1,1497 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://deepusharma.github.io/gitpulse/sprint/sprint-16-plan/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Sprint 16 Execution Plan — Pro Features - GitPulse</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sprint-16-execution-plan-pro-features" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GitPulse" class="md-header__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GitPulse
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sprint 16 Execution Plan — Pro Features
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli-reference/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GitPulse" class="md-nav__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GitPulse
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../web-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to Contribute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code-of-conduct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code of Conduct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions-pre-approved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Decisions (Pre-approved)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oauth-scope-upgrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAuth Scope Upgrade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#db-schema-change-is_public-flag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DB Schema Change — is_public flag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New API Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-new-routes-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend New Routes / Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-of-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order of Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-technical-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Technical Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Technical Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stream-1-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream 1 — Backend
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stream 1 — Backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-11-db-migration-is_public-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.1: DB Migration — is_public column
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-12-patch-historysummary_idpublic-toggle-public-flag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.2: PATCH /history/{summary_id}/public — Toggle public flag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-13-get-summarypublicsummary_id-unauthenticated-public-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.3: GET /summary/public/{summary_id} — Unauthenticated public view
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-14-extend-post-summarise-with-user-token-forwarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.4: Extend POST /summarise with user token forwarding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-15-get-analyticscompare-period-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.5: GET /analytics/compare — Period comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-16-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.6: Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-2-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream 2 — Frontend
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stream 2 — Frontend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-21-nextauth-github-private-provider-expose-accesstoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.1: NextAuth — github-private provider + expose accessToken
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-22-home-page-permission-toggle-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.2: Home page — Permission toggle UI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-23-results-component-share-button" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.3: Results component — Share button
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-24-summaryid-public-view-page-no-auth-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.4: /summary/[id] — Public view page (no auth required)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-25-insights-page-comparison-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.5: Insights page — Comparison section
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-change-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Change Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-pre-work-for-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Questions / Pre-work for Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#definition-of-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition of Done
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#out-of-scope-deferred" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Out of Scope (Deferred)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sprint-16-execution-plan-pro-features">Sprint 16 Execution Plan — Pro Features</h1>
+<p><strong>Sprint Goal:</strong> Add support for private org repos via expanded OAuth scope, public shareable summary links, and comparison modes.
+<strong>Milestone:</strong> v1.1 — Pro Features
+<strong>Branch:</strong> <code>feature/sprint-16-pro</code>
+<strong>Status:</strong> Approved — Ready to Execute</p>
+<hr />
+<h2 id="design-decisions-pre-approved">Design Decisions (Pre-approved)</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OAuth scope upgrade</td>
+<td>Conditional <code>repo</code> scope via a toggle on the sign-in page</td>
+<td>Always requesting <code>repo</code> scope would break users who only need public repos; opt-in keeps it safe</td>
+</tr>
+<tr>
+<td>Token storage</td>
+<td>NextAuth JWT callback stores GitHub access token in the session</td>
+<td>Token never hits our backend at rest; only passes it in-flight per request</td>
+</tr>
+<tr>
+<td>Token forwarding</td>
+<td>Frontend passes token as <code>X-GitHub-Token</code> header to FastAPI on private-repo requests</td>
+<td>Keeps FastAPI stateless — no session server needed</td>
+</tr>
+<tr>
+<td>Public link storage</td>
+<td>Add <code>is_public BOOLEAN</code> column to existing <code>summaries</code> table (migration in <code>db.py</code>)</td>
+<td>Minimal DB change; re-uses existing UUID <code>id</code> as permalink</td>
+</tr>
+<tr>
+<td>Unauthenticated public route</td>
+<td><code>GET /summary/public/{id}</code> — no auth required</td>
+<td>Separate route keeps auth middleware clean</td>
+</tr>
+<tr>
+<td>Comparison mode (S16.3)</td>
+<td>Period comparison (current N days vs previous N days) computed server-side</td>
+<td>Avoids complex client math; consistent with existing analytics patterns</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<h3 id="oauth-scope-upgrade">OAuth Scope Upgrade</h3>
+<p>Current <code>route.ts</code> does not request any scopes explicitly — GitHub OAuth defaults to <code>read:user</code> + <code>user:email</code>. To access private repos we need the full <code>repo</code> scope.</p>
+<p>The plan is to make the scope <strong>conditional via a session param</strong>:
+- Default sign-in: <code>scope: "read:user user:email"</code> (unchanged, public repos only)
+- Opt-in sign-in: <code>scope: "read:user user:email repo"</code> (private repos unlocked)
+- A new <code>signIn({ callbackUrl, scope: "private" })</code> call is triggered from a UI toggle on the home page</p>
+<p>NextAuth does not natively support per-call scope overrides on GitHub OAuth v4. We handle this by  registering a <strong>second GitHub provider</strong> with <code>id: "github-private"</code> and <code>scope: "read:user user:email repo"</code>. The user explicitly picks this via a UI prompt.</p>
+<p>The access token must flow from NextAuth into the frontend session, then be forwarded to FastAPI via a request header. To do this:
+- <code>jwt</code> callback: persist <code>account.access_token</code> into the token
+- <code>session</code> callback: expose it as <code>session.accessToken</code></p>
+<p>FastAPI's <code>get_activity</code> already passes a <code>GITHUB_TOKEN</code> env var for server-level rate limiting. Private-repo requests forward the user's personal token as an override so our server token doesn't get contaminated.</p>
+<h3 id="db-schema-change-is_public-flag">DB Schema Change — <code>is_public</code> flag</h3>
+<pre><code class="language-sql">ALTER TABLE summaries ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;
+</code></pre>
+<p>The <code>summaries</code> table already has:</p>
+<pre><code>id UUID, username TEXT, repos TEXT[], days INT, display TEXT, summary TEXT, generated_at TIMESTAMPTZ
+</code></pre>
+<p>No other table changes are needed.</p>
+<h3 id="new-api-endpoints">New API Endpoints</h3>
+<pre><code class="language-python">PATCH /history/{summary_id}/public
+    # Toggle is_public flag. Body: {&quot;public&quot;: true|false}
+    # Returns: {&quot;id&quot;: str, &quot;is_public&quot;: bool}
+
+GET /summary/public/{summary_id}
+    # Returns a summary record if is_public=true, 404 otherwise (no auth required)
+    # Returns: {&quot;id&quot;, &quot;username&quot;, &quot;repos&quot;, &quot;days&quot;, &quot;summary&quot;, &quot;generated_at&quot;}
+
+GET /analytics/compare
+    # Compare current period vs previous period for a user
+    # Query params: username, days
+    # Returns: {&quot;current&quot;: {...}, &quot;previous&quot;: {...}, &quot;delta&quot;: {...}}
+</code></pre>
+<h3 id="frontend-new-routes-components">Frontend New Routes / Components</h3>
+<pre><code>/summary/[id]   — public summary view (no auth required, renders summary card)
+</code></pre>
+<p>New UI components alongside existing pages:
+- <strong>Permission toggle</strong> on home page — "Include private repos" checkbox → triggers re-auth with <code>github-private</code> provider
+- <strong>Share button</strong> on Results component → calls <code>PATCH /history/{id}/public</code>, copies permalink to clipboard
+- <strong>Comparison section</strong> in <code>/insights</code> page → calls <code>GET /analytics/compare</code></p>
+<hr />
+<h2 id="order-of-execution">Order of Execution</h2>
+<pre><code>Stream 1 (Backend):
+  DB Migration (is_public column)
+    → PATCH /history/{id}/public endpoint
+    → GET /summary/public/{id} endpoint
+    → GET /analytics/compare endpoint
+    → Extend POST /summarise to accept X-GitHub-Token header
+    → Tests for all new endpoints
+
+Stream 2 (Frontend):
+  NextAuth: add github-private provider + expose accessToken in session
+    → Home page: permission toggle UI
+    → Results component: Share button
+    → New /summary/[id] public page (no auth wrapper)
+    → Insights page: comparison chart section
+</code></pre>
+<hr />
+<h2 id="step-by-step-technical-plan">Step-by-Step Technical Plan</h2>
+<h3 id="stream-1-backend">Stream 1 — Backend</h3>
+<h4 id="step-11-db-migration-is_public-column">Step 1.1: DB Migration — <code>is_public</code> column</h4>
+<ul>
+<li>File: <code>api/db.py</code></li>
+<li>Add <code>init_summaries_public_migration()</code> async function that runs <code>ALTER TABLE summaries ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE</code>.</li>
+<li>Call from <code>init_db()</code> after the existing pool init, after the existing <code>init_rosters_table()</code> call.</li>
+<li>Use <code>IF NOT EXISTS</code> inside <code>ADD COLUMN</code> to make it idempotent (Postgres 9.6+ supports this).</li>
+</ul>
+<h4 id="step-12-patch-historysummary_idpublic-toggle-public-flag">Step 1.2: <code>PATCH /history/{summary_id}/public</code> — Toggle public flag</h4>
+<ul>
+<li>File: <code>api/api.py</code></li>
+<li>New Pydantic model: <code>PublicToggleRequest(public: bool)</code></li>
+<li>New Pydantic model: <code>PublicToggleResponse(id: str, is_public: bool)</code></li>
+<li><code>PATCH /history/{summary_id}/public</code> — receives <code>{public: true|false}</code>, runs <code>UPDATE summaries SET is_public=$1 WHERE id=$2</code>, returns <code>PublicToggleResponse</code>.</li>
+<li>Returns 404 if the id doesn't exist, 503 if DB is disabled.</li>
+</ul>
+<h4 id="step-13-get-summarypublicsummary_id-unauthenticated-public-view">Step 1.3: <code>GET /summary/public/{summary_id}</code> — Unauthenticated public view</h4>
+<ul>
+<li>File: <code>api/api.py</code></li>
+<li>No auth dependency required (fully open).</li>
+<li>Queries <code>SELECT * FROM summaries WHERE id=$1 AND is_public=TRUE</code>.</li>
+<li>Returns <code>{id, username, repos, days, summary, generated_at}</code> or 404.</li>
+<li>New response model: <code>PublicSummaryResponse</code>.</li>
+</ul>
+<h4 id="step-14-extend-post-summarise-with-user-token-forwarding">Step 1.4: Extend <code>POST /summarise</code> with user token forwarding</h4>
+<ul>
+<li>File: <code>api/api.py</code></li>
+<li>Add optional <code>Request</code> dependency to the route to read the <code>X-GitHub-Token</code> header.</li>
+<li>If present, pass the token value into <code>get_activity(... token=user_token)</code>.</li>
+<li>Update <code>gitpulse/core/repo_reader.py</code> → <code>_get_github_activity()</code> to accept an optional <code>token</code> parameter that overrides the env-var token when fetching from the GitHub API.</li>
+<li>This unlocks private repo access without touching the server-level <code>GITHUB_TOKEN</code>.</li>
+</ul>
+<h4 id="step-15-get-analyticscompare-period-comparison">Step 1.5: <code>GET /analytics/compare</code> — Period comparison</h4>
+<ul>
+<li>File: <code>api/api.py</code></li>
+<li>Query params: <code>username: str</code>, <code>days: int = 30</code>.</li>
+<li>Fetches activity for <code>days</code> window (current period) AND for the <code>days</code> window immediately before that (previous period), via two <code>get_activity</code> calls.</li>
+<li>Computes per-period totals: <code>commits</code>, <code>prs</code>, <code>issues</code>, <code>active_days</code>.</li>
+<li>Computes <code>delta</code>: <code>{commits: +N%, prs: +N%, ...}</code> as percentage differences.</li>
+<li>Returns: <code>{"current": {...}, "previous": {...}, "delta": {...}, "days": N}</code>.</li>
+<li>Add to <code>analytics_cache</code> with 5-minute TTL.</li>
+</ul>
+<h4 id="step-16-tests">Step 1.6: Tests</h4>
+<ul>
+<li>File: <code>api/tests/test_api.py</code></li>
+<li><code>test_patch_summary_public</code> — mock DB, verify toggle sets <code>is_public=True</code>.</li>
+<li><code>test_get_public_summary</code> — verify response when <code>is_public=True</code>; verify 404 when <code>is_public=False</code>.</li>
+<li><code>test_get_public_summary_not_found</code> — verify 404 for nonexistent ID.</li>
+<li><code>test_analytics_compare</code> — mock <code>get_activity</code>, verify delta calculation math.</li>
+<li><code>test_summarise_with_user_token</code> — verify <code>X-GitHub-Token</code> header is picked up and forwarded.</li>
+</ul>
+<hr />
+<h3 id="stream-2-frontend">Stream 2 — Frontend</h3>
+<h4 id="step-21-nextauth-github-private-provider-expose-accesstoken">Step 2.1: NextAuth — <code>github-private</code> provider + expose <code>accessToken</code></h4>
+<ul>
+<li>File: <code>web/app/api/auth/[...nextauth]/route.ts</code></li>
+<li>Add a second provider: <code>GithubProvider({ id: "github-private", clientId, clientSecret, authorization: { params: { scope: "read:user user:email repo" } } })</code>.</li>
+<li>Update <code>jwt</code> callback: <code>if (account?.access_token) token.accessToken = account.access_token;</code></li>
+<li>Update <code>session</code> callback: <code>session.accessToken = token.accessToken as string;</code></li>
+<li>File: <code>web/types/next-auth.d.ts</code> (<strong>new</strong> or update existing) — extend <code>Session</code> interface to include <code>accessToken: string</code>.</li>
+</ul>
+<h4 id="step-22-home-page-permission-toggle-ui">Step 2.2: Home page — Permission toggle UI</h4>
+<ul>
+<li>File: <code>web/components/SummaryForm.tsx</code> (or a new <code>PrivateRepoToggle.tsx</code> component)</li>
+<li>Add a checkbox/toggle: "Include private repos (requires additional permissions)".</li>
+<li>When toggled ON and the user is not yet signed in with <code>github-private</code> scope: call <code>signIn("github-private")</code>.</li>
+<li>When toggled ON and already signed in with <code>github-private</code>: set a request flag <code>usePrivateToken=true</code>.</li>
+<li>When <code>usePrivateToken=true</code>, the form passes <code>X-GitHub-Token: session.accessToken</code> as a header in the <code>POST /summarise</code> fetch call.</li>
+<li>Visual indicator: badge on the form "🔒 Private Repos" when active.</li>
+</ul>
+<h4 id="step-23-results-component-share-button">Step 2.3: Results component — Share button</h4>
+<ul>
+<li>File: <code>web/components/Results.tsx</code></li>
+<li>Add a "Share" button (icon: <code>Share2</code> from lucide-react) next to the Copy button.</li>
+<li>On click: calls <code>PATCH {API_URL}/history/{summaryId}/public</code> with <code>{public: true}</code>.</li>
+<li>On success: constructs permalink <code>{window.location.origin}/summary/{summaryId}</code> and copies to clipboard.</li>
+<li>Show a toast: "Public link copied to clipboard!" (use existing shadcn toast pattern).</li>
+<li>The <code>summaryId</code> needs to come from the API response — ensure <code>POST /summarise</code> response includes <code>id</code> field (add to <code>SummariseResponse</code> model in both Python and TypeScript).</li>
+</ul>
+<blockquote>
+<p>[!IMPORTANT]
+<code>POST /summarise</code> must be updated to return the DB-inserted <code>id</code> field. This requires returning the <code>RETURNING id</code> value from the INSERT in <code>api.py</code> and exposing it in <code>SummariseResponse</code>.</p>
+</blockquote>
+<h4 id="step-24-summaryid-public-view-page-no-auth-required">Step 2.4: <code>/summary/[id]</code> — Public view page (no auth required)</h4>
+<ul>
+<li>File: <code>web/app/summary/[id]/page.tsx</code> (<strong>new</strong>)</li>
+<li>Server component (no <code>"use client"</code>) — fetches <code>GET {API_URL}/summary/public/{id}</code> at render time.</li>
+<li>If 404 → renders a "Summary not found or is private" card.</li>
+<li>If found → renders the summary in a clean read-only layout (no Header form, just the summary card + GitPulse branding footer).</li>
+<li>No NextAuth session check — fully public.</li>
+<li>SEO: sets <code>&lt;title&gt;</code> and <code>&lt;meta description&gt;</code> from the summary content dynamically.</li>
+</ul>
+<h4 id="step-25-insights-page-comparison-section">Step 2.5: Insights page — Comparison section</h4>
+<ul>
+<li>File: <code>web/app/insights/page.tsx</code></li>
+<li>Add a new section below the existing charts: "Period Comparison".</li>
+<li>Fetches <code>GET /analytics/compare?username=X&amp;days=N</code> (uses same <code>days</code> value already on the page).</li>
+<li>Renders a side-by-side stat card table showing current vs previous period with colored delta arrows:</li>
+<li>Green ▲ for positive change, Red ▼ for negative.</li>
+<li>Metrics: Commits, PRs merged, Issues closed, Active days.</li>
+<li>Loading skeleton during fetch.</li>
+</ul>
+<hr />
+<h2 id="file-change-summary">File Change Summary</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+<th>Stream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api/db.py</code></td>
+<td>Add <code>init_summaries_public_migration()</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>api/api.py</code></td>
+<td><code>PATCH /history/{id}/public</code>, <code>GET /summary/public/{id}</code>, <code>GET /analytics/compare</code>, extend <code>/summarise</code> with token header + return <code>id</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>gitpulse/core/repo_reader.py</code></td>
+<td>Optional <code>token</code> param override in <code>_get_github_activity()</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>api/tests/test_api.py</code></td>
+<td>5 new test cases</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>web/app/api/auth/[...nextauth]/route.ts</code></td>
+<td>Add <code>github-private</code> provider, expose <code>accessToken</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/types/next-auth.d.ts</code></td>
+<td>Extend <code>Session</code> type with <code>accessToken</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/components/SummaryForm.tsx</code></td>
+<td>Private repo toggle + token forwarding</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/components/Results.tsx</code></td>
+<td>Share button + public link copy</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/app/summary/[id]/page.tsx</code></td>
+<td><strong>NEW</strong> — public summary view</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/app/insights/page.tsx</code></td>
+<td>Add comparison section</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="open-questions-pre-work-for-execution">Open Questions / Pre-work for Execution</h2>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>S16.3 Comparison scope:</strong> The brief mentions "comparison modes" broadly. This plan scopes it to a backend <code>GET /analytics/compare</code> endpoint + a read-only UI section in <code>/insights</code>. This is achievable within a single sprint. A full side-by-side interactive comparison across arbitrary date ranges is deferred to v1.2.</p>
+<p>[!WARNING]
+<strong><code>POST /summarise</code> must return <code>id</code>:</strong> The Share feature depends on the summary DB id being returned in the <code>/summarise</code> response. This is a breaking shape change — the TypeScript <code>SummariseResponse</code> type must be updated. No existing consumer reads an <code>id</code> field today, so it is backward-compatible (additive), but tests must be updated to assert its presence.</p>
+<p>[!NOTE]
+<strong>Private repo OAuth on Railway:</strong> The <code>github-private</code> provider will require the same <code>GITHUB_CLIENT_ID</code> and <code>GITHUB_CLIENT_SECRET</code>. No new GitHub OAuth App is needed — just the <code>repo</code> scope addition. The Vercel env vars do not change.</p>
+</blockquote>
+<hr />
+<h2 id="definition-of-done">Definition of Done</h2>
+<ul>
+<li>[ ] <code>ALTER TABLE summaries ADD COLUMN is_public</code> runs idempotently on startup</li>
+<li>[ ] <code>PATCH /history/{id}/public</code> toggles flag and returns updated state</li>
+<li>[ ] <code>GET /summary/public/{id}</code> returns summary without auth if <code>is_public=TRUE</code>; 404 otherwise</li>
+<li>[ ] <code>GET /analytics/compare</code> returns current vs previous period deltas correctly</li>
+<li>[ ] <code>POST /summarise</code> accepts <code>X-GitHub-Token</code> header and returns <code>id</code> in response</li>
+<li>[ ] <code>gitpulse/core/repo_reader.py</code> passes user token through to GitHub API when provided</li>
+<li>[ ] NextAuth session exposes <code>accessToken</code> when <code>github-private</code> provider used</li>
+<li>[ ] Home page toggles private repo mode; requests include user token when active</li>
+<li>[ ] Results component Share button creates shareable link and copies to clipboard</li>
+<li>[ ] <code>/summary/[id]</code> renders public summary without requiring sign-in</li>
+<li>[ ] Insights page shows period comparison section with delta indicators</li>
+<li>[ ] All new tests pass (<code>uv run pytest -v</code>)</li>
+<li>[ ] <code>npm run lint</code> passes in web/</li>
+<li>[ ] PR squash-merged to master</li>
+</ul>
+<hr />
+<h2 id="out-of-scope-deferred">Out of Scope (Deferred)</h2>
+<ul>
+<li>Per-user authenticated roster isolation (v1.1+ when private repos land and user binding makes sense)</li>
+<li>Interactive date-range comparison picker (deferred to v1.2)</li>
+<li>S15.6 Smart Reminders (still deferred from Sprint 15)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

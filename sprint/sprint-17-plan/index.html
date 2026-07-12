@@ -1,0 +1,1564 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://deepusharma.github.io/gitpulse/sprint/sprint-17-plan/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Sprint 17 Execution Plan — AI & MCP - GitPulse</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sprint-17-execution-plan-ai-mcp" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GitPulse" class="md-header__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GitPulse
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sprint 17 Execution Plan — AI &amp; MCP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli-reference/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GitPulse" class="md-nav__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GitPulse
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../web-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to Contribute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code-of-conduct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code of Conduct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions-pre-approved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Decisions (Pre-approved)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcp-server-mcpserverpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Server (mcp/server.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sse-remote-mcp-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSE Remote MCP (FastAPI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proactive-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proactive Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prompt Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-of-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order of Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-technical-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Technical Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Technical Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stream-1-backend-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream 1 — Backend &amp; MCP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stream 1 — Backend &amp; MCP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-11-mcpserverpy-stdio-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.1: mcp/server.py — stdio MCP server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-12-mcppyprojecttoml-standalone-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.2: mcp/pyproject.toml — standalone package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-13-gitpulsecorerecommendationspy-proactive-ai-nudges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.3: gitpulse/core/recommendations.py — proactive AI nudges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-14-apidbpy-prompt_templates-table-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.4: api/db.py — prompt_templates table migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-15-apiapipy-get-mcpsse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.5: api/api.py — GET /mcp/sse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-16-apiapipy-post-insightsrecommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.6: api/api.py — POST /insights/recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-17-apiapipy-crud-prompt-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.7: api/api.py — CRUD /prompt-templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-18-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1.8: Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-2-frontend-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream 2 — Frontend &amp; Docs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stream 2 — Frontend &amp; Docs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-21-webappinsightspagetsx-ai-recommendations-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.1: web/app/insights/page.tsx — AI Recommendations panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-22-webcomponentsrecommendationspaneltsx-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.2: web/components/RecommendationsPanel.tsx — NEW
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-23-webapptemplatespagetsx-new-saved-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.3: web/app/templates/page.tsx — NEW — saved templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-24-webcomponentsheadertsx-templates-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.4: web/components/Header.tsx — Templates link
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-25-docsmcpreadmemd-ide-setup-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2.5: docs/mcp/README.md — IDE setup guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#definition-of-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition of Done
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#out-of-scope-deferred-to-v13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Out of Scope (Deferred to v1.3)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sprint-17-execution-plan-ai-mcp">Sprint 17 Execution Plan — AI &amp; MCP</h1>
+<p><strong>Sprint Goal:</strong> Build an MCP (Model Context Protocol) server wrapping <code>gitpulse.core</code> so Claude Desktop / Cursor / Windsurf can generate standups and retrieve insights natively inside the IDE. Add proactive AI recommendations and saved prompt templates.
+<strong>Milestone:</strong> v1.2 — AI &amp; MCP
+<strong>Branch:</strong> <code>feature/sprint-17-local-mcp</code>
+<strong>Status:</strong> Approved — Ready to Execute</p>
+<hr />
+<h2 id="design-decisions-pre-approved">Design Decisions (Pre-approved)</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCP transport</td>
+<td><code>stdio</code> (local) as primary; SSE endpoint on FastAPI as remote option</td>
+<td><code>stdio</code> is zero-infrastructure; Railway-hosted SSE unlocks Cloudflare/Vercel-hosted IDE integrations</td>
+</tr>
+<tr>
+<td>MCP Python package</td>
+<td><code>mcp</code> pip package (official Anthropic SDK)</td>
+<td>First-party, stable, aligns with Claude Desktop's expected protocol</td>
+</tr>
+<tr>
+<td>Tool scope</td>
+<td><code>generate_standup</code> and <code>get_insights</code> (2 tools, high-value)</td>
+<td>Keeps first iteration focused; more tools can be added in v1.3</td>
+</tr>
+<tr>
+<td>Proactive recommendations</td>
+<td>New <code>gitpulse.core.recommendations.py</code> module; LLM call over aggregated DB metrics</td>
+<td>Keeps recommendation logic in <code>core/</code> per project rules; FastAPI route just triggers it</td>
+</tr>
+<tr>
+<td>Prompt templates</td>
+<td><code>prompt_templates</code> table in existing PostgreSQL DB; CRUD via API</td>
+<td>Reuses existing DB infrastructure; no new data store needed</td>
+</tr>
+<tr>
+<td>MCP server entry point</td>
+<td><code>mcp/server.py</code> at repo root; installable as <code>gitpulse-mcp</code> via <code>pyproject.toml</code> script</td>
+<td>Keeps <code>gitpulse.core</code> package unchanged; MCP code lives in its own <code>mcp/</code> directory</td>
+</tr>
+<tr>
+<td>PyPI publish</td>
+<td>Separate <code>gitpulse-mcp</code> package (<code>mcp/pyproject.toml</code>) so users can <code>uvx gitpulse-mcp</code></td>
+<td>Clean separation; MCP users do not need the FastAPI stack</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<h3 id="mcp-server-mcpserverpy">MCP Server (<code>mcp/server.py</code>)</h3>
+<pre><code>Claude Desktop / Cursor
+      │  stdio  (local install)
+      ▼
+mcp/server.py
+  ├── tool: generate_standup   → gitpulse.core.repo_reader.get_activity()
+  │                              → gitpulse.core.summarise.summarise()
+  └── tool: get_insights       → gitpulse.core.repo_reader.get_activity()  [aggregate only]
+</code></pre>
+<p>The MCP server is a thin wrapper — no new business logic. It delegates entirely to <code>gitpulse.core</code>.</p>
+<h3 id="sse-remote-mcp-fastapi">SSE Remote MCP (FastAPI)</h3>
+<pre><code>Claude (remote)  ←→  GET /mcp/sse  (FastAPI, Railway)  ←→  gitpulse.core
+</code></pre>
+<p>FastAPI's <code>StreamingResponse</code> will emit Server-Sent Events that proxy MCP tool calls. This is an <strong>optional</strong> route for users who prefer not to install anything locally.</p>
+<h3 id="proactive-recommendations">Proactive Recommendations</h3>
+<pre><code>POST /insights/recommendations
+  │
+  ├── Query DB for last 30 days of summary + activity metrics for user
+  ├── gitpulse.core.recommendations.build_recommendations_prompt(metrics)
+  └── gitpulse.core.summarise.summarise(prompt) → Groq LLM → bulleted AI nudges
+</code></pre>
+<h3 id="prompt-templates">Prompt Templates</h3>
+<pre><code>POST   /prompt-templates           → create a saved template
+GET    /prompt-templates           → list user's templates
+DELETE /prompt-templates/{id}      → delete a template
+</code></pre>
+<p>Templates are stored in a new <code>prompt_templates</code> table and exposed as metadata options in the web UI.</p>
+<hr />
+<h2 id="file-map">File Map</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+<th>Stream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp/__init__.py</code></td>
+<td><strong>NEW</strong> — package marker</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>mcp/server.py</code></td>
+<td><strong>NEW</strong> — stdio MCP server with <code>generate_standup</code> + <code>get_insights</code> tools</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>mcp/pyproject.toml</code></td>
+<td><strong>NEW</strong> — standalone package for <code>uvx gitpulse-mcp</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>mcp/tests/test_mcp_server.py</code></td>
+<td><strong>NEW</strong> — unit tests for tool handlers</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>gitpulse/core/recommendations.py</code></td>
+<td><strong>NEW</strong> — <code>build_recommendations_prompt</code> + <code>get_recommendations</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>gitpulse/core/tests/test_recommendations.py</code></td>
+<td><strong>NEW</strong> — unit tests (mocked Groq)</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>api/db.py</code></td>
+<td>Add <code>init_prompt_templates_table()</code> migration</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>api/api.py</code></td>
+<td>Add <code>GET /mcp/sse</code>, <code>POST /insights/recommendations</code>, CRUD <code>/prompt-templates</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>api/tests/test_api.py</code></td>
+<td>New test cases for all new endpoints</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>web/app/insights/page.tsx</code></td>
+<td>Add AI Recommendations sidebar panel</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/app/templates/page.tsx</code></td>
+<td><strong>NEW</strong> — saved prompt templates management UI</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/components/RecommendationsPanel.tsx</code></td>
+<td><strong>NEW</strong> — AI nudges rendered in the insights sidebar</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>web/components/Header.tsx</code></td>
+<td>Add "Templates" nav link</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>docs/mcp/README.md</code></td>
+<td><strong>NEW</strong> — MCP setup guide for Claude Desktop, Cursor, Windsurf</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="order-of-execution">Order of Execution</h2>
+<pre><code>Stream 1 (Backend / MCP):
+  1.1  mcp/ directory + mcp/server.py (stdio tools)
+  1.2  mcp/pyproject.toml (standalone package)
+  1.3  gitpulse/core/recommendations.py
+  1.4  api/db.py — prompt_templates migration
+  1.5  api/api.py — GET /mcp/sse (SSE proxy)
+  1.6  api/api.py — POST /insights/recommendations
+  1.7  api/api.py — CRUD /prompt-templates
+  1.8  Tests for all new backend code
+
+Stream 2 (Frontend / Docs):
+  2.1  web/app/insights/page.tsx — AI Recommendations sidebar
+  2.2  web/components/RecommendationsPanel.tsx
+  2.3  web/app/templates/page.tsx — saved templates UI
+  2.4  web/components/Header.tsx — Templates nav link
+  2.5  docs/mcp/README.md — IDE setup guide
+</code></pre>
+<hr />
+<h2 id="step-by-step-technical-plan">Step-by-Step Technical Plan</h2>
+<h3 id="stream-1-backend-mcp">Stream 1 — Backend &amp; MCP</h3>
+<h4 id="step-11-mcpserverpy-stdio-mcp-server">Step 1.1: <code>mcp/server.py</code> — stdio MCP server</h4>
+<ul>
+<li>Create <code>mcp/</code> directory with <code>__init__.py</code>.</li>
+<li>Install <code>mcp</code> as a dependency in <code>pyproject.toml</code> (optional group <code>mcp</code>).</li>
+<li><code>mcp/server.py</code> uses the <code>mcp</code> SDK's <code>Server</code> class with <code>stdio_server</code> transport.</li>
+<li><strong>Tool 1: <code>generate_standup</code></strong></li>
+<li>Input schema: <code>{ "username": str, "repos": list[str], "days": int, "source": "github"|"local", "tone": str (optional) }</code></li>
+<li>Handler: calls <code>get_activity(source, username, repos, days)</code> → <code>format_activity()</code> → <code>build_prompt()</code> → <code>summarise()</code> → returns the summary string.</li>
+<li><strong>Tool 2: <code>get_insights</code></strong></li>
+<li>Input schema: <code>{ "username": str, "repos": list[str], "days": int }</code></li>
+<li>Handler: calls <code>get_activity(source="github", ...)</code> → aggregates commit/PR/issue counts → returns a structured dict summary (no LLM call, fast lookup).</li>
+<li>Both tools use <code>asyncio.run()</code> where needed since <code>gitpulse.core</code> functions are synchronous.</li>
+<li>Entry point: <code>if __name__ == "__main__": asyncio.run(main())</code>.</li>
+</ul>
+<h4 id="step-12-mcppyprojecttoml-standalone-package">Step 1.2: <code>mcp/pyproject.toml</code> — standalone package</h4>
+<pre><code class="language-toml">[project]
+name = &quot;gitpulse-mcp&quot;
+version = &quot;1.2.0&quot;
+description = &quot;MCP server for GitPulse — expose standup generation to Claude/Cursor&quot;
+dependencies = [&quot;gitpulse&gt;=1.2.0&quot;, &quot;mcp&gt;=1.0.0&quot;]
+
+[project.scripts]
+gitpulse-mcp = &quot;mcp.server:main_sync&quot;
+</code></pre>
+<ul>
+<li><code>main_sync</code> is a thin wrapper that calls <code>asyncio.run(main())</code>.</li>
+<li>This allows <code>uvx gitpulse-mcp</code> to work without installing anything else.</li>
+</ul>
+<h4 id="step-13-gitpulsecorerecommendationspy-proactive-ai-nudges">Step 1.3: <code>gitpulse/core/recommendations.py</code> — proactive AI nudges</h4>
+<ul>
+<li><strong><code>build_recommendations_prompt(metrics: dict) -&gt; str</code></strong></li>
+<li><code>metrics</code> dict: <code>{ "commits": int, "prs": int, "issues": int, "avg_cycle_time_hrs": float, "stale_prs": int, "commit_streak_days": int, "prev_commits": int }</code></li>
+<li>Builds a system prompt that asks the LLM to identify worrying patterns and give 3–5 actionable suggestions.</li>
+<li><strong><code>get_recommendations(metrics: dict) -&gt; str</code></strong></li>
+<li>Calls <code>build_recommendations_prompt()</code> → <code>summarise(prompt)</code> → returns formatted nudge string.</li>
+<li>Google docstrings on all functions. No <code>print</code> statements.</li>
+<li><code>gitpulse/core/tests/test_recommendations.py</code> — mock the Groq call, assert output is non-empty string.</li>
+</ul>
+<h4 id="step-14-apidbpy-prompt_templates-table-migration">Step 1.4: <code>api/db.py</code> — <code>prompt_templates</code> table migration</h4>
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS prompt_templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  username TEXT NOT NULL,
+  name TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+</code></pre>
+<ul>
+<li>New <code>init_prompt_templates_table()</code> async function using <code>IF NOT EXISTS</code> (idempotent).</li>
+<li>Call from <code>init_db()</code> after existing migrations.</li>
+</ul>
+<h4 id="step-15-apiapipy-get-mcpsse">Step 1.5: <code>api/api.py</code> — <code>GET /mcp/sse</code></h4>
+<ul>
+<li>SSE proxy endpoint that wraps the MCP tool registry over HTTP.</li>
+<li>Uses FastAPI's <code>StreamingResponse</code> with <code>media_type="text/event-stream"</code>.</li>
+<li>On connection: sends an initial <code>event: tools</code> frame listing the two available tools with their JSON schemas.</li>
+<li>On <code>POST /mcp/sse/call</code> companion route: accepts <code>{ "tool": str, "params": dict }</code>, delegates to the same handler functions used in <code>mcp/server.py</code> (refactored into shared <code>mcp/handlers.py</code>), returns <code>event: result</code> SSE frame.</li>
+<li>Add to <code>analytics_cache</code> where appropriate (tool responses are cached for 1 minute).</li>
+</ul>
+<h4 id="step-16-apiapipy-post-insightsrecommendations">Step 1.6: <code>api/api.py</code> — <code>POST /insights/recommendations</code></h4>
+<pre><code class="language-python">class RecommendationsRequest(BaseModel):
+    username: str
+    days: int = 30
+
+class RecommendationsResponse(BaseModel):
+    recommendations: str
+    generated_at: str
+</code></pre>
+<ul>
+<li>Fetches recent activity metrics from the DB (<code>SELECT COUNT(*) GROUP BY ...</code> over last N days).</li>
+<li>Constructs the <code>metrics</code> dict and calls <code>core.recommendations.get_recommendations(metrics)</code>.</li>
+<li>Caches result per <code>username+days</code> in <code>analytics_cache</code> with 10-minute TTL.</li>
+<li>Returns <code>RecommendationsResponse</code>.</li>
+</ul>
+<h4 id="step-17-apiapipy-crud-prompt-templates">Step 1.7: <code>api/api.py</code> — CRUD <code>/prompt-templates</code></h4>
+<pre><code class="language-python">POST   /prompt-templates          → insert row, return template with id
+GET    /prompt-templates?username=X → list all templates for user (ordered by created_at DESC)
+DELETE /prompt-templates/{id}     → delete, return 204
+</code></pre>
+<ul>
+<li>Pydantic models: <code>PromptTemplateCreate</code>, <code>PromptTemplateResponse</code>.</li>
+<li>All routes return 503 if DB is disabled (same pattern as <code>/history</code>).</li>
+</ul>
+<h4 id="step-18-tests">Step 1.8: Tests</h4>
+<ul>
+<li><code>api/tests/test_api.py</code>:</li>
+<li><code>test_get_mcp_sse_lists_tools</code> — verify SSE response contains the two tool schemas.</li>
+<li><code>test_recommendations_returns_string</code> — mock <code>get_recommendations</code>, verify 200 + <code>recommendations</code> key non-empty.</li>
+<li><code>test_create_prompt_template</code> — mock DB, verify insert returns <code>id</code>.</li>
+<li><code>test_list_prompt_templates</code> — mock DB, verify list returns array.</li>
+<li><code>test_delete_prompt_template</code> — verify 204 response.</li>
+<li><code>mcp/tests/test_mcp_server.py</code>:</li>
+<li><code>test_generate_standup_tool</code> — mock <code>get_activity</code> + <code>summarise</code>, verify tool returns summary string.</li>
+<li><code>test_get_insights_tool</code> — mock <code>get_activity</code>, verify aggregated counts dict returned.</li>
+</ul>
+<hr />
+<h3 id="stream-2-frontend-docs">Stream 2 — Frontend &amp; Docs</h3>
+<h4 id="step-21-webappinsightspagetsx-ai-recommendations-panel">Step 2.1: <code>web/app/insights/page.tsx</code> — AI Recommendations panel</h4>
+<ul>
+<li>Add a new <code>&lt;RecommendationsPanel username={username} days={days} /&gt;</code> component below the existing charts section.</li>
+<li>Fetches <code>POST {API_URL}/insights/recommendations</code> with <code>{ username, days }</code> on mount.</li>
+<li>Shows a loading skeleton (3 skeleton lines) while fetching.</li>
+<li>On success: renders the markdown-formatted nudge list inside a styled card with a "✨ AI Insights" heading.</li>
+<li>On error: renders a subtle "Recommendations unavailable" message (non-blocking).</li>
+</ul>
+<h4 id="step-22-webcomponentsrecommendationspaneltsx-new">Step 2.2: <code>web/components/RecommendationsPanel.tsx</code> — <strong>NEW</strong></h4>
+<pre><code class="language-tsx">interface RecommendationsPanelProps {
+  username: string;
+  days: number;
+}
+</code></pre>
+<ul>
+<li>Client component (<code>"use client"</code>).</li>
+<li>Fetches recommendations on mount and whenever <code>username</code> or <code>days</code> changes.</li>
+<li>Renders output as a markdown string using <code>&lt;pre&gt;</code> or the existing <code>@tailwindcss/typography</code> prose classes.</li>
+<li>Refresh button (icon: <code>RefreshCw</code> from lucide-react) to re-trigger the fetch and re-generate recommendations.</li>
+<li>Card styling: left accent border in the existing accent color, icon ✨, muted subtitle "Generated by Groq LLaMA 3.3".</li>
+</ul>
+<h4 id="step-23-webapptemplatespagetsx-new-saved-templates">Step 2.3: <code>web/app/templates/page.tsx</code> — <strong>NEW</strong> — saved templates</h4>
+<ul>
+<li>Client page behind NextAuth session guard (same as <code>/insights</code>).</li>
+<li>Fetches <code>GET /prompt-templates?username=X</code> on mount.</li>
+<li>Renders a list of saved templates in cards: name, first 60 chars of content preview, delete button.</li>
+<li>"New Template" button at top → opens an inline form (textarea for content, text input for name) → submits <code>POST /prompt-templates</code>.</li>
+<li>On delete: optimistic UI removal + <code>DELETE /prompt-templates/{id}</code> call.</li>
+<li>Empty state: "No saved templates yet. Create one to reuse your custom instructions."</li>
+</ul>
+<h4 id="step-24-webcomponentsheadertsx-templates-link">Step 2.4: <code>web/components/Header.tsx</code> — Templates link</h4>
+<ul>
+<li>Add "Templates" nav link alongside existing links (History, Insights, Team).</li>
+<li>Only visible when session is active.</li>
+</ul>
+<h4 id="step-25-docsmcpreadmemd-ide-setup-guide">Step 2.5: <code>docs/mcp/README.md</code> — IDE setup guide</h4>
+<p>Must include:
+1. <strong>Prerequisites</strong> — Python 3.12+, <code>uv</code>, <code>GROQ_API_KEY</code>, <code>GITHUB_TOKEN</code>.
+2. <strong>Claude Desktop setup</strong> — exact JSON block to add to <code>claude_desktop_config.json</code>:
+   <code>json
+   {
+     "mcpServers": {
+       "gitpulse": {
+         "command": "uvx",
+         "args": ["gitpulse-mcp"],
+         "env": {
+           "GROQ_API_KEY": "your-key",
+           "GITHUB_TOKEN": "your-token"
+         }
+       }
+     }
+   }</code>
+3. <strong>Cursor setup</strong> — equivalent <code>mcp.json</code> configuration block.
+4. <strong>Available tools</strong> — table of <code>generate_standup</code> and <code>get_insights</code> with all params.
+5. <strong>Example prompts</strong> — "Generate my standup for the last 7 days from my gitpulse repo."
+6. <strong>Troubleshooting</strong> — common failure modes (missing env vars, wrong Python version).</p>
+<hr />
+<h2 id="definition-of-done">Definition of Done</h2>
+<ul>
+<li>[ ] <code>mcp/server.py</code> connects via stdio and correctly executes both tools end-to-end</li>
+<li>[ ] <code>uvx gitpulse-mcp</code> installs and runs without errors on a clean machine</li>
+<li>[ ] <code>GET /mcp/sse</code> returns the tool list as an SSE frame</li>
+<li>[ ] <code>POST /insights/recommendations</code> returns a non-empty recommendations string</li>
+<li>[ ] <code>prompt_templates</code> table created idempotently on startup</li>
+<li>[ ] CRUD <code>/prompt-templates</code> endpoints all return correct status codes</li>
+<li>[ ] <code>web/app/templates/page.tsx</code> lists, creates, and deletes templates</li>
+<li>[ ] <code>RecommendationsPanel</code> renders on the Insights page without blocking existing charts</li>
+<li>[ ] <code>docs/mcp/README.md</code> tested against a fresh Claude Desktop install</li>
+<li>[ ] All new Python tests pass (<code>uv run pytest -v</code>)</li>
+<li>[ ] <code>npm run lint</code> passes in <code>web/</code></li>
+<li>[ ] PR squash-merged to master</li>
+</ul>
+<hr />
+<h2 id="out-of-scope-deferred-to-v13">Out of Scope (Deferred to v1.3)</h2>
+<ul>
+<li>MCP tool: <code>list_history</code> (standup history search via IDE) — deferred, lower priority</li>
+<li>Prompt template sharing between users (team-scoped templates)</li>
+<li>Streaming SSE responses from Groq through the MCP tool (complex async plumbing)</li>
+<li>S18 gamification/streaks (next sprint)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

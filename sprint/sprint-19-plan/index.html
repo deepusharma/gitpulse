@@ -1,0 +1,2084 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://deepusharma.github.io/gitpulse/sprint/sprint-19-plan/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Sprint 19 Execution Plan — API Refactor & Code Health - GitPulse</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sprint-19-execution-plan-api-refactor-code-health" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GitPulse" class="md-header__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GitPulse
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sprint 19 Execution Plan — API Refactor &amp; Code Health
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli-reference/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GitPulse" class="md-nav__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GitPulse
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../web-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to Contribute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code-of-conduct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code of Conduct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#current-state-audit-pre-refactor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State Audit (pre-refactor)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions-pre-approved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Decisions (Pre-approved)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target File Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#route-router-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Route → Router Mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-of-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order of Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-technical-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Technical Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Technical Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s196-coding-standard-update-10-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.6 — Coding Standard Update (~10 min)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s195-dedup-get-healthkeys-5-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.5 — Dedup GET /health/keys (~5 min)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s197-extract-repo_readerpy-nested-fetchers-45-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.7 — Extract repo_reader.py Nested Fetchers (~45 min)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s198-split-weblibapits-fix-templatespagetsx-45-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.8 — Split web/lib/api.ts + Fix templates/page.tsx (~45 min)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="S19.8 — Split web/lib/api.ts + Fix templates/page.tsx (~45 min)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#part-a-create-weblibtypests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part A — Create web/lib/types.ts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-b-trim-weblibapits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part B — Trim web/lib/api.ts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-c-fix-webapptemplatespagetsx-duplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part C — Fix web/app/templates/page.tsx duplication
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s191-scaffold-router-structure-20-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.1 — Scaffold Router Structure (~20 min)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s193-extract-shared-dependencies-20-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.3 — Extract Shared Dependencies (~20 min)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="S19.3 — Extract Shared Dependencies (~20 min)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependency-1-get_db_pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency 1: get_db_pool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency-2-get_user_repos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency 2: get_user_repos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency-3-get_token_override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency 3: get_token_override
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s192-migrate-routes-domain-by-domain-90-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.2 — Migrate Routes (Domain by Domain) (~90 min)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="S19.2 — Migrate Routes (Domain by Domain) (~90 min)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domain-1-health-routershealthpy-10-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 1: Health (routers/health.py) — ~10 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-2-github-routersgithubpy-50-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 2: GitHub (routers/github.py) — ~50 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-3-history-routershistorypy-135-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 3: History (routers/history.py) — ~135 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-4-summarise-routerssummarisepy-270-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 4: Summarise (routers/summarise.py) — ~270 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-5-analytics-routersanalyticspy-230-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 5: Analytics (routers/analytics.py) — ~230 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-6-insights-routersinsightspy-280-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 6: Insights (routers/insights.py) — ~280 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-7-team-routersteampy-130-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 7: Team (routers/team.py) — ~130 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-8-deliver-routersdeliverpy-30-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 8: Deliver (routers/deliver.py) — ~30 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-9-badges-routersbadgespy-50-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 9: Badges (routers/badges.py) — ~50 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-10-mcp-routersmcppy-120-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 10: MCP (routers/mcp.py) — ~120 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-11-templates-routerstemplatespy-110-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain 11: Templates (routers/templates.py) — ~110 lines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-apiapipy-target-70-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final api/api.py target (~70 lines):
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s194-split-test-file-60-min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19.4 — Split Test File (~60 min)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-change-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Change Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#definition-of-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition of Done
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#out-of-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Out of Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risk-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sprint-19-execution-plan-api-refactor-code-health">Sprint 19 Execution Plan — API Refactor &amp; Code Health</h1>
+<p><strong>Sprint Goal:</strong> Break <code>api/api.py</code> into focused APIRouter modules, extract nested functions from <code>repo_reader.py</code>, split <code>web/lib/api.ts</code> into types and HTTP layers, eliminate the duplicate <code>/health/keys</code> route, and resolve the duplicate API helpers in <code>web/app/templates/page.tsx</code>.
+<strong>Milestone:</strong> v1.4 — Code Health
+<strong>Branch:</strong> <code>feature/sprint-19-code-health</code>
+<strong>Status:</strong> Approved — Ready to Execute</p>
+<hr />
+<h2 id="current-state-audit-pre-refactor">Current State Audit (pre-refactor)</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Lines</th>
+<th>Problem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api/api.py</code></td>
+<td><strong>1,570</strong></td>
+<td>31 routes in one file; duplicate <code>GET /health/keys</code> at lines 168 and 205</td>
+</tr>
+<tr>
+<td><code>web/lib/api.ts</code></td>
+<td><strong>309</strong></td>
+<td>Mixed interfaces + HTTP functions; 9 interfaces + 17 functions interleaved</td>
+</tr>
+<tr>
+<td><code>gitpulse/core/repo_reader.py</code></td>
+<td><strong>274</strong></td>
+<td>3 nested async fetchers inside <code>_get_github_commits()</code> — untestable</td>
+</tr>
+<tr>
+<td><code>web/app/templates/page.tsx</code></td>
+<td>—</td>
+<td>3 local API helpers duplicate canonical versions in <code>lib/api.ts</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="design-decisions-pre-approved">Design Decisions (Pre-approved)</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Router decomposition strategy</td>
+<td>One <code>APIRouter</code> per domain prefix</td>
+<td>Matches FastAPI best practices; mirrors the existing test domain groupings</td>
+</tr>
+<tr>
+<td>Shared models location</td>
+<td>New <code>api/models.py</code> for cross-router types (e.g., <code>SummariseResponse</code>)</td>
+<td>Avoids circular imports between routers</td>
+</tr>
+<tr>
+<td>Shared dependencies location</td>
+<td>New <code>api/dependencies.py</code></td>
+<td>Isolates FastAPI <code>Depends()</code> callables; importable by any router</td>
+</tr>
+<tr>
+<td>Test split strategy</td>
+<td>One test file per router; existing test IDs preserved</td>
+<td>Prevents coverage gaps; minimal delta from current test structure</td>
+</tr>
+<tr>
+<td><code>web/lib/types.ts</code></td>
+<td>All <code>interface</code> + <code>type</code> exports; zero functions</td>
+<td>Pure separation — any consumer imports types without loading HTTP code</td>
+</tr>
+<tr>
+<td><code>repo_reader.py</code> helper names</td>
+<td><code>_fetch_commits</code>, <code>_fetch_prs</code>, <code>_fetch_issues</code> (module-level, private)</td>
+<td>Consistent naming; <code>_</code> prefix signals internal use</td>
+</tr>
+<tr>
+<td>File size rule</td>
+<td>300-line max per file in <code>api/</code> and <code>gitpulse/core/</code></td>
+<td>Generous for docstrings + type hints but draws a clear line</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="target-file-structure">Target File Structure</h2>
+<pre><code>api/
+├── api.py               ← ≤ 80 lines: app init, lifespan, CORS, router registration
+├── models.py            ← NEW: shared Pydantic models (SummariseResponse, etc.)
+├── dependencies.py      ← NEW: shared FastAPI Depends (get_user_repos, db_pool_guard)
+├── db.py                ← unchanged
+├── cache.py             ← unchanged
+├── routers/
+│   ├── __init__.py      ← NEW
+│   ├── health.py        ← GET /health, GET /health/keys (deduplicated)
+│   ├── summarise.py     ← POST /summarise, PATCH /history/:id/public, GET /summary/public/:id
+│   ├── history.py       ← GET /history
+│   ├── analytics.py     ← GET /analytics/*, GET /analytics/compare
+│   ├── insights.py      ← GET /insights/metrics, GET /insights/health, GET /analytics/insights, POST /insights/recommendations
+│   ├── github.py        ← GET /github/validate, GET /github/repos
+│   ├── team.py          ← POST /team/roster, GET /team/rosters, GET /team/roster/:id, DELETE /team/roster/:id, POST /team/summarise
+│   ├── mcp.py           ← GET /mcp/sse, POST /mcp/sse/call
+│   ├── templates.py     ← POST/GET/DELETE /prompt-templates
+│   ├── deliver.py       ← POST /deliver/slack
+│   └── badges.py        ← GET /badges/*
+└── tests/
+    ├── test_health.py
+    ├── test_summarise.py
+    ├── test_history.py
+    ├── test_analytics.py
+    ├── test_insights.py
+    ├── test_github.py
+    ├── test_team.py
+    ├── test_mcp_api.py
+    ├── test_templates.py
+    ├── test_deliver.py
+    └── test_badges.py
+
+web/lib/
+├── types.ts             ← NEW: all interfaces and types (no functions)
+└── api.ts               ← HTTP functions only; imports types from ./types
+</code></pre>
+<hr />
+<h2 id="route-router-mapping">Route → Router Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Route(s)</th>
+<th>Target Router</th>
+<th>Lines in api.py</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /health</code>, <code>GET /health/keys</code> (×2 → deduplicated to ×1)</td>
+<td><code>routers/health.py</code></td>
+<td>157–240</td>
+</tr>
+<tr>
+<td><code>POST /summarise</code>, <code>PATCH /history/:id/public</code>, <code>GET /summary/public/:id</code>, <code>GET /analytics/compare</code></td>
+<td><code>routers/summarise.py</code></td>
+<td>244–515</td>
+</tr>
+<tr>
+<td><code>GET /history</code></td>
+<td><code>routers/history.py</code></td>
+<td>515–648</td>
+</tr>
+<tr>
+<td><code>GET /analytics/commits-per-day</code>, <code>/analytics/repos-breakdown</code>, <code>/analytics/all</code></td>
+<td><code>routers/analytics.py</code></td>
+<td>649–876</td>
+</tr>
+<tr>
+<td><code>GET /analytics/insights</code>, <code>GET /insights/metrics</code>, <code>GET /insights/health</code>, <code>POST /insights/recommendations</code></td>
+<td><code>routers/insights.py</code></td>
+<td>877–1159</td>
+</tr>
+<tr>
+<td><code>GET /github/validate</code>, <code>GET /github/repos</code></td>
+<td><code>routers/github.py</code></td>
+<td>699–747</td>
+</tr>
+<tr>
+<td><code>POST /team/roster</code>, <code>GET /team/rosters</code>, <code>GET /team/roster/:id</code>, <code>DELETE /team/roster/:id</code>, <code>POST /team/summarise</code></td>
+<td><code>routers/team.py</code></td>
+<td>1031–1159</td>
+</tr>
+<tr>
+<td><code>POST /deliver/slack</code></td>
+<td><code>routers/deliver.py</code></td>
+<td>1160–1189</td>
+</tr>
+<tr>
+<td><code>GET /badges/streak</code>, <code>/badges/commits</code>, <code>/badges/health</code></td>
+<td><code>routers/badges.py</code></td>
+<td>1190–1236</td>
+</tr>
+<tr>
+<td><code>GET /mcp/sse</code>, <code>POST /mcp/sse/call</code></td>
+<td><code>routers/mcp.py</code></td>
+<td>1237–1357</td>
+</tr>
+<tr>
+<td><code>POST/GET/DELETE /prompt-templates</code></td>
+<td><code>routers/templates.py</code></td>
+<td>1460–1570</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!NOTE]
+<code>GET /analytics/compare</code> logically belongs to summarise (it compares summary periods), so it lands in <code>routers/summarise.py</code>. The <code>/analytics/all</code> bulk endpoint lives in <code>routers/analytics.py</code>.</p>
+</blockquote>
+<hr />
+<h2 id="order-of-execution">Order of Execution</h2>
+<pre><code>S19.6  → Update AGENTS.md + GEMINI.md with 300-line rule
+S19.5  → Dedup GET /health/keys (2-line fix, zero risk)
+S19.7  → Extract repo_reader.py nested fetchers + 3 new unit tests
+S19.8  → Split web/lib/api.ts + fix templates/page.tsx duplication
+S19.1  → Scaffold api/routers/ + api/models.py + api/dependencies.py
+S19.3  → Move shared deps into api/dependencies.py
+S19.2  → Migrate routes domain-by-domain (pytest after EACH domain)
+S19.4  → Split api/tests/test_api.py into per-router test files
+</code></pre>
+<p>Run <code>uv run pytest -v</code> after every domain migration. Run <code>npm run lint</code> after S19.8.</p>
+<hr />
+<h2 id="step-by-step-technical-plan">Step-by-Step Technical Plan</h2>
+<h3 id="s196-coding-standard-update-10-min">S19.6 — Coding Standard Update <em>(~10 min)</em></h3>
+<p><strong>Files:</strong> <code>AGENTS.md</code>, <code>GEMINI.md</code></p>
+<p>Add to <code>AGENTS.md</code> under <strong>Coding Standards → Python</strong>:</p>
+<pre><code class="language-markdown">- **File size limit:** 300 lines max per file in `api/` and `gitpulse/core/`. Files approaching this limit must be split before adding new features.
+</code></pre>
+<p>Add the equivalent rule to <code>GEMINI.md</code> under <strong>Development Conventions → Core Mandates</strong> (after item 5):</p>
+<pre><code class="language-markdown">6. **File Size**: No file in `api/` or `gitpulse/core/` shall exceed **300 lines**. Split into modules before adding features if at the limit.
+</code></pre>
+<hr />
+<h3 id="s195-dedup-get-healthkeys-5-min">S19.5 — Dedup <code>GET /health/keys</code> <em>(~5 min)</em></h3>
+<p><strong>File:</strong> <code>api/api.py</code> line 205</p>
+<p><code>GET /health/keys</code> is registered <strong>twice</strong> — at lines 168 and 205 (confirmed in audit above). FastAPI silently uses the first and ignores the second. Simply <strong>delete</strong> the second registration (lines 205–240) and its associated handler function (they are identical copies).</p>
+<p>Verification: <code>curl localhost:8000/health/keys</code> returns the same response as before.</p>
+<hr />
+<h3 id="s197-extract-repo_readerpy-nested-fetchers-45-min">S19.7 — Extract <code>repo_reader.py</code> Nested Fetchers <em>(~45 min)</em></h3>
+<p><strong>File:</strong> <code>gitpulse/core/repo_reader.py</code></p>
+<p><strong>Problem:</strong> <code>_get_github_commits()</code> contains three nested async functions that are ~160 lines total and cannot be unit tested independently.</p>
+<p><strong>Fix:</strong> Lift them to module-level private functions with explicit parameter signatures:</p>
+<pre><code class="language-python"># BEFORE (nested inside _get_github_commits — untestable)
+async def fetch_repo_commits(client, repo, retries=3): ...
+async def fetch_repo_prs(...): ...
+async def fetch_repo_issues(...): ...
+
+# AFTER (module-level — independently testable)
+async def _fetch_commits(
+    client: httpx.AsyncClient,
+    repo: str,
+    username: str,
+    since_iso: str,
+    headers: dict,
+    semaphore: asyncio.Semaphore,
+) -&gt; list[dict]: ...
+
+async def _fetch_prs(
+    client: httpx.AsyncClient,
+    repo: str,
+    username: str,
+    since: datetime,
+    headers: dict,
+    semaphore: asyncio.Semaphore,
+) -&gt; list[dict]: ...
+
+async def _fetch_issues(
+    client: httpx.AsyncClient,
+    repo: str,
+    username: str,
+    since: datetime,
+    headers: dict,
+    semaphore: asyncio.Semaphore,
+) -&gt; list[dict]: ...
+</code></pre>
+<ul>
+<li><code>_get_github_commits()</code> calls each helper exactly as before — <strong>zero behaviour change</strong>.</li>
+<li>Google docstrings on each extracted function.</li>
+<li>File must remain ≤ 300 lines after the change.</li>
+</ul>
+<p><strong>New tests</strong> — <code>gitpulse/core/tests/test_repo_reader.py</code>:
+- <code>test_fetch_commits_returns_list</code> — <code>respx</code> mock of GitHub API <code>/repos/{owner}/{repo}/commits</code>, assert list of dicts with <code>message</code>, <code>hash</code>, <code>date</code> keys.
+- <code>test_fetch_prs_returns_list</code> — mock <code>/repos/{owner}/{repo}/pulls</code>, assert PR fields present.
+- <code>test_fetch_issues_returns_list</code> — mock <code>/repos/{owner}/{repo}/issues</code>, assert issue fields present.</p>
+<p>Use the existing <code>respx</code> + <code>httpx.AsyncClient</code> pattern already in the test file.</p>
+<hr />
+<h3 id="s198-split-weblibapits-fix-templatespagetsx-45-min">S19.8 — Split <code>web/lib/api.ts</code> + Fix <code>templates/page.tsx</code> <em>(~45 min)</em></h3>
+<h4 id="part-a-create-weblibtypests">Part A — Create <code>web/lib/types.ts</code></h4>
+<p>Extract <strong>all</strong> <code>interface</code> and <code>type</code> declarations from <code>api.ts</code> into a new <code>web/lib/types.ts</code>. Based on current audit, these are:</p>
+<pre><code class="language-typescript">// web/lib/types.ts — interfaces only, zero HTTP code
+
+export interface SummariseRequest { ... }
+export interface SummariseResponse { ... }
+export interface HistoryRecord { ... }
+export interface HistoryResponse { ... }
+export interface PublicSummaryResponse { ... }
+export interface CompareRecord { ... }
+export interface CompareResponse { ... }
+export class ApiError extends Error { ... }  // keep here — shared error type
+export interface RosterRequest { ... }
+export interface RosterResponse { ... }
+export interface TeamSummariseRequest { ... }
+export interface TeamSummariseResponse { ... }
+export interface RecommendationsRequest { ... }
+export interface RecommendationsResponse { ... }
+export interface PromptTemplate { ... }
+export interface PromptTemplateCreate { ... }
+</code></pre>
+<h4 id="part-b-trim-weblibapits">Part B — Trim <code>web/lib/api.ts</code></h4>
+<p>After moving interfaces to <code>types.ts</code>, <code>api.ts</code> becomes:</p>
+<pre><code class="language-typescript">// web/lib/api.ts — HTTP functions only
+import type { SummariseRequest, SummariseResponse, ... } from &quot;./types&quot;;
+export { ApiError } from &quot;./types&quot;;          // re-export for backward compat
+export const API_URL = ...;
+
+export async function generateSummary(...) { ... }
+export async function togglePublicSummary(...) { ... }
+// ... all 17 HTTP functions unchanged
+</code></pre>
+<p>Result: <code>api.ts</code> drops from 309 lines to ~220 lines (within 300-line limit).</p>
+<blockquote>
+<p>[!IMPORTANT]
+All existing component imports <code>from "@/lib/api"</code> continue to work unchanged — the HTTP functions stay in <code>api.ts</code>. Type-only imports in components should be updated to <code>from "@/lib/types"</code> where applicable, but this is not strictly required for correctness.</p>
+</blockquote>
+<h4 id="part-c-fix-webapptemplatespagetsx-duplication">Part C — Fix <code>web/app/templates/page.tsx</code> duplication</h4>
+<p>Delete lines 34–55 (the three local helper functions: <code>listTemplates</code>, <code>createTemplate</code>, <code>deleteTemplate</code>) and replace usages:</p>
+<table>
+<thead>
+<tr>
+<th>Before (local)</th>
+<th>After (canonical from lib/api)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>listTemplates(username)</code></td>
+<td><code>listPromptTemplates(username)</code></td>
+</tr>
+<tr>
+<td><code>createTemplate({ name, content, username })</code></td>
+<td><code>createPromptTemplate({ name, content, username })</code></td>
+</tr>
+<tr>
+<td><code>deleteTemplate(id)</code></td>
+<td><code>deletePromptTemplate(id)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Also add the import at the top:</p>
+<pre><code class="language-typescript">import { listPromptTemplates, createPromptTemplate, deletePromptTemplate } from &quot;@/lib/api&quot;;
+</code></pre>
+<p>Run <code>npm run lint</code> after this step to verify no type errors.</p>
+<hr />
+<h3 id="s191-scaffold-router-structure-20-min">S19.1 — Scaffold Router Structure <em>(~20 min)</em></h3>
+<p><strong>Create the following new files</strong> (all empty stubs initially):</p>
+<pre><code>api/routers/__init__.py
+api/routers/health.py
+api/routers/summarise.py
+api/routers/history.py
+api/routers/analytics.py
+api/routers/insights.py
+api/routers/github.py
+api/routers/team.py
+api/routers/mcp.py
+api/routers/templates.py
+api/routers/deliver.py
+api/routers/badges.py
+api/models.py
+api/dependencies.py
+</code></pre>
+<p>Each router stub follows this template:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Router for [domain] endpoints.&quot;&quot;&quot;
+import logging
+from fastapi import APIRouter
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter(prefix=&quot;/[prefix]&quot;, tags=[&quot;[Domain]&quot;])
+</code></pre>
+<p><code>api/api.py</code> gets a new import block at the bottom (not yet wired up — just declared):</p>
+<pre><code class="language-python">from api.routers import health, summarise, history, analytics, insights, github, team, mcp, templates, deliver, badges
+</code></pre>
+<p>Run <code>uv run pytest -v</code> — all 82+ tests must still pass (nothing moved yet).</p>
+<hr />
+<h3 id="s193-extract-shared-dependencies-20-min">S19.3 — Extract Shared Dependencies <em>(~20 min)</em></h3>
+<p><strong>File:</strong> <code>api/dependencies.py</code></p>
+<p>Move two reusable patterns from <code>api/api.py</code> into this file:</p>
+<h4 id="dependency-1-get_db_pool">Dependency 1: <code>get_db_pool</code></h4>
+<p>The "503 if DB disabled" guard that currently appears inline in ~12 routes:</p>
+<pre><code class="language-python">async def get_db_pool() -&gt; asyncpg.Pool:
+    &quot;&quot;&quot;Return the active DB pool or raise 503 if DB is disabled.
+
+    Args:
+        None
+
+    Returns:
+        The active asyncpg connection pool.
+
+    Raises:
+        HTTPException: 503 if the database pool is not initialized.
+    &quot;&quot;&quot;
+    if db.pool is None:
+        raise HTTPException(status_code=503, detail=&quot;Database not available&quot;)
+    return db.pool
+</code></pre>
+<p>Usage in routers: <code>pool: asyncpg.Pool = Depends(get_db_pool)</code></p>
+<h4 id="dependency-2-get_user_repos">Dependency 2: <code>get_user_repos</code></h4>
+<p><code>_get_user_repos()</code> is a private helper currently called inline from 6 routes. Lift to <code>dependencies.py</code> as a proper async dependency:</p>
+<pre><code class="language-python">async def get_user_repos(username: str, repos: list[str] | None = None) -&gt; list[str]:
+    &quot;&quot;&quot;Resolve the repo list for a user — use provided list or fetch all from GitHub.
+
+    Args:
+        username: GitHub username.
+        repos: Optional explicit repo list. If None or empty, fetches all repos via API.
+
+    Returns:
+        List of repository name strings.
+    &quot;&quot;&quot;
+</code></pre>
+<h4 id="dependency-3-get_token_override">Dependency 3: <code>get_token_override</code></h4>
+<p>Reads <code>X-GitHub-Token</code> from the request header and returns it as an optional string:</p>
+<pre><code class="language-python">async def get_token_override(request: Request) -&gt; str | None:
+    &quot;&quot;&quot;Extract optional user-supplied GitHub token from request headers.
+
+    Args:
+        request: The incoming FastAPI request.
+
+    Returns:
+        Token string if X-GitHub-Token header is present, else None.
+    &quot;&quot;&quot;
+    return request.headers.get(&quot;X-GitHub-Token&quot;)
+</code></pre>
+<hr />
+<h3 id="s192-migrate-routes-domain-by-domain-90-min">S19.2 — Migrate Routes (Domain by Domain) <em>(~90 min)</em></h3>
+<p>Migrate in this order. Run <code>uv run pytest -v</code> after <strong>each domain</strong>.</p>
+<h4 id="domain-1-health-routershealthpy-10-lines">Domain 1: Health (<code>routers/health.py</code>) — ~10 lines</h4>
+<p>Move <code>GET /health</code> and the single (deduplicated) <code>GET /health/keys</code> handler. No model dependencies. Simplest migration — good confidence check.</p>
+<pre><code class="language-python">router = APIRouter(tags=[&quot;Health&quot;])
+
+@router.get(&quot;/health&quot;)
+async def health_check(): ...
+
+@router.get(&quot;/health/keys&quot;)
+async def health_keys(): ...
+</code></pre>
+<p>Wire in <code>api.py</code>: <code>app.include_router(health.router)</code>.</p>
+<h4 id="domain-2-github-routersgithubpy-50-lines">Domain 2: GitHub (<code>routers/github.py</code>) — ~50 lines</h4>
+<p>Move <code>GET /github/validate</code> and <code>GET /github/repos</code>. These are read-only, no DB dependency.</p>
+<h4 id="domain-3-history-routershistorypy-135-lines">Domain 3: History (<code>routers/history.py</code>) — ~135 lines</h4>
+<p>Move <code>GET /history</code>. Uses <code>get_db_pool</code> dependency from <code>dependencies.py</code>.</p>
+<h4 id="domain-4-summarise-routerssummarisepy-270-lines">Domain 4: Summarise (<code>routers/summarise.py</code>) — ~270 lines</h4>
+<p>Move <code>POST /summarise</code>, <code>PATCH /history/{id}/public</code>, <code>GET /summary/public/{id}</code>, <code>GET /analytics/compare</code>. Imports <code>SummariseResponse</code> from <code>api/models.py</code>.</p>
+<blockquote>
+<p>[!IMPORTANT]
+<code>SummariseResponse</code> is shared — move it to <code>api/models.py</code> before this step to avoid circular imports.</p>
+</blockquote>
+<h4 id="domain-5-analytics-routersanalyticspy-230-lines">Domain 5: Analytics (<code>routers/analytics.py</code>) — ~230 lines</h4>
+<p>Move <code>GET /analytics/commits-per-day</code>, <code>/analytics/repos-breakdown</code>, <code>/analytics/all</code>. These share the <code>analytics_cache</code> — import it from <code>api.cache</code>.</p>
+<h4 id="domain-6-insights-routersinsightspy-280-lines">Domain 6: Insights (<code>routers/insights.py</code>) — ~280 lines</h4>
+<p>Move <code>GET /analytics/insights</code>, <code>GET /insights/metrics</code>, <code>GET /insights/health</code>, <code>POST /insights/recommendations</code>. Largest domain — check line count stays ≤ 300.</p>
+<h4 id="domain-7-team-routersteampy-130-lines">Domain 7: Team (<code>routers/team.py</code>) — ~130 lines</h4>
+<p>Move all 5 team routes. DB-heavy — uses <code>get_db_pool</code> dependency.</p>
+<h4 id="domain-8-deliver-routersdeliverpy-30-lines">Domain 8: Deliver (<code>routers/deliver.py</code>) — ~30 lines</h4>
+<p>Move <code>POST /deliver/slack</code>.</p>
+<h4 id="domain-9-badges-routersbadgespy-50-lines">Domain 9: Badges (<code>routers/badges.py</code>) — ~50 lines</h4>
+<p>Move <code>GET /badges/streak</code>, <code>/badges/commits</code>, <code>/badges/health</code>.</p>
+<h4 id="domain-10-mcp-routersmcppy-120-lines">Domain 10: MCP (<code>routers/mcp.py</code>) — ~120 lines</h4>
+<p>Move <code>GET /mcp/sse</code> and <code>POST /mcp/sse/call</code>.</p>
+<h4 id="domain-11-templates-routerstemplatespy-110-lines">Domain 11: Templates (<code>routers/templates.py</code>) — ~110 lines</h4>
+<p>Move <code>POST/GET/DELETE /prompt-templates</code>. Uses <code>get_db_pool</code> dependency.</p>
+<h4 id="final-apiapipy-target-70-lines">Final <code>api/api.py</code> target (~70 lines):</h4>
+<pre><code class="language-python">&quot;&quot;&quot;GitPulse FastAPI application — entry point and router registration.&quot;&quot;&quot;
+import logging
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from api import db
+from api.routers import (
+    health, summarise, history, analytics, insights,
+    github, team, mcp, templates, deliver, badges,
+)
+
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await db.init_db()
+    yield
+    await db.close_db()
+
+app = FastAPI(title=&quot;GitPulse API&quot;, lifespan=lifespan)
+
+app.add_middleware(CORSMiddleware, ...)
+
+app.include_router(health.router)
+app.include_router(github.router)
+app.include_router(summarise.router)
+app.include_router(history.router)
+app.include_router(analytics.router)
+app.include_router(insights.router)
+app.include_router(team.router)
+app.include_router(deliver.router)
+app.include_router(badges.router)
+app.include_router(mcp.router)
+app.include_router(templates.router)
+</code></pre>
+<hr />
+<h3 id="s194-split-test-file-60-min">S19.4 — Split Test File <em>(~60 min)</em></h3>
+<p><strong>Current:</strong> <code>api/tests/test_api.py</code> — single large file importing the whole app.</p>
+<p><strong>Target:</strong> One test file per router. Each imports only the app (FastAPI <code>TestClient</code>) — the split is logical (by test function grouping), not by import change, since <code>TestClient</code> always needs the full app.</p>
+<p>Create these files (move corresponding test functions from <code>test_api.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>New Test File</th>
+<th>Test Functions to Move</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api/tests/test_health.py</code></td>
+<td><code>test_health_*</code>, <code>test_health_keys_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_summarise.py</code></td>
+<td><code>test_summarise_*</code>, <code>test_patch_summary_*</code>, <code>test_get_public_*</code>, <code>test_analytics_compare_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_history.py</code></td>
+<td><code>test_history_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_analytics.py</code></td>
+<td><code>test_analytics_commits_*</code>, <code>test_analytics_repos_*</code>, <code>test_analytics_all_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_insights.py</code></td>
+<td><code>test_insights_*</code>, <code>test_recommendations_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_github.py</code></td>
+<td><code>test_github_validate_*</code>, <code>test_github_repos_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_team.py</code></td>
+<td><code>test_team_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_deliver.py</code></td>
+<td><code>test_deliver_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_badges.py</code></td>
+<td><code>test_badges_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_mcp_api.py</code></td>
+<td><code>test_mcp_*</code></td>
+</tr>
+<tr>
+<td><code>api/tests/test_templates.py</code></td>
+<td><code>test_prompt_template_*</code></td>
+</tr>
+</tbody>
+</table>
+<p>Delete the original <code>api/tests/test_api.py</code> once all functions are migrated.</p>
+<p>Run <code>uv run pytest -v</code> — test count must be ≥ the pre-sprint count.</p>
+<hr />
+<h2 id="file-change-summary">File Change Summary</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+<th>Story</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENTS.md</code></td>
+<td>Add 300-line file size rule</td>
+<td>S19.6</td>
+</tr>
+<tr>
+<td><code>GEMINI.md</code></td>
+<td>Add 300-line file size rule</td>
+<td>S19.6</td>
+</tr>
+<tr>
+<td><code>api/api.py</code></td>
+<td>Reduce to ~70 lines (app init + router registration only)</td>
+<td>S19.1, S19.2</td>
+</tr>
+<tr>
+<td><code>api/models.py</code></td>
+<td><strong>NEW</strong> — shared Pydantic models</td>
+<td>S19.1</td>
+</tr>
+<tr>
+<td><code>api/dependencies.py</code></td>
+<td><strong>NEW</strong> — <code>get_db_pool</code>, <code>get_user_repos</code>, <code>get_token_override</code></td>
+<td>S19.3</td>
+</tr>
+<tr>
+<td><code>api/routers/__init__.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.1</td>
+</tr>
+<tr>
+<td><code>api/routers/health.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/summarise.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/history.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/analytics.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/insights.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/github.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/team.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/mcp.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/templates.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/deliver.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/routers/badges.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.2</td>
+</tr>
+<tr>
+<td><code>api/tests/test_api.py</code></td>
+<td><strong>DELETED</strong> — split into per-router files</td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_health.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_summarise.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_history.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_analytics.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_insights.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_github.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_team.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_mcp_api.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_templates.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_deliver.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>api/tests/test_badges.py</code></td>
+<td><strong>NEW</strong></td>
+<td>S19.4</td>
+</tr>
+<tr>
+<td><code>gitpulse/core/repo_reader.py</code></td>
+<td>Extract 3 nested fetchers to module-level</td>
+<td>S19.7</td>
+</tr>
+<tr>
+<td><code>gitpulse/core/tests/test_repo_reader.py</code></td>
+<td>Add 3 new unit tests for extracted fetchers</td>
+<td>S19.7</td>
+</tr>
+<tr>
+<td><code>web/lib/types.ts</code></td>
+<td><strong>NEW</strong> — all TypeScript interfaces</td>
+<td>S19.8</td>
+</tr>
+<tr>
+<td><code>web/lib/api.ts</code></td>
+<td>Remove interfaces; import from <code>./types</code>; HTTP functions only</td>
+<td>S19.8</td>
+</tr>
+<tr>
+<td><code>web/app/templates/page.tsx</code></td>
+<td>Remove 3 local helper functions; import from <code>@/lib/api</code></td>
+<td>S19.8</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="definition-of-done">Definition of Done</h2>
+<ul>
+<li>[ ] <code>api/api.py</code> is ≤ 80 lines (app init + router registration only)</li>
+<li>[ ] Every router file is ≤ 300 lines</li>
+<li>[ ] <code>GET /health/keys</code> is registered exactly once (no duplicate)</li>
+<li>[ ] <code>api/dependencies.py</code> contains <code>get_db_pool</code>, <code>get_user_repos</code>, <code>get_token_override</code></li>
+<li>[ ] <code>uv run pytest -v</code> passes — test count ≥ pre-sprint count (82+ tests)</li>
+<li>[ ] <code>repo_reader.py</code> has <code>_fetch_commits</code>, <code>_fetch_prs</code>, <code>_fetch_issues</code> at module level</li>
+<li>[ ] 3 new <code>test_repo_reader.py</code> unit tests pass for extracted fetchers</li>
+<li>[ ] <code>web/lib/types.ts</code> exists and exports all interfaces</li>
+<li>[ ] <code>web/lib/api.ts</code> is ≤ 300 lines and contains only HTTP functions</li>
+<li>[ ] <code>web/app/templates/page.tsx</code> uses <code>listPromptTemplates</code>, <code>createPromptTemplate</code>, <code>deletePromptTemplate</code> from <code>@/lib/api</code></li>
+<li>[ ] <code>AGENTS.md</code> and <code>GEMINI.md</code> updated with the 300-line rule</li>
+<li>[ ] <code>npm run lint</code> passes in <code>web/</code></li>
+<li>[ ] PR squash-merged to master</li>
+</ul>
+<hr />
+<h2 id="out-of-scope">Out of Scope</h2>
+<ul>
+<li>Changing any route behaviour or response schema (pure structural refactor only)</li>
+<li>Adding new routes or features</li>
+<li><code>web/components/SummaryForm.tsx</code> (302 lines but single-responsibility form — leave as-is)</li>
+<li><code>gitpulse_mcp/server.py</code> (299 lines, within limit — no split needed yet)</li>
+<li><code>web/app/insights/page.tsx</code> chart extraction (already done in Sprint 17 Stream 2)</li>
+<li>Sprint 18 gamification / VS Code extension (next sprint)</li>
+</ul>
+<hr />
+<h2 id="risk-notes">Risk Notes</h2>
+<blockquote>
+<p>[!WARNING]
+The <code>analytics_cache</code> object is imported by multiple routes. After migration it must be imported from <code>api.cache</code> in each router file — do not re-instantiate it per router or cache isolation will break.</p>
+<p>[!WARNING]
+<code>POST /summarise</code> returns <code>SummariseResponse</code> which is also referenced by <code>POST /team/summarise</code>. Move this model to <code>api/models.py</code> <strong>before</strong> migrating either router to avoid a circular import.</p>
+<p>[!NOTE]
+<code>uv run pytest -v</code> must be run after every single domain migration — not just at the end. A regression caught mid-migration is far cheaper to debug than one discovered after all 31 routes have moved.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2091 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://deepusharma.github.io/gitpulse/decisions/feature-brainstorm-2026-04/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>GitPulse — Final Feature Brainstorm v4 (Complete Vision) - GitPulse</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gitpulse-final-feature-brainstorm-v4-complete-vision" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GitPulse" class="md-header__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GitPulse
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GitPulse — Final Feature Brainstorm v4 (Complete Vision)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli-reference/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GitPulse" class="md-nav__button md-logo" aria-label="GitPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GitPulse
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/deepusharma/gitpulse" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    deepusharma/gitpulse
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../web-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to Contribute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code-of-conduct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code of Conduct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-1-answers-to-open-questions-confirmed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: Answers to Open Questions (Confirmed)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-2-in-app-documentation-hub-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: In-App Documentation Hub (/docs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 2: In-App Documentation Hub (/docs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-documentation-specifics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Documentation Specifics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onboarding-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Onboarding Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-3-github-projects-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 3: GitHub Projects Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 3: GitHub Projects Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-this-enables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What This Enables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-4-repo-intelligence-metadata-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 4: Repo Intelligence &amp; Metadata Insights
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 4: Repo Intelligence &amp; Metadata Insights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#repo-metadata-cards-in-insights-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repo Metadata Cards (in /insights dashboard)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#traffic-insights-owners-own-repos-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traffic Insights (owner's own repos only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cicd-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD Insights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repo-health-score-refined-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repo Health Score (refined algorithm)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-5-stats-for-nerds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 5: Stats for Nerds 🤓
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 5: Stats for Nerds 🤓">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timing-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timing Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stats-for-nerds-ui-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Stats for Nerds" UI Panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-6-rich-cli-help-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 6: Rich CLI Help &amp; UX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 6: Rich CLI Help &amp; UX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitpulse-help-current-vs-proposed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gitpulse --help (current vs proposed)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-cli-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional CLI improvements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-7-other-missing-features-bonus-round" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 7: Other Missing Features (Bonus Round)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 7: Other Missing Features (Bonus Round)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gamification-streaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏆 Gamification &amp; Streaks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#badge-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📛 Badge Generator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sprint-retrospective-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎙 Sprint Retrospective Generator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#presentation-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥 Presentation Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔔 Smart Notifications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shareable-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Shareable Links
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ai-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🤖 AI Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Comparison Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-8-complete-priority-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 8: Complete Priority Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-9-final-revised-milestone-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 9: Final Revised Milestone Plan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-10-ux-refinements-latest-additions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 10: UX Refinements (Latest Additions)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 10: UX Refinements (Latest Additions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#10a-hover-tooltips-on-metric-cards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10a: Hover Tooltips on Metric Cards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10b-cli-help-clarified-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10b: CLI Help — Clarified Design
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="gitpulse-final-feature-brainstorm-v4-complete-vision">GitPulse — Final Feature Brainstorm v4 (Complete Vision)</h1>
+<blockquote>
+<p>Full product vision. Priority-ranked. Includes hover tooltip design, CLI help UX, and platform decisions.</p>
+</blockquote>
+<hr />
+<h2 id="part-1-answers-to-open-questions-confirmed">Part 1: Answers to Open Questions (Confirmed)</h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Private repos vs team first?</td>
+<td><strong>Private repos first</strong> — v0.6</td>
+</tr>
+<tr>
+<td>Slack in Sprint 08?</td>
+<td><strong>Yes, bundle with email</strong></td>
+</tr>
+<tr>
+<td>PR/Issue data — inline or dashboard?</td>
+<td><strong>Both</strong> — prose in summary + visual in <code>/insights</code></td>
+</tr>
+<tr>
+<td>GitLab timing?</td>
+<td><strong>v1.1</strong> — after GitHub depth is complete</td>
+</tr>
+<tr>
+<td>Tone/language — preference or form?</td>
+<td><strong>Form first, saved defaults in Phase 2</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-2-in-app-documentation-hub-docs">Part 2: In-App Documentation Hub (<code>/docs</code>)</h2>
+<blockquote>
+<p>FastAPI already auto-generates OpenAPI. Surface it beautifully with user-facing docs on the same domain.</p>
+</blockquote>
+<h3 id="pages">Pages</h3>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Content</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/docs</code></td>
+<td>User guide — getting started, form walkthrough, history, insights</td>
+<td>New user onboarding</td>
+</tr>
+<tr>
+<td><code>/docs/api</code></td>
+<td>Interactive API reference (OpenAPI/Swagger UI, styled to match app)</td>
+<td>Developer integration</td>
+</tr>
+<tr>
+<td><code>/docs/cli</code></td>
+<td>CLI reference — all flags, examples, config file format</td>
+<td>Power users</td>
+</tr>
+<tr>
+<td><code>/docs/changelog</code></td>
+<td>Version history, what changed in each release</td>
+<td>Transparency</td>
+</tr>
+<tr>
+<td><code>/docs/roadmap</code></td>
+<td>Public roadmap (derived from PRD) — planned features, voting</td>
+<td>Community engagement</td>
+</tr>
+<tr>
+<td><code>/docs/mcp</code></td>
+<td>MCP server setup guide for Claude Code, Cursor, Windsurf</td>
+<td>Plugin audience</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-documentation-specifics">API Documentation Specifics</h3>
+<ul>
+<li>FastAPI already generates <code>/openapi.json</code> — wrap it with a polished Swagger/Redoc UI</li>
+<li>Add example request/response for every endpoint</li>
+<li>Include rate limit info, auth requirements, error codes</li>
+<li>Add a "Try it" live playground against the production API</li>
+</ul>
+<h3 id="onboarding-flow">Onboarding Flow</h3>
+<ul>
+<li>First-visit tour (Shepherd.js or custom) — highlight the form, explain what it does</li>
+<li>Empty state on <code>/history</code> that guides you to generate your first summary</li>
+<li><code>gitpulse init</code> wizard (CLI equivalent, Sprint 09) — mirrors the web experience</li>
+</ul>
+<p><strong>Priority: Medium — should ship with v0.8 (Open Source Ready)</strong></p>
+<hr />
+<h2 id="part-3-github-projects-integration">Part 3: GitHub Projects Integration</h2>
+<blockquote>
+<p>GitHub Projects (v2) uses GraphQL. This is the most underserved data source in developer tools.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>What It Shows</th>
+<th>Data Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Active project boards</strong></td>
+<td>List of open Projects for a user/org</td>
+<td>GraphQL <code>projectsV2</code></td>
+</tr>
+<tr>
+<td><strong>Sprint progress</strong></td>
+<td>Items % complete in current sprint iteration</td>
+<td>GraphQL <code>ProjectV2Item</code></td>
+</tr>
+<tr>
+<td><strong>Overdue items</strong></td>
+<td>Cards past their target date</td>
+<td>Derived</td>
+</tr>
+<tr>
+<td><strong>Blocked items</strong></td>
+<td>Cards with "blocked" status</td>
+<td>Status field</td>
+</tr>
+<tr>
+<td><strong>Velocity tracking</strong></td>
+<td>Items completed per sprint over time</td>
+<td>Historical iterations</td>
+</tr>
+<tr>
+<td><strong>Standup enrichment</strong></td>
+<td>"I moved 3 cards to Done in Sprint 14" added to summary</td>
+<td>GraphQL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-this-enables">What This Enables</h3>
+<p>The standup summary becomes: <em>"I merged PR #45, closed 3 issues, and completed 4 sprint cards in the Security Improvements project."</em> — That's a complete picture of a developer's day, not just commits.</p>
+<p><strong>Priority: Medium — v0.9/Sprint 14</strong></p>
+<hr />
+<h2 id="part-4-repo-intelligence-metadata-insights">Part 4: Repo Intelligence &amp; Metadata Insights</h2>
+<blockquote>
+<p>You asked specifically about private/public, CI, forks, stars, visitors. Here's the full map:</p>
+</blockquote>
+<h3 id="repo-metadata-cards-in-insights-dashboard">Repo Metadata Cards (in <code>/insights</code> dashboard)</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>API Source</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stars</strong></td>
+<td><code>GET /repos/:owner/:repo</code></td>
+<td>Popularity indicator</td>
+</tr>
+<tr>
+<td><strong>Forks</strong></td>
+<td>Same</td>
+<td>Adoption indicator</td>
+</tr>
+<tr>
+<td><strong>Watchers</strong></td>
+<td>Same</td>
+<td>Interest indicator</td>
+</tr>
+<tr>
+<td><strong>Open issues count</strong></td>
+<td>Same</td>
+<td>Backlog health</td>
+</tr>
+<tr>
+<td><strong>Open PRs count</strong></td>
+<td><code>GET /repos/:owner/:repo/pulls</code></td>
+<td>WIP indicator</td>
+</tr>
+<tr>
+<td><strong>Default branch</strong></td>
+<td>Same</td>
+<td>Convention check</td>
+</tr>
+<tr>
+<td><strong>License type</strong></td>
+<td>Same</td>
+<td>OSS compliance</td>
+</tr>
+<tr>
+<td><strong>Visibility (public/private)</strong></td>
+<td>Same</td>
+<td>Portfolio context</td>
+</tr>
+<tr>
+<td><strong>Topics/Tags</strong></td>
+<td><code>GET /repos/:owner/:repo/topics</code></td>
+<td>Tech stack</td>
+</tr>
+<tr>
+<td><strong>Last pushed</strong></td>
+<td><code>GET /repos/:owner/:repo</code></td>
+<td>Freshness indicator</td>
+</tr>
+</tbody>
+</table>
+<h3 id="traffic-insights-owners-own-repos-only">Traffic Insights (owner's own repos only)</h3>
+<blockquote>
+<p>GitHub Traffic API requires push access — works for your own repos.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>API Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Page views (14d)</strong></td>
+<td><code>GET /repos/:owner/:repo/traffic/views</code></td>
+</tr>
+<tr>
+<td><strong>Unique visitors (14d)</strong></td>
+<td>Same</td>
+</tr>
+<tr>
+<td><strong>Clone count (14d)</strong></td>
+<td><code>GET /repos/:owner/:repo/traffic/clones</code></td>
+</tr>
+<tr>
+<td><strong>Top referrers</strong></td>
+<td><code>GET /repos/:owner/:repo/traffic/popular/referrers</code></td>
+</tr>
+<tr>
+<td><strong>Top content paths</strong></td>
+<td><code>GET /repos/:owner/:repo/traffic/popular/paths</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cicd-insights">CI/CD Insights</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>API Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Latest workflow runs</strong></td>
+<td><code>GET /repos/:owner/:repo/actions/runs</code></td>
+</tr>
+<tr>
+<td><strong>Pass/fail rate (30d)</strong></td>
+<td>Derived from runs</td>
+</tr>
+<tr>
+<td><strong>Average CI duration</strong></td>
+<td>Derived from run timing</td>
+</tr>
+<tr>
+<td><strong>Most failing workflows</strong></td>
+<td>Ranked by failure count</td>
+</tr>
+<tr>
+<td><strong>Dependabot alerts</strong></td>
+<td><code>GET /repos/:owner/:repo/vulnerability-alerts</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="repo-health-score-refined-algorithm">Repo Health Score (refined algorithm)</h3>
+<pre><code>Score = 
+  commit_frequency_score (0-20)     # commits per week in last month
+  + issue_close_rate (0-20)         # closed/opened ratio
+  + pr_merge_rate (0-15)            # merged/opened ratio  
+  + ci_pass_rate (0-15)             # GitHub Actions green rate
+  + staleness_penalty (-0 to -20)   # days since last commit
+  + has_readme (0-10)               # README.md present
+  + has_tests (0-10)                # test files detected
+  + has_license (0-5)               # LICENSE file present
+  + has_ci (0-5)                    # .github/workflows present
+</code></pre>
+<p><strong>Priority: High for stars/forks/issues (Low complexity). Medium for traffic (needs owner scope). Sprint 14.</strong></p>
+<hr />
+<h2 id="part-5-stats-for-nerds">Part 5: Stats for Nerds 🤓</h2>
+<blockquote>
+<p>Time-based analytics that no other standup tool exposes. This is a genuine differentiator.</p>
+</blockquote>
+<h3 id="timing-metrics">Timing Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>How Calculated</th>
+<th>Why It Matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Avg PR cycle time</strong></td>
+<td>Time from PR opened → merged, averaged over period</td>
+<td>Engineering velocity indicator</td>
+</tr>
+<tr>
+<td><strong>Avg first review time</strong></td>
+<td>Time from PR opened → first review comment</td>
+<td>Review responsiveness</td>
+</tr>
+<tr>
+<td><strong>Avg commit-to-merge time</strong></td>
+<td>First commit in branch → PR merged</td>
+<td>Development loop speed</td>
+</tr>
+<tr>
+<td><strong>Time between commits</strong></td>
+<td>Stddev of commit timestamps</td>
+<td>Consistency vs burst pattern</td>
+</tr>
+<tr>
+<td><strong>PR size distribution</strong></td>
+<td>Lines changed per PR, bucketed (S/M/L/XL)</td>
+<td>Healthy PR sizing habits</td>
+</tr>
+<tr>
+<td><strong>Bug fix ratio</strong></td>
+<td>Commits with "fix/bug/patch" keywords vs new features</td>
+<td>Code quality proxy</td>
+</tr>
+<tr>
+<td><strong>Avg commits per PR</strong></td>
+<td>Total commits / total PRs in period</td>
+<td>PR granularity</td>
+</tr>
+<tr>
+<td><strong>Reopened PR rate</strong></td>
+<td>PRs that were closed and reopened</td>
+<td>Rework indicator</td>
+</tr>
+<tr>
+<td><strong>Review round trips</strong></td>
+<td>Avg number of review cycles before merge</td>
+<td>Process health</td>
+</tr>
+<tr>
+<td><strong>Issue response time</strong></td>
+<td>Time from issue opened → first comment</td>
+<td>Community responsiveness</td>
+</tr>
+<tr>
+<td><strong>Issue resolution time</strong></td>
+<td>Time from issue opened → closed</td>
+<td>Bug lifecycle efficiency</td>
+</tr>
+<tr>
+<td><strong>Commit by hour/day</strong></td>
+<td>Heatmap of when you commit</td>
+<td>Work pattern visibility</td>
+</tr>
+<tr>
+<td><strong>Commit message length</strong></td>
+<td>Avg chars in commit message</td>
+<td>Message quality proxy</td>
+</tr>
+<tr>
+<td><strong>Code churn</strong></td>
+<td>Lines added vs deleted ratio</td>
+<td>Rework detection</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stats-for-nerds-ui-panel">"Stats for Nerds" UI Panel</h3>
+<p>A collapsible panel at the bottom of <code>/insights</code> styled like Spotify's or YouTube's stats section:</p>
+<pre><code>┌─ Stats for Nerds ──────────────────────────────────────────────────────┐
+│ Avg PR cycle time: 14.2 hrs   │ Avg first review: 3.1 hrs              │
+│ PR size: S:45% M:38% L:12% XL:5% │ Bug fix ratio: 23%                 │
+│ Peak commit hours: 10am-12pm (UTC) │ Commit streak: 12 days 🔥         │
+│ Code churn: +1,847 / -622 lines   │ Reviews given: 8 PRs this month    │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Priority: Medium — exciting differentiator. Sprint 14 alongside <code>/insights</code>.</strong></p>
+<hr />
+<h2 id="part-6-rich-cli-help-ux">Part 6: Rich CLI Help &amp; UX</h2>
+<blockquote>
+<p><code>rich</code> is already a dependency. Use it fully.</p>
+</blockquote>
+<h3 id="gitpulse-help-current-vs-proposed"><code>gitpulse --help</code> (current vs proposed)</h3>
+<p><strong>Current:</strong> Basic Typer auto-generated help.</p>
+<p><strong>Proposed:</strong> Full Rich-formatted help panel:</p>
+<pre><code>╭─ gitpulse v0.7.0 ────────────────────────────────────────────────────────╮
+│  Your weekly standup, done.                                               │
+│  Generate AI-powered standup summaries from your git commit history.      │
+╰───────────────────────────────────────────────────────────────────────────╯
+
+ Usage: gitpulse [OPTIONS] COMMAND [ARGS]...
+
+╭─ Commands ────────────────────────────────────────────────────────────────╮
+│  run        Generate a standup summary (default)                          │
+│  insights   Show developer analytics dashboard in terminal                │
+│  history    List past summaries stored in history                         │
+│  init       Interactive setup wizard                                      │
+│  config     Show or edit ~/.gitpulse.toml                                 │
+╰───────────────────────────────────────────────────────────────────────────╯
+
+╭─ Options (run) ───────────────────────────────────────────────────────────╮
+│  --days    INTEGER   Lookback period in days [default: 7]                 │
+│  --repo    TEXT      Repo name(s), comma-separated [default: from config] │
+│  --tone    TEXT      Summary tone: technical|casual|executive             │
+│  --lang    TEXT      Output language: english|spanish|french|...          │
+│  --length  TEXT      Summary length: brief|standard|detailed              │
+│  --mode    TEXT      Standup mode: daily|weekly                           │
+│  --team    TEXT      Comma-separated GitHub usernames (team standup)      │
+│  --include-prs       Include PR activity in summary                       │
+│  --include-issues    Include issue activity in summary                    │
+│  --dry-run           Show commits without LLM call                        │
+│  --deliver TEXT      Delivery: clipboard|slack|gist|email                 │
+│  --output  PATH      Save output to file                                  │
+│  --debug             Enable verbose logging                               │
+╰───────────────────────────────────────────────────────────────────────────╯
+
+╭─ Examples ──────────────────────────────────────────────────────────────╮
+│  gitpulse run                          # use config defaults             │
+│  gitpulse run --days 14 --tone casual  # 2-week casual summary           │
+│  gitpulse run --team alice,bob,carol   # team standup                    │
+│  gitpulse run --language spanish       # Spanish output                  │
+│  gitpulse run --deliver slack          # post to Slack                   │
+│  gitpulse insights --days 30           # terminal analytics              │
+╰─────────────────────────────────────────────────────────────────────────╯
+</code></pre>
+<h3 id="additional-cli-improvements">Additional CLI improvements</h3>
+<ul>
+<li><strong>Colour-coded output:</strong> Green for commits, blue for PRs, yellow for issues</li>
+<li><strong>Progress bar</strong> during LLM generation: <code>Generating summary ████████░░ 80%</code></li>
+<li><strong>Interactive mode:</strong> <code>gitpulse --interactive</code> → guided prompts via <code>rich.prompt</code></li>
+<li><strong><code>gitpulse config</code></strong> subcommand to view/edit <code>~/.gitpulse.toml</code> without opening a text editor</li>
+<li><strong>Shell completion:</strong> <code>gitpulse --install-completion zsh</code> (Typer supports this natively)</li>
+</ul>
+<p><strong>Priority: Medium — ship with Sprint 09 (Packaging &amp; DX)</strong></p>
+<hr />
+<h2 id="part-7-other-missing-features-bonus-round">Part 7: Other Missing Features (Bonus Round)</h2>
+<h3 id="gamification-streaks">🏆 Gamification &amp; Streaks</h3>
+<ul>
+<li><strong>Commit streak counter</strong> (like GitHub's contribution graph streak)</li>
+<li><strong>Weekly badges:</strong> "🚀 Shipping Machine (10+ commits)", "🐛 Bug Squasher (5+ fixes)"</li>
+<li><strong>Personal bests:</strong> "Your fastest PR merge ever: 47 minutes"</li>
+<li><strong>Year in review:</strong> Annual wrap-up (Spotify Wrapped for your code)</li>
+<li><em>Priority: Low — fun engagement feature. v1.3</em></li>
+</ul>
+<h3 id="badge-generator">📛 Badge Generator</h3>
+<ul>
+<li>Auto-generate README badges from your stats:
+  <code>![Commit Streak](https://gitpulse.io/badge/streak/deepusharma)
+  ![PRs This Month](https://gitpulse.io/badge/prs/deepusharma)
+  ![Health Score](https://gitpulse.io/badge/health/deepusharma/gitpulse)</code></li>
+<li>Shield.io-compatible format, embeddable anywhere</li>
+<li><em>Priority: Medium — viral distribution through README badges. v1.0</em></li>
+</ul>
+<h3 id="sprint-retrospective-generator">🎙 Sprint Retrospective Generator</h3>
+<ul>
+<li>Broader than standup — covers a full 2-week sprint</li>
+<li>Sections: What went well / What didn't / What to improve / Action items</li>
+<li>Pull from 14 days of commits + PRs + issues + sprint board</li>
+<li><em>Priority: High — distinct from daily standup, new use case. v0.9</em></li>
+</ul>
+<h3 id="presentation-mode">🖥 Presentation Mode</h3>
+<ul>
+<li><code>/present</code> route — full-screen standup card optimized for screen sharing</li>
+<li>Large fonts, dark background, no UI chrome</li>
+<li>Keyboard shortcuts: next section, copy, share</li>
+<li><em>Priority: Low — nice polish. v1.0</em></li>
+</ul>
+<h3 id="smart-notifications">🔔 Smart Notifications</h3>
+<ul>
+<li>Daily 9am browser notification (if enabled): "Your standup is ready — 7 commits since yesterday"</li>
+<li>Weekly email digest with insights summary (Sunday evening)</li>
+<li>PR staleness alert: "You have 3 PRs untouched for 5+ days"</li>
+<li><em>Priority: Medium — drives daily habit formation. v1.0</em></li>
+</ul>
+<h3 id="shareable-links">🔗 Shareable Links</h3>
+<ul>
+<li><code>/summary/:id</code> — public shareable link for a specific generated summary</li>
+<li>Optional password protection</li>
+<li>Read-only view with Open Graph preview for Slack/Twitter unfurls</li>
+<li><em>Priority: Low — useful for sharing standups with manager. v1.1</em></li>
+</ul>
+<h3 id="ai-recommendations">🤖 AI Recommendations</h3>
+<ul>
+<li>"You haven't pushed to <code>main</code> in 8 days — are you blocked?"</li>
+<li>"Your PR review time is 3x slower than your personal average this week"</li>
+<li>"You've squashed 60% more bugs than features this sprint — is this a hotfix week?"</li>
+<li>Uses the history + insights data to generate proactive nudges</li>
+<li><em>Priority: Medium — differentiating AI layer. v1.2</em></li>
+</ul>
+<h3 id="comparison-mode">📊 Comparison Mode</h3>
+<ul>
+<li>Compare your stats this period vs last period (% change)</li>
+<li>Compare against your personal historical averages</li>
+<li>(Optional, with consent) Anonymous aggregate benchmarks: "You commit 2x more than the median solo dev"</li>
+<li><em>Priority: Medium — powerful for self-improvement. v1.1</em></li>
+</ul>
+<hr />
+<h2 id="part-8-complete-priority-matrix">Part 8: Complete Priority Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>User Value</th>
+<th>Complexity</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Private repo OAuth</strong></td>
+<td>🔴 Critical</td>
+<td>Low–Med</td>
+<td>v0.6 / Sprint 08</td>
+</tr>
+<tr>
+<td><strong>Slack delivery</strong></td>
+<td>🔴 Critical</td>
+<td>Low</td>
+<td>v0.6 / Sprint 08</td>
+</tr>
+<tr>
+<td><strong>PR + Issue in summary</strong></td>
+<td>🔴 Critical</td>
+<td>Medium</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong><code>/insights</code> dashboard</strong></td>
+<td>🔴 Critical</td>
+<td>Medium</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong>Team standup view</strong></td>
+<td>🔴 Critical</td>
+<td>Medium</td>
+<td>v1.0 / Sprint 15</td>
+</tr>
+<tr>
+<td><strong>Rich CLI help</strong></td>
+<td>🟠 High</td>
+<td>Low</td>
+<td>v0.7 / Sprint 09</td>
+</tr>
+<tr>
+<td><strong>Tone/language/length</strong></td>
+<td>🟠 High</td>
+<td>Low</td>
+<td>v0.6 / Sprint 08</td>
+</tr>
+<tr>
+<td><strong>GitHub Projects integration</strong></td>
+<td>🟠 High</td>
+<td>Medium</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong>Stats for nerds</strong></td>
+<td>🟠 High</td>
+<td>Medium</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong>Sprint retrospective generator</strong></td>
+<td>🟠 High</td>
+<td>Medium</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong>Repo metadata (stars/forks/CI)</strong></td>
+<td>🟠 High</td>
+<td>Low</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong>Traffic insights</strong></td>
+<td>🟠 High</td>
+<td>Low</td>
+<td>v0.9 / Sprint 14</td>
+</tr>
+<tr>
+<td><strong>MCP server</strong></td>
+<td>🟠 High</td>
+<td>Medium</td>
+<td>v1.2 / Sprint 17</td>
+</tr>
+<tr>
+<td><strong>In-app docs hub</strong></td>
+<td>🟡 Medium</td>
+<td>Low–Med</td>
+<td>v0.8 / Sprint 11</td>
+</tr>
+<tr>
+<td><strong>Badge generator</strong></td>
+<td>🟡 Medium</td>
+<td>Low</td>
+<td>v1.0 / Sprint 15</td>
+</tr>
+<tr>
+<td><strong>GitHub Gist delivery</strong></td>
+<td>🟡 Medium</td>
+<td>Low</td>
+<td>v0.6 / Sprint 08</td>
+</tr>
+<tr>
+<td><strong>Smart notifications</strong></td>
+<td>🟡 Medium</td>
+<td>Medium</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><strong>AI recommendations</strong></td>
+<td>🟡 Medium</td>
+<td>Medium</td>
+<td>v1.2</td>
+</tr>
+<tr>
+<td><strong>Comparison mode</strong></td>
+<td>🟡 Medium</td>
+<td>Medium</td>
+<td>v1.1</td>
+</tr>
+<tr>
+<td><strong>Shareable links</strong></td>
+<td>🟡 Medium</td>
+<td>Low</td>
+<td>v1.1</td>
+</tr>
+<tr>
+<td><strong>Presentation mode</strong></td>
+<td>🟢 Low–Med</td>
+<td>Low</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><strong>Gamification/streaks</strong></td>
+<td>🟢 Low</td>
+<td>Low</td>
+<td>v1.3</td>
+</tr>
+<tr>
+<td><strong>GitLab adapter</strong></td>
+<td>❌ Drop</td>
+<td>Disproportionate complexity vs user value. CLI already works with local GitLab repos via GitPython. Web UI stays GitHub-only.</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Bitbucket</strong></td>
+<td>❌ Never</td>
+<td>Declining market share, not worth the maintenance cost</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Azure DevOps</strong></td>
+<td>❌ Never</td>
+<td>Completely different paradigm, enterprise-only</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>VS Code extension</strong></td>
+<td>🟡 Medium</td>
+<td>High</td>
+<td>v1.3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-9-final-revised-milestone-plan">Part 9: Final Revised Milestone Plan</h2>
+<table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Theme</th>
+<th>Key Additions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>v0.5</strong> 🔄</td>
+<td>History &amp; Analytics</td>
+<td>DB, history, analytics dashboard, UX fixes</td>
+</tr>
+<tr>
+<td><strong>v0.6</strong> 📋</td>
+<td>Integrations + Private</td>
+<td>Email, Slack, Gist, private repos, tone/language/mode</td>
+</tr>
+<tr>
+<td><strong>v0.7</strong> 📋</td>
+<td>Packaging &amp; DX</td>
+<td>PyPI, <code>gitpulse init</code>, rich CLI help, shell completion</td>
+</tr>
+<tr>
+<td><strong>v0.8</strong> 📋</td>
+<td>Open Source Ready</td>
+<td>README, MkDocs, in-app <code>/docs</code> hub, changelog</td>
+</tr>
+<tr>
+<td><strong>v0.9</strong> 🆕</td>
+<td>Depth &amp; Intelligence</td>
+<td>PR/issue in summary, <code>/insights</code> dashboard, stats for nerds, GitHub Projects, repo metadata, retro generator, traffic insights</td>
+</tr>
+<tr>
+<td><strong>v1.0</strong> 🆕</td>
+<td>Team &amp; Reach</td>
+<td>Team standup, Slack channels, badge generator, presentation mode, smart notifications</td>
+</tr>
+<tr>
+<td><strong>v1.1</strong> 🆕</td>
+<td>Platform Expansion</td>
+<td>Private orgs, shareable links, comparison mode</td>
+</tr>
+<tr>
+<td><strong>v1.2</strong> 🆕</td>
+<td>AI &amp; MCP</td>
+<td>MCP server (Claude/Cursor/Windsurf), AI recommendations, prompt templates</td>
+</tr>
+<tr>
+<td><strong>v1.3</strong> 🆕</td>
+<td>Delight</td>
+<td>Year in review, gamification, streaks, VS Code extension</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-10-ux-refinements-latest-additions">Part 10: UX Refinements (Latest Additions)</h2>
+<h3 id="10a-hover-tooltips-on-metric-cards">10a: Hover Tooltips on Metric Cards</h3>
+<p>When the <code>/insights</code> dashboard shows a metric card with a count (e.g. "12 PRs Merged"), hovering
+should reveal the actual items — not just a number.</p>
+<p><strong>Design rules:</strong>
+- <strong>PRs Merged card</strong> → popover list of PR titles, each a clickable GitHub link, with merge date and target branch
+- <strong>Issues Closed card</strong> → popover list of issue titles, label badge (bug/feature/chore), close date, and link
+- <strong>Commits card</strong> → too many to list individually; hover shows a <strong>breakdown by repo</strong> instead
+  (e.g. <code>gitpulse: 23  dotfiles: 8  blog: 4</code>) — clicking a repo drills into its commit list
+- <strong>Active Repos card</strong> → hover shows the repo names as a quick list</p>
+<p><strong>Popover cap:</strong> Show max 8 items, then a <code>+3 more →</code> link to the full GitHub list. Keeps the popover
+clean without hiding data.</p>
+<p><strong>Data implication:</strong> The <code>/insights</code> API must return the PR/issue <em>list</em> (not just counts) so the
+frontend can populate the popover without a second API call. This is a schema consideration for
+Sprint 14 API design.</p>
+<p><strong>Tooltip UX pattern:</strong></p>
+<pre><code>┌─ PRs Merged — 12 ───────────────────────────────┐
+│ ✅ feat: add /history page          #132  Mar 31 │
+│ ✅ fix: asyncpg missing in Railway  #134  Apr 01 │
+│ ✅ docs: sprint 07 complete         #133  Apr 01 │
+│ ✅ chore: PRD formatting            #144  Apr 01 │
+│ ✅ docs: extend PRD v0.9–v1.3       #145  Apr 01 │
+│                              +7 more on GitHub → │
+└──────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Priority: Medium — high UX impact, data design decision needed early. Sprint 14.</strong></p>
+<hr />
+<h3 id="10b-cli-help-clarified-design">10b: CLI Help — Clarified Design</h3>
+<p>The goal: when a user types <code>gitpulse --help</code> (or just <code>gitpulse</code> with no arguments), they
+immediately see what commands exist and how to use them — without reading docs.</p>
+<p><strong>Two levels of help:</strong></p>
+<p><strong>Level 1 — <code>gitpulse</code> (no args) or <code>gitpulse --help</code>:</strong>
+Shows a brief, scannable overview. Commands first, options second, examples third.</p>
+<pre><code> gitpulse — Your weekly standup, done.
+
+ Usage:  gitpulse &lt;command&gt; [options]
+
+ Commands:
+   run       Generate a standup summary (default)
+   insights  Developer analytics in terminal
+   history   List your past summaries
+   init      Interactive setup wizard
+   config    View / edit ~/.gitpulse.toml
+
+ Quick start:
+   gitpulse run                        # defaults from config
+   gitpulse run --days 14              # last 2 weeks
+   gitpulse run --tone casual          # casual tone
+   gitpulse insights --days 30         # analytics view
+
+ Run 'gitpulse &lt;command&gt; --help' for more options.
+ Docs: https://gitpulse.io/docs/cli
+</code></pre>
+<p><strong>Level 2 — <code>gitpulse run --help</code>:</strong>
+Shows the full options list for that specific subcommand only, keeping each help page focused.</p>
+<p><strong>Key UX decisions:</strong>
+- <code>gitpulse</code> with no args → show Level 1 help (friendlier for new users than silently running with defaults)
+- <code>gitpulse run</code> with no args → run with defaults (power user shortcut)
+- Keep Level 1 short enough to fit in one terminal screen without scrolling
+- <code>rich</code> adds colour (green for commands, dimmed for defaults) but the <em>structure</em> is the real value
+- Typer natively supports custom help groups and rich formatting — minimal implementation effort</p>
+<p><strong>Additional related CLI improvements:</strong>
+- Progress indicator during generation: <code>Generating summary... ████████░░ 80%</code>
+- Colour-coded output: green for new commits, blue for PRs, yellow for issues
+- Shell completion: <code>gitpulse --install-completion zsh</code> (Typer built-in, one line to enable)</p>
+<p><strong>Priority: High within v0.7 — polish that makes first impressions count.</strong></p>
+<hr />
+<blockquote>
+<p><strong>Status: Brainstorm complete — ready for PRD update and GitHub issue creation on your go-ahead.</strong>
+No changes have been made to the PRD or any code files.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
