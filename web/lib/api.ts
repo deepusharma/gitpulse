@@ -14,6 +14,8 @@ import type {
   PromptTemplateCreate,
   AnalyticsFullResponse,
   YearInReviewResponse,
+  DigestSchedule,
+  DigestScheduleRequest,
 } from "./types";
 export type {
   SummariseRequest,
@@ -31,6 +33,8 @@ export type {
   PromptTemplateCreate,
   AnalyticsFullResponse,
   YearInReviewResponse,
+  DigestSchedule,
+  DigestScheduleRequest,
 } from "./types";
 import { ApiError } from "./types";
 export { ApiError };
@@ -275,5 +279,31 @@ export async function fetchYearInReview(
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch year in review");
   return response.json();
+}
+
+export async function getSchedule(username: string): Promise<DigestSchedule | null> {
+  const response = await fetch(`${API_URL}/schedule/${encodeURIComponent(username)}`);
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    throw new Error("Failed to fetch schedule");
+  }
+  return response.json();
+}
+
+export async function saveSchedule(data: DigestScheduleRequest): Promise<DigestSchedule> {
+  const response = await fetch(`${API_URL}/schedule`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error("Failed to save schedule");
+  return response.json();
+}
+
+export async function deleteSchedule(username: string): Promise<void> {
+  const response = await fetch(`${API_URL}/schedule/${encodeURIComponent(username)}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) throw new Error("Failed to delete schedule");
 }
 

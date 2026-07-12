@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Literal
 from pydantic import BaseModel
 
 class SummariseRequest(BaseModel):
@@ -138,3 +138,30 @@ class PublicProfileResponse(BaseModel):
     health_score: int
     total_summaries: int
     generated_at: str
+
+class DigestScheduleRequest(BaseModel):
+    username: str
+    enabled: bool = True
+    frequency: Literal["daily", "weekly"]
+    hour_utc: int
+    day_of_week: Optional[int] = None
+    channel: Literal["email", "slack"]
+    email_to: Optional[str] = None
+    slack_webhook: Optional[str] = None
+    repos: List[str]
+    days: int = 7
+    tone: str = "professional"
+    language: str = "English"
+
+class DigestScheduleResponse(BaseModel):
+    id: str
+    username: str
+    enabled: bool
+    frequency: str
+    hour_utc: int
+    day_of_week: Optional[int]
+    channel: str
+    repos: List[str]
+    days: int
+    last_sent_at: Optional[str]
+    created_at: str
