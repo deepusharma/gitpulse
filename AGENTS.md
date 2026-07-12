@@ -1,6 +1,6 @@
 # AGENTS.md — gitpulse
 
-This file provides guidance to AI coding agents (Claude Code, Gemini, etc.) when working with code in this repository. `CLAUDE.md` and `GEMINI.md` are 1-line pointers to this file — no content lives there.
+This file provides guidance to AI coding agents (Claude Code, Gemini, etc.) when working with code in this repository. `CLAUDE.md` and `GEMINI.md` are pointers to this file — no content lives there.
 
 ---
 
