@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md — gitpulse
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Gemini, etc.) when working with code in this repository. `CLAUDE.md` and `GEMINI.md` are 1-line pointers to this file — no content lives there.
 
 ---
 
@@ -161,7 +161,7 @@ pyproject.toml
 
 ### TypeScript (web)
 
-- Next.js 14 App Router
+- Next.js 16 App Router (verified against `web/package.json` 2026-07-12 — if this drifts again, check `package.json`, don't guess)
 - NextAuth.js (GitHub OAuth)
 - TypeScript strict mode
 - Tailwind CSS (with @tailwindcss/typography)
@@ -175,19 +175,30 @@ pyproject.toml
 ### Python
 
 - **File size limit:** 300 lines max per file in `api/` and `gitpulse/core/`. Files approaching this limit must be split before adding new features.
+- **Function size:** under 30 lines, single responsibility. Guard clauses over nested ifs.
 - Google docstrings on all functions
 - `logging` module — never `print`
-- `%s` format style for logger calls: `logger.debug("msg: %s", var)`
+- `%s` format style for logger calls: `logger.debug("msg: %s", var)`; always include `exc_info=True` on error-level logs
 - Type hints on all function signatures
-- Guard clauses over nested ifs
-- One function, one responsibility
+- No hardcoding — config (URLs, model names, API keys) comes from env vars or `~/.gitpulse.toml`, never inline
+- Never put business logic in `cli.py` or `api.py` — always implement it in `gitpulse.core`
 
 ### TypeScript
 
 - Strict mode always
 - No `any` types
-- Interfaces over types for objects
+- Interfaces over types for objects — do not prefix interfaces with `I`
 - Named exports preferred
+- JSDoc on exported functions/components
+
+### Naming
+
+- **Python:** `snake_case` for functions/variables, `PascalCase` for classes, `UPPER_CASE` for constants.
+- **TypeScript:** `camelCase` for functions/variables, `PascalCase` for components/interfaces.
+
+### UI Standards
+
+shadcn/ui + Tailwind CSS. Monochrome/neutral palette with a single accent color. Mobile-first responsive design.
 
 ---
 
