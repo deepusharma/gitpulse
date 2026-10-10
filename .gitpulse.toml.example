@@ -3,7 +3,7 @@
 # --------------------------------
 
 [repos]
-dotfiles = "/mnt/d/GitProjects/public/dotfiles"
-gitpulse = "/mnt/d/GitProjects/public/gitpulse"
-crewai-course = "/mnt/d/GitProjects/lab/crse-crewai-deeplearningai"
+dotfiles = "~/Documents/GitProjects/public/dotfiles"
+gitpulse = "~/Documents/GitProjects/public/gitpulse"
+crewai-course = "~/Documents/GitProjects/lab/crse-crewai-deeplearningai"
 
